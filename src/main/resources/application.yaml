@@ -1,0 +1,26 @@
+feeder:
+  sta:
+    http:
+      url: http://docker.srv.int.52north.org:8082/sta/v2/
+    mqtt:
+      url: tcp://docker.srv.int.52north.org:8083
+      password: null
+      username: null
+  retrieval:
+    baseURL: http://eurofleets.utm.csic.es/data/ES/SDG
+    position:
+      #url: ${feeder.retrieval.baseURL}/NAV/0
+      url: http://eurofleets.utm.csic.es/data/ES/SDG/NAV/20200214
+      repeating: true
+      schedule: PT1S
+    meteorology:
+      url: ${feeder.retrieval.baseURL}/MET/0
+      schedule: PT5S
+    thermosalinity:
+      url: ${feeder.retrieval.baseURL}/TSS/0
+      schedule: PT5S
+  thing:
+    id: ES_GDC
+    name: R/V García del Cid
+    description: R/V García del Cid
+    observedArea: [-180, -90, 180, 90]
