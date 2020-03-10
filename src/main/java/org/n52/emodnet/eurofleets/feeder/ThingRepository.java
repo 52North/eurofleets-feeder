@@ -1,6 +1,5 @@
 package org.n52.emodnet.eurofleets.feeder;
 
-import com.google.common.collect.ImmutableMap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -15,9 +14,14 @@ import org.n52.emodnet.eurofleets.feeder.sta.FeatureOfInterestCreator;
 import org.n52.emodnet.eurofleets.feeder.sta.ThingCreator;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.temporal.IsoFields;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -55,13 +59,9 @@ public class ThingRepository {
         featureOfInterestCreator.create(featureOfInterest);
         thing.setProperties(Collections.singletonMap("updateFOI", featureOfInterest.getId()));
         thingCreator.create(thing);
-
     }
 
-
-
     private Datastreams createDatastreams() {
-
         return new Datastreams(createDatastream(thing, ObservedProperties.LONGITUDE, Units.DEGREES),
                                createDatastream(thing, ObservedProperties.LATITUDE, Units.DEGREES),
                                createDatastream(thing, ObservedProperties.HEADING, Units.DEGREES),
@@ -136,11 +136,15 @@ public class ThingRepository {
     }
 
     private FeatureOfInterest createFeatureOfInterest() {
+
         FeatureOfInterest featureOfInterest = new FeatureOfInterest();
         Feature feature = new Feature();
         feature.setGeometry(geometryFactory.createLineString());
-        featureOfInterest.setId(thing.getId());
-        featureOfInterest.setName(thing.getName());
+        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("UTC"));
+        int year = now.get(IsoFields.WEEK_BASED_YEAR);
+        int week = now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        featureOfInterest.setId(String.format("%s-%4d-%2d", thing.getId(), year, week));
+        featureOfInterest.setName(String.format("%s in week %d of %4d", thing.getName(), week, year));
         featureOfInterest.setDescription(thing.getDescription());
         featureOfInterest.setEncodingType("application/vnd.geo+json");
         featureOfInterest.setFeature(feature);
@@ -148,4 +152,22 @@ public class ThingRepository {
 
     }
 
+    /**
+     * Create a new feature of interest on week changes.
+     */
+    @Scheduled(cron = "1 0 0 * * *", zone = "UTC")
+    public void updateFeature() {
+        OffsetDateTime today = OffsetDateTime.now(ZoneId.of("UTC"));
+        OffsetDateTime yesterday = today.minus(Duration.parse("PT12H"));
+        int year = today.get(IsoFields.WEEK_BASED_YEAR);
+        int week = today.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        if (year != yesterday.get(IsoFields.WEEK_BASED_YEAR) ||
+            week != yesterday.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)) {
+            FeatureOfInterest featureOfInterest = createFeatureOfInterest();
+            this.featureOfInterestCreator.create(featureOfInterest);
+            this.featureOfInterest = featureOfInterest;
+            thing.setProperties(Collections.singletonMap("updateFOI",
+                                                         this.featureOfInterest.getId()));
+        }
+    }
 }

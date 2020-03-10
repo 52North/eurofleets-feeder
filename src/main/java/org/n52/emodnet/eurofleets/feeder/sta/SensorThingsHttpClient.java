@@ -26,7 +26,6 @@ public class SensorThingsHttpClient implements FeatureOfInterestCreator, ThingCr
     @Override
     public void create(FeatureOfInterest featureOfInterest) {
         try {
-
             if (!api.getFeature(featureOfInterest.getId()).execute().isSuccessful()) {
                 Response<JsonNode> response = api.createFeature(featureOfInterest).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {

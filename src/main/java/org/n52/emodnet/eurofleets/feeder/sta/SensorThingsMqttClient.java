@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -72,9 +73,9 @@ public class SensorThingsMqttClient implements ObservationCreator, LocationCreat
 
     private void publish(Message message) {
         try {
-            byte[] payload = objectWriter.writeValueAsBytes(message.getWritable());
-            mqttClient.publish(message.getTopic(), payload, 1, false);
-            LOG.info("Published message for topic {}: {}", message.getTopic(), message.getWritable());
+            String payload = objectWriter.writeValueAsString(message.getWritable());
+            mqttClient.publish(message.getTopic(), payload.getBytes(StandardCharsets.UTF_8), 1, false);
+            LOG.info("Published message for topic {}: {}", message.getTopic(), payload);
         } catch (MqttException | JsonProcessingException e) {
             LOG.error("could not publish MQTT message", e);
         }

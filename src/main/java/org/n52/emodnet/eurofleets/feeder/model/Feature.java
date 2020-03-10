@@ -40,6 +40,7 @@ public class Feature implements Enveloped {
     }
 
     @JsonGetter(JsonConstants.PROPERTIES)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public ObjectNode getProperties() {
         return properties;
     }
