@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Location extends EncodedEntity {
     private Feature location;
-    private List<IdentifiedEntity> things;
+    private List<Thing> things;
 
     @JsonGetter(JsonConstants.LOCATION)
     public Feature getLocation() {
@@ -22,13 +22,13 @@ public class Location extends EncodedEntity {
     }
 
     @JsonGetter(JsonConstants.THINGS)
-    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
-    public List<IdentifiedEntity> getThings() {
+    @JsonSerialize(contentAs = IdentifiedEntity.class)
+    public List<Thing> getThings() {
         return things;
     }
 
     @JsonSetter(JsonConstants.THINGS)
-    public void setThings(List<IdentifiedEntity> things) {
+    public void setThings(List<Thing> things) {
         this.things = things;
     }
 

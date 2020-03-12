@@ -2,6 +2,7 @@ package org.n52.emodnet.eurofleets.feeder.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.locationtech.jts.geom.Polygon;
 import org.n52.emodnet.eurofleets.feeder.JsonConstants;
 
@@ -43,6 +44,7 @@ public class Datastream extends DescribedEntity {
     }
 
     @JsonGetter(JsonConstants.OBSERVED_PROPERTY)
+    @JsonSerialize(as = IdentifiedEntity.class)
     public ObservedProperty getObservedProperty() {
         return observedProperty;
     }
@@ -53,6 +55,7 @@ public class Datastream extends DescribedEntity {
     }
 
     @JsonGetter(JsonConstants.SENSOR)
+    @JsonSerialize(as = IdentifiedEntity.class)
     public Sensor getSensor() {
         return sensor;
     }

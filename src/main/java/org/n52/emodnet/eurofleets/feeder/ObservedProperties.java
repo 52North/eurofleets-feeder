@@ -5,6 +5,7 @@ import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
 import org.n52.emodnet.eurofleets.feeder.model.UnitOfMeasurement;
 
 import java.util.Map;
+import java.util.Set;
 
 public interface ObservedProperties {
     ObservedProperty LONGITUDE = new ObservedProperty("longitude", "longitude", "http://vocab.nerc.ac.uk/collection/P06/current/DEGE/");
@@ -48,5 +49,7 @@ public interface ObservedProperties {
                                                              .put(ObservedProperties.CONDUCTIVITY, Units.SIEMENS_PER_METRE)
                                                              .put(ObservedProperties.DENSITY, Units.KILOGRAMS_PER_CUBIC_METRE)
                                                              .build();
+
+    Set<ObservedProperty> ALL = UNITS.keySet();
 
 }

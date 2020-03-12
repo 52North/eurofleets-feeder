@@ -13,8 +13,8 @@ public class Observation {
     private OffsetDateTime phenomenonTime;
     private OffsetDateTime resultTime;
     private List<Parameter> parameters;
-    private IdentifiedEntity datastream;
-    private IdentifiedEntity featureOfInterest;
+    private Datastream datastream;
+    private FeatureOfInterest featureOfInterest;
 
     @JsonGetter(JsonConstants.RESULT_TIME)
     public OffsetDateTime getResultTime() {
@@ -57,24 +57,24 @@ public class Observation {
     }
 
     @JsonGetter(JsonConstants.DATASTREAM)
-    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
-    public IdentifiedEntity getDatastream() {
+    @JsonSerialize(as = IdentifiedEntity.class)
+    public Datastream getDatastream() {
         return datastream;
     }
 
     @JsonSetter(JsonConstants.DATASTREAM)
-    public void setDatastream(IdentifiedEntity datastream) {
+    public void setDatastream(Datastream datastream) {
         this.datastream = datastream;
     }
 
     @JsonGetter(JsonConstants.FEATURE_OF_INTEREST)
-    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
-    public IdentifiedEntity getFeatureOfInterest() {
+    @JsonSerialize(as = IdentifiedEntity.class)
+    public FeatureOfInterest getFeatureOfInterest() {
         return featureOfInterest;
     }
 
     @JsonSetter(JsonConstants.FEATURE_OF_INTEREST)
-    public void setFeatureOfInterest(IdentifiedEntity featureOfInterest) {
+    public void setFeatureOfInterest(FeatureOfInterest featureOfInterest) {
         this.featureOfInterest = featureOfInterest;
     }
 

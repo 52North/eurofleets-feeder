@@ -6,6 +6,8 @@ import org.apache.http.HttpStatus;
 import org.n52.emodnet.eurofleets.feeder.SensorThingsAPI;
 import org.n52.emodnet.eurofleets.feeder.model.FeatureOfInterest;
 import org.n52.emodnet.eurofleets.feeder.model.Intentified;
+import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
+import org.n52.emodnet.eurofleets.feeder.model.Sensor;
 import org.n52.emodnet.eurofleets.feeder.model.Thing;
 import org.n52.janmayen.function.ThrowingRunnable;
 import org.slf4j.Logger;
@@ -23,7 +25,8 @@ import java.util.function.IntToLongFunction;
 import java.util.function.Predicate;
 
 @Service
-public class SensorThingsHttpClient implements FeatureOfInterestCreator, ThingCreator, ThingUpdater {
+public class SensorThingsHttpClient
+        implements FeatureOfInterestCreator, ThingCreator, ThingUpdater, SensorCreator, ObservedPropertyCreator {
     public static final Logger LOG = LoggerFactory.getLogger(SensorThingsHttpClient.class);
     private final SensorThingsAPI api;
     private final Retrier retrier;
@@ -108,6 +111,36 @@ public class SensorThingsHttpClient implements FeatureOfInterestCreator, ThingCr
                 Response<Void> response = api.createThing(thing).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(thing, response);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void create(ObservedProperty observedProperty) {
+        LOG.info("creating observed property {}", observedProperty);
+        retryingExecute(() -> {
+            if (api.getObservedProperty(observedProperty.getId()).execute().isSuccessful()) {
+                LOG.info("{} does already exist", observedProperty);
+            } else {
+                Response<Void> response = api.createObservedProperty(observedProperty).execute();
+                if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
+                    checkForConflict(observedProperty, response);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void create(Sensor sensor) {
+        LOG.info("creating sensor {}", sensor);
+        retryingExecute(() -> {
+            if (api.getSensor(sensor.getId()).execute().isSuccessful()) {
+                LOG.info("{} does already exist", sensor);
+            } else {
+                Response<Void> response = api.createSensor(sensor).execute();
+                if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
+                    checkForConflict(sensor, response);
                 }
             }
         });

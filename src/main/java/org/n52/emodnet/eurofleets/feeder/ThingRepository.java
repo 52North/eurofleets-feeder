@@ -11,6 +11,8 @@ import org.n52.emodnet.eurofleets.feeder.model.Sensor;
 import org.n52.emodnet.eurofleets.feeder.model.Thing;
 import org.n52.emodnet.eurofleets.feeder.model.UnitOfMeasurement;
 import org.n52.emodnet.eurofleets.feeder.sta.FeatureOfInterestCreator;
+import org.n52.emodnet.eurofleets.feeder.sta.ObservedPropertyCreator;
+import org.n52.emodnet.eurofleets.feeder.sta.SensorCreator;
 import org.n52.emodnet.eurofleets.feeder.sta.ThingCreator;
 import org.n52.emodnet.eurofleets.feeder.sta.ThingUpdater;
 import org.n52.shetland.ogc.om.OmConstants;
@@ -19,12 +21,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.net.URL;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.IsoFields;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -38,9 +42,12 @@ public class ThingRepository {
     private final ThingCreator thingCreator;
     private final FeatureOfInterestCreator featureOfInterestCreator;
     private final ThingUpdater thingUpdater;
+    private final SensorCreator sensorCreator;
+    private final ObservedPropertyCreator observedPropertyCreator;
     private final GeometryFactory geometryFactory;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private Thing thing;
+    private Sensor sensor;
     private Datastreams datastreams;
     private FeatureOfInterest featureOfInterest;
 
@@ -49,11 +56,15 @@ public class ThingRepository {
                            ThingCreator thingCreator,
                            FeatureOfInterestCreator featureOfInterestCreator,
                            ThingUpdater thingUpdater,
+                           SensorCreator sensorCreator,
+                           ObservedPropertyCreator observedPropertyCreator,
                            GeometryFactory geometryFactory) {
         this.thingConfiguration = Objects.requireNonNull(thingConfiguration);
         this.thingCreator = Objects.requireNonNull(thingCreator);
         this.featureOfInterestCreator = Objects.requireNonNull(featureOfInterestCreator);
         this.thingUpdater = Objects.requireNonNull(thingUpdater);
+        this.sensorCreator = Objects.requireNonNull(sensorCreator);
+        this.observedPropertyCreator = Objects.requireNonNull(observedPropertyCreator);
         this.geometryFactory = Objects.requireNonNull(geometryFactory);
     }
 
@@ -66,7 +77,12 @@ public class ThingRepository {
         lock.writeLock().lock();
         try {
             thing = createThing();
-            datastreams = createDatastreams(thing);
+            sensor = createSensor(thing);
+            sensorCreator.create(sensor);
+            datastreams = createDatastreams(thing, sensor);
+
+            ObservedProperties.ALL.forEach(observedPropertyCreator::create);
+
             thing.setDatastreams(datastreams.all());
             featureOfInterest = createFeatureOfInterest(thing);
             featureOfInterestCreator.create(featureOfInterest);
@@ -77,44 +93,40 @@ public class ThingRepository {
         }
     }
 
-    private Datastreams createDatastreams(Thing thing) {
-        return new Datastreams(createDatastream(thing, ObservedProperties.LONGITUDE, Units.DEGREES),
-                               createDatastream(thing, ObservedProperties.LATITUDE, Units.DEGREES),
-                               createDatastream(thing, ObservedProperties.HEADING, Units.DEGREES),
-                               createDatastream(thing, ObservedProperties.SPEED, Units.KNOTS),
-                               createDatastream(thing, ObservedProperties.DEPTH, Units.METRES),
-                               createDatastream(thing, ObservedProperties.WIND_MEAN, Units.METRES_PER_SECOND),
-                               createDatastream(thing, ObservedProperties.SPEED_OVER_GROUND, Units.KNOTS),
-                               createDatastream(thing, ObservedProperties.COURSE_OVER_GROUND, Units.DEGREES),
-                               createDatastream(thing, ObservedProperties.WIND_GUST, Units.METRES_PER_SECOND),
-                               createDatastream(thing, ObservedProperties.WIND_DIRECTION, Units.DEGREES),
-                               createDatastream(thing, ObservedProperties.AIR_TEMPERATURE, Units.DEGREES_CELSIUS),
-                               createDatastream(thing, ObservedProperties.HUMIDITY, Units.PERCENT),
-                               createDatastream(thing, ObservedProperties.SOLAR_RADIATION, Units.WATTS_PER_SQUARE_METRE),
-                               createDatastream(thing, ObservedProperties.PRESSURE, Units.HECTOPASCALS),
-                               createDatastream(thing, ObservedProperties.WATER_TEMPERATURE, Units.DEGREES_CELSIUS),
-                               createDatastream(thing, ObservedProperties.SALINITY, Units.PSU),
-                               createDatastream(thing, ObservedProperties.RAW_FLUOROMETRY, Units.VOLTS),
-                               createDatastream(thing, ObservedProperties.CONDUCTIVITY, Units.SIEMENS_PER_METRE),
-                               createDatastream(thing, ObservedProperties.DENSITY, Units.KILOGRAMS_PER_CUBIC_METRE));
+    private Datastreams createDatastreams(Thing thing, Sensor sensor) {
+        return new Datastreams(ObservedProperties.ALL.stream()
+                                                     .map(op -> createDatastream(thing, sensor, op,
+                                                                                 ObservedProperties.UNITS.get(op)))
+                                                     .toArray(Datastream[]::new));
     }
 
-    private Sensor createSensor(Thing thing, ObservedProperty observedProperty) {
+    private Sensor createSensor(Thing thing) {
         Sensor sensor = new Sensor();
-        sensor.setId(String.format("%s_%s", thing.getId(), observedProperty.getId()));
-        sensor.setDescription(String.format("Sensor for %s of %s", observedProperty.getName(), thing.getName()));
-        sensor.setName(String.format("%s Sensor", observedProperty.getName()));
-        sensor.setMetadata(thingConfiguration.getMetadata().toExternalForm());
+        sensor.setId(thing.getId());
+        sensor.setDescription(thing.getDescription());
+        sensor.setName(thing.getName());
+        sensor.setMetadata(Optional.ofNullable(thingConfiguration.getMetadata()).map(URL::toExternalForm).orElse(""));
         sensor.setEncodingType(thingConfiguration.getMetadataType());
         return sensor;
     }
 
-    private Datastream createDatastream(Thing thing, ObservedProperty property, UnitOfMeasurement uom) {
+    /*
+        private Sensor createSensor(Thing thing, ObservedProperty observedProperty) {
+            Sensor sensor = new Sensor();
+            sensor.setId(String.format("%s_%s", thing.getId(), observedProperty.getId()));
+            sensor.setDescription(String.format("Sensor for %s of %s", observedProperty.getName(), thing.getName()));
+            sensor.setName(String.format("%s Sensor", observedProperty.getName()));
+            sensor.setMetadata(thingConfiguration.getMetadata().toExternalForm());
+            sensor.setEncodingType(thingConfiguration.getMetadataType());
+            return sensor;
+        }
+    */
+    private Datastream createDatastream(Thing thing, Sensor sensor, ObservedProperty property, UnitOfMeasurement uom) {
         Datastream datastream = new Datastream();
         datastream.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
         datastream.setObservedProperty(property);
         datastream.setUnitOfMeasurement(uom);
-        datastream.setSensor(createSensor(thing, property));
+        datastream.setSensor(sensor);
 
         double[] observedArea = thingConfiguration.getObservedArea();
 
@@ -139,6 +151,15 @@ public class ThingRepository {
         thing.setDescription(thingConfiguration.getDescription());
         thing.setProperties(Collections.singletonMap("updateFOI", "foiName"));
         return thing;
+    }
+
+    public Sensor getSensor() {
+        lock.readLock().lock();
+        try {
+            return sensor;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public Thing getThing() {

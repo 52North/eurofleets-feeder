@@ -2,6 +2,8 @@ package org.n52.emodnet.eurofleets.feeder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.n52.emodnet.eurofleets.feeder.model.FeatureOfInterest;
+import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
+import org.n52.emodnet.eurofleets.feeder.model.Sensor;
 import org.n52.emodnet.eurofleets.feeder.model.Thing;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -31,4 +33,20 @@ public interface SensorThingsAPI {
 
     @PATCH("Things({id})")
     Call<Void> updateThing(@Path("id") String id, @Body Thing thing);
+
+    @GET("Sensors({id})")
+    @Headers("Content-Type: application/json")
+    Call<JsonNode> getSensor(@Path("id") String id);
+
+    @POST("Sensors")
+    @Headers("Content-Type: application/json")
+    Call<Void> createSensor(@Body Sensor sensor);
+
+    @GET("ObservedProperties({id})")
+    @Headers("Content-Type: application/json")
+    Call<JsonNode> getObservedProperty(@Path("id") String id);
+
+    @POST("ObservedProperties")
+    @Headers("Content-Type: application/json")
+    Call<Void> createObservedProperty(@Body ObservedProperty sensor);
 }
