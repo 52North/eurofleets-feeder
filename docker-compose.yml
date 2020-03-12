@@ -1,9 +1,9 @@
 version: '3'
 services:
   feeder:
-    image: ${REGISTRY}/eurofleets/feeder:latest
-    build: https://github.com/52North/eurofleets-feeder.git
-    #build: .
+    image: ${REGISTRY}eurofleets/feeder:latest
+    #build: https://github.com/52North/eurofleets-feeder.git
+    build: .
     environment:
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_ORG_N52: DEBUG
@@ -16,17 +16,21 @@ services:
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
-      FEEDER_THING_METADATA: https://www.eurofleets.eu/vessel/rv-sarmiento-de-gamboa/
+      #FEEDER_THING_METADATA: https://www.eurofleets.eu/vessel/rv-sarmiento-de-gamboa/
+      FEEDER_THING_METADATA: ""
       #FEEDER_THING_METADATA_TYPE: text/html
-      FEEDER_THING_METADATA_TYPE: application/pdf
-      FEEDER_STA_HTTP_URL: http://sta:8081/sta/
+      #FEEDER_THING_METADATA_TYPE: application/pdf
+      #FEEDER_THING_METADATA_TYPE: http://www.opengis.net/doc/IS/SensorML/2.0
+      FEEDER_THING_METADATA_TYPE: http://www.opengis.net/sensorml/2.0
+      FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
       #FEEDER_STA_HTTP_URL: http://docker.srv.int.52north.org:8082/sta/v2/
       FEEDER_STA_MQTT_URL: tcp://sta:1883
     depends_on:
       - sta
+    restart: on-failure:10
 
   sta:
-    image: ${REGISTRY}/eurofleets/sta:latest
+    image: ${REGISTRY}eurofleets/sta:latest
     build: https://github.com/52North/sensorweb-server-sta.git#develop
     ports:
       - 8081:8081 # http
@@ -35,38 +39,48 @@ services:
     environment:
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_ORG_N52: DEBUG
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/sws
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPING_JPA_PROPERTIES_HIBERNATE_HBM2DDL: update
       MQTT_BROKER_PLAINTCP_ENABLED: "true"
       MQTT_BROKER_WEBSOCKET_ENABLED: "true"
       MQTT_BROKER_PERSISTENCE_ENABLED: "false"
-      SERVER_ROOTURL: http://localhost:8081/sta/
-      SERVER_SERVLET_CONTEXT_PATH: /sta
-      SERVER_FEATURE_UPDATEFOI: "true"
+      SERVER_ROOTURL: http://localhost:8081${STA_CONTEXT_PATH}/
+      SERVER_SERVLET_CONTEXT_PATH: ${STA_CONTEXT_PATH}
+      SERVER_FEATURE_UPDATE_FOI: "true"
       SERVER_FEATURE_MQTT_PUBLISH_TOPICS: Locations, Observations
       SERVER_FEATURE_VARIABLE_ENCODING_TYPE: "true"
-    restart: on-failure:10
     depends_on:
       - database
+    restart: on-failure:10
 
   sos:
-    image: 52north/sos:5
+    image: ${REGISTRY}eurofleets/sos:latest
+    build: ./sos
     ports:
     - 8080:8080
+    environment:
+      SOS_DATASOURCE_TYPE: postgres
+      SOS_DATASOURCE_HOST: database
+      SOS_DATASOURCE_PORT: 5432
+      SOS_DATASOURCE_DATABASE: ${POSTGRES_DATABASE}
+      SOS_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
+      SOS_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       - database
 
   database:
-    image: mdillon/postgis:11-alpine
-    restart: on-failure
+    image: ${REGISTRY}eurofleets/database:latest
+    build: ./database
     environment:
-      POSTGRES_DB: sws
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       ALLOW_IP_RANGE: 0.0.0.0/0
-      POSTGRES_MULTIPLE_EXTENSIONS: postgis
     volumes:
       - postgres:/var/lib/postgresql/data
+    restart: on-failure:10
 
 volumes:
   postgres:
