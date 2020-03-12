@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:latest AS BUILDER
+FROM adoptopenjdk/openjdk8:alpine-slim AS BUILDER
 
 WORKDIR /app
 COPY .mvn ./.mvn
@@ -9,6 +9,6 @@ RUN ./mvnw clean install -Dspring-boot.repackage.skip=true
 COPY ./ ./
 RUN ./mvnw clean install
 
-FROM adoptopenjdk/openjdk8:latest
+FROM adoptopenjdk/openjdk8:alpine-slim
 COPY --from=BUILDER /app/target/eurofleets-feeder-0.0.1-SNAPSHOT.jar /app.jar
-CMD [ "java", "-jar", "/app.jar", "--debug" ]
+CMD [ "java", "-jar", "/app.jar" ]

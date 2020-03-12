@@ -12,6 +12,7 @@ import org.n52.emodnet.eurofleets.feeder.model.Thing;
 import org.n52.emodnet.eurofleets.feeder.model.UnitOfMeasurement;
 import org.n52.emodnet.eurofleets.feeder.sta.FeatureOfInterestCreator;
 import org.n52.emodnet.eurofleets.feeder.sta.ThingCreator;
+import org.n52.emodnet.eurofleets.feeder.sta.ThingUpdater;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,25 +25,35 @@ import java.time.ZoneId;
 import java.time.temporal.IsoFields;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Component
 public class ThingRepository {
+    private static final String TIME_ZONE = "UTC";
+    private static final ZoneId TIME_ZONE_ID = ZoneId.of(TIME_ZONE);
+    private static final String UPDATE_FOI_PROPERTY = "updateFOI";
+    private static final String APPLICATION_VND_GEO_JSON = "application/vnd.geo+json";
     private final ThingConfiguration thingConfiguration;
     private final ThingCreator thingCreator;
     private final FeatureOfInterestCreator featureOfInterestCreator;
+    private final ThingUpdater thingUpdater;
+    private final GeometryFactory geometryFactory;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private Thing thing;
     private Datastreams datastreams;
     private FeatureOfInterest featureOfInterest;
-    private final GeometryFactory geometryFactory;
 
     @Autowired
     public ThingRepository(ThingConfiguration thingConfiguration,
                            ThingCreator thingCreator,
                            FeatureOfInterestCreator featureOfInterestCreator,
+                           ThingUpdater thingUpdater,
                            GeometryFactory geometryFactory) {
         this.thingConfiguration = Objects.requireNonNull(thingConfiguration);
         this.thingCreator = Objects.requireNonNull(thingCreator);
         this.featureOfInterestCreator = Objects.requireNonNull(featureOfInterestCreator);
+        this.thingUpdater = Objects.requireNonNull(thingUpdater);
         this.geometryFactory = Objects.requireNonNull(geometryFactory);
     }
 
@@ -52,16 +63,21 @@ public class ThingRepository {
 
     @PostConstruct
     public void init() {
-        thing = createThing();
-        datastreams = createDatastreams();
-        thing.setDatastreams(datastreams.all());
-        featureOfInterest = createFeatureOfInterest();
-        featureOfInterestCreator.create(featureOfInterest);
-        thing.setProperties(Collections.singletonMap("updateFOI", featureOfInterest.getId()));
-        thingCreator.create(thing);
+        lock.writeLock().lock();
+        try {
+            thing = createThing();
+            datastreams = createDatastreams(thing);
+            thing.setDatastreams(datastreams.all());
+            featureOfInterest = createFeatureOfInterest(thing);
+            featureOfInterestCreator.create(featureOfInterest);
+            thing.setProperties(Collections.singletonMap(UPDATE_FOI_PROPERTY, featureOfInterest.getId()));
+            thingCreator.create(thing);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
-    private Datastreams createDatastreams() {
+    private Datastreams createDatastreams(Thing thing) {
         return new Datastreams(createDatastream(thing, ObservedProperties.LONGITUDE, Units.DEGREES),
                                createDatastream(thing, ObservedProperties.LATITUDE, Units.DEGREES),
                                createDatastream(thing, ObservedProperties.HEADING, Units.DEGREES),
@@ -88,10 +104,8 @@ public class ThingRepository {
         sensor.setId(String.format("%s_%s", thing.getId(), observedProperty.getId()));
         sensor.setDescription(String.format("Sensor for %s of %s", observedProperty.getName(), thing.getName()));
         sensor.setName(String.format("%s Sensor", observedProperty.getName()));
-        String sensorMetadata = "sensorMetadata";
-        String sensorEncodingType = "http://www.opengis.net/doc/IS/SensorML/2.0";
-        sensor.setMetadata(sensorMetadata);
-        sensor.setEncodingType(sensorEncodingType);
+        sensor.setMetadata(thingConfiguration.getMetadata().toExternalForm());
+        sensor.setEncodingType(thingConfiguration.getMetadataType());
         return sensor;
     }
 
@@ -128,46 +142,74 @@ public class ThingRepository {
     }
 
     public Thing getThing() {
-        return thing;
+        lock.readLock().lock();
+        try {
+            return thing;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public FeatureOfInterest getFeatureOfInterest() {
+        lock.readLock().lock();
+        try {
+            return featureOfInterest;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private FeatureOfInterest createFeatureOfInterest(Thing thing) {
+        FeatureOfInterest featureOfInterest = new FeatureOfInterest();
+        OffsetDateTime now = OffsetDateTime.now(TIME_ZONE_ID);
+        int year = now.get(IsoFields.WEEK_BASED_YEAR);
+        int week = now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        featureOfInterest.setId(getFeatureOfInterestId(thing, year, week));
+        featureOfInterest.setName(getFeatureOfInterestName(thing, year, week));
+        featureOfInterest.setDescription(thing.getDescription());
+        featureOfInterest.setEncodingType(APPLICATION_VND_GEO_JSON);
+        featureOfInterest.setFeature(createEmptyFeature());
         return featureOfInterest;
     }
 
-    private FeatureOfInterest createFeatureOfInterest() {
+    private String getFeatureOfInterestName(Thing thing, int year, int week) {
+        return String.format("%s in week %d of %4d", thing.getName(), week, year);
+    }
 
-        FeatureOfInterest featureOfInterest = new FeatureOfInterest();
+    private String getFeatureOfInterestId(Thing thing, int year, int week) {
+        return String.format("%s-%4d-%2d", thing.getId(), year, week);
+    }
+
+    private Feature createEmptyFeature() {
         Feature feature = new Feature();
         feature.setGeometry(geometryFactory.createLineString());
-        OffsetDateTime now = OffsetDateTime.now(ZoneId.of("UTC"));
-        int year = now.get(IsoFields.WEEK_BASED_YEAR);
-        int week = now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-        featureOfInterest.setId(String.format("%s-%4d-%2d", thing.getId(), year, week));
-        featureOfInterest.setName(String.format("%s in week %d of %4d", thing.getName(), week, year));
-        featureOfInterest.setDescription(thing.getDescription());
-        featureOfInterest.setEncodingType("application/vnd.geo+json");
-        featureOfInterest.setFeature(feature);
-        return featureOfInterest;
-
+        return feature;
     }
 
     /**
      * Create a new feature of interest on week changes.
      */
-    @Scheduled(cron = "1 0 0 * * *", zone = "UTC")
+    @Scheduled(cron = "1 0 0 * * *", zone = TIME_ZONE)
     public void updateFeature() {
-        OffsetDateTime today = OffsetDateTime.now(ZoneId.of("UTC"));
-        OffsetDateTime yesterday = today.minus(Duration.parse("PT12H"));
-        int year = today.get(IsoFields.WEEK_BASED_YEAR);
-        int week = today.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-        if (year != yesterday.get(IsoFields.WEEK_BASED_YEAR) ||
-            week != yesterday.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)) {
-            FeatureOfInterest featureOfInterest = createFeatureOfInterest();
-            this.featureOfInterestCreator.create(featureOfInterest);
-            this.featureOfInterest = featureOfInterest;
-            thing.setProperties(Collections.singletonMap("updateFOI",
-                                                         this.featureOfInterest.getId()));
+        if (isNewWeek()) {
+            lock.writeLock().lock();
+            try {
+                this.featureOfInterest = createFeatureOfInterest(thing);
+                this.featureOfInterestCreator.create(featureOfInterest);
+                this.thing.setProperties(Collections.singletonMap(UPDATE_FOI_PROPERTY, this.featureOfInterest.getId()));
+                Thing update = new Thing();
+                update.setProperties(thing.getProperties());
+                thingUpdater.update(thing.getId(), update);
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
+    }
+
+    private boolean isNewWeek() {
+        OffsetDateTime today = OffsetDateTime.now(TIME_ZONE_ID);
+        OffsetDateTime yesterday = today.minus(Duration.parse("PT12H"));
+        return today.get(IsoFields.WEEK_BASED_YEAR) != yesterday.get(IsoFields.WEEK_BASED_YEAR) ||
+               today.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) != yesterday.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
 }

@@ -3,6 +3,8 @@ package org.n52.emodnet.eurofleets.feeder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.URL;
+
 @Configuration
 @ConfigurationProperties(prefix = "feeder.thing")
 public class ThingConfiguration {
@@ -10,6 +12,16 @@ public class ThingConfiguration {
     private String name;
     private String description;
     private double[] observedArea;
+    private URL metadata;
+    private String metadataType;
+
+    public String getMetadataType() {
+        return metadataType;
+    }
+
+    public void setMetadataType(String metadataType) {
+        this.metadataType = metadataType;
+    }
 
     public String getId() {
         return id;
@@ -41,5 +53,13 @@ public class ThingConfiguration {
 
     public void setObservedArea(double[] observedArea) {
         this.observedArea = observedArea;
+    }
+
+    public URL getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(URL metadata) {
+        this.metadata = metadata;
     }
 }

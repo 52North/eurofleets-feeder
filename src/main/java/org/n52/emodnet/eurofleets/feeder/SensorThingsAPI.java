@@ -15,7 +15,7 @@ public interface SensorThingsAPI {
 
     @POST("FeaturesOfInterest")
     @Headers("Content-Type: application/json")
-    Call<JsonNode> createFeature(@Body FeatureOfInterest featureOfInterest);
+    Call<Void> createFeature(@Body FeatureOfInterest featureOfInterest);
 
     @GET("FeaturesOfInterest({id})")
     @Headers("Accept: application/json")
@@ -23,8 +23,12 @@ public interface SensorThingsAPI {
 
     @POST("Things")
     @Headers("Content-Type: application/json")
-    Call<JsonNode> createThing(@Body Thing thing);
+    Call<Void> createThing(@Body Thing thing);
+
+    @GET("Things({id})")
+    @Headers("Content-Type: application/json")
+    Call<JsonNode> getThing(@Path("id") String id);
 
     @PATCH("Things({id})")
-    Call<JsonNode> updateThing(@Path("id") String id, @Body Thing thing);
+    Call<Void> updateThing(@Path("id") String id, @Body Thing thing);
 }

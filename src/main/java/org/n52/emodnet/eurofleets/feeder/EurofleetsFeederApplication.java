@@ -12,8 +12,5 @@ public class EurofleetsFeederApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(EurofleetsFeederApplication.class, args);
-
-
     }
-
 }

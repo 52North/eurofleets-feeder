@@ -1,15 +1,19 @@
 package org.n52.emodnet.eurofleets.feeder.config;
 
-import org.eclipse.paho.client.mqttv3.IMqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClient;
+import com.google.common.base.Throwables;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.n52.emodnet.eurofleets.feeder.sta.Retrier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.ConnectException;
 import java.util.UUID;
+import java.util.function.IntToLongFunction;
 
 @Configuration
 public class MqttConfiguration {
@@ -34,11 +38,32 @@ public class MqttConfiguration {
     }
 
     @Bean
-    public IMqttClient mqttClient() throws MqttException {
-        String clientId = "eurofleets-feeder-" + UUID.randomUUID();
-        MqttClient mqttClient = new MqttClient(endpoint, clientId, mqttClientPersistence());
-        mqttClient.connect(mqttConnectOptions());
-        return mqttClient;
+    public IMqttAsyncClient mqttAsyncClient() throws MqttException {
+        MqttAsyncClient mqttClient = new MqttAsyncClient(endpoint, mqttClientId(), mqttClientPersistence());
+        try {
+            createRetrier().execute(() -> {
+                mqttClient.connect(mqttConnectOptions()).waitForCompletion();
+            });
+        } catch (Exception e) {
+            Throwables.propagateIfPossible(e, MqttException.class);
+            throw new MqttException(e);
+        }
+
+        return new DisconnectingMqttAsyncClient(mqttClient);
+    }
+
+    private Retrier createRetrier() {
+        IntToLongFunction exponential = Retrier.Strategies.waitExponential();
+        IntToLongFunction waitStrategy = attempts -> 1000L * exponential.applyAsLong(attempts);
+        return new Retrier.Builder()
+                                  .withWaitStrategy(waitStrategy)
+                                  .withStopStrategy(Retrier.Strategies.stopAfter(10))
+                                  .withFailedRetryStrategy(Retrier.Strategies.retryOn(ConnectException.class))
+                                  .build();
+    }
+
+    private String mqttClientId() {
+        return "eurofleets-feeder-" + UUID.randomUUID();
     }
 
     @Bean
@@ -46,4 +71,20 @@ public class MqttConfiguration {
         return new MemoryPersistence();
     }
 
+    private static class DisconnectingMqttAsyncClient extends DelegatingMqttAsyncClient {
+        public DisconnectingMqttAsyncClient(MqttAsyncClient mqttClient) {
+            super(mqttClient);
+        }
+
+        @Override
+        public void close() throws MqttException {
+            try {
+                if (isConnected()) {
+                    disconnect().waitForCompletion();
+                }
+            } finally {
+                super.close();
+            }
+        }
+    }
 }

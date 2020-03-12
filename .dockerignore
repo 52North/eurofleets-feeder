@@ -1,4 +1,5 @@
 target/
 Dockerfile
+docker-compose.yml
 *.iml
 .mvn/wrapper/maven-wrapper.jar
