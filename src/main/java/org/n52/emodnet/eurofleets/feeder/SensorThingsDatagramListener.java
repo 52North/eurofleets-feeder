@@ -12,8 +12,7 @@ import org.n52.emodnet.eurofleets.feeder.model.Location;
 import org.n52.emodnet.eurofleets.feeder.model.Observation;
 import org.n52.emodnet.eurofleets.feeder.model.Parameter;
 import org.n52.emodnet.eurofleets.feeder.model.Thing;
-import org.n52.emodnet.eurofleets.feeder.sta.LocationCreator;
-import org.n52.emodnet.eurofleets.feeder.sta.ObservationCreator;
+import org.n52.emodnet.eurofleets.feeder.sta.SensorThingsApi;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,20 +32,17 @@ public class SensorThingsDatagramListener implements DatagramListener {
     private final GeometryFactory geometryFactory;
     private final Datastreams ds;
     private final FeatureOfInterest featureOfInterest;
-    private final ObservationCreator observationCreator;
-    private final LocationCreator locationCreator;
+    private final SensorThingsApi sta;
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private Point latestPoint;
 
     @Autowired
     public SensorThingsDatagramListener(ThingRepository thingRepository,
                                         GeometryFactory geometryFactory,
-                                        ObservationCreator observationCreator,
-                                        LocationCreator locationCreator) {
+                                        SensorThingsApi sta) {
         this.thingRepository = Objects.requireNonNull(thingRepository);
         this.geometryFactory = Objects.requireNonNull(geometryFactory);
-        this.observationCreator = Objects.requireNonNull(observationCreator);
-        this.locationCreator = Objects.requireNonNull(locationCreator);
+        this.sta = Objects.requireNonNull(sta);
         this.ds = thingRepository.getDatastreams();
         this.featureOfInterest = thingRepository.getFeatureOfInterest();
     }
@@ -85,12 +81,12 @@ public class SensorThingsDatagramListener implements DatagramListener {
     }
 
     private void publish(Location locationUpdate) {
-        locationCreator.create(locationUpdate);
+        sta.create(locationUpdate);
     }
 
     private void publish(Stream<Observation> observations) {
         observations.peek(observation -> LOG.info("publishing observation {}", observation))
-                    .forEach(observationCreator::create);
+                    .forEach(sta::create);
     }
 
     @Override

@@ -7,6 +7,7 @@ feeder:
       #url: http://sta:8082/sta/
       url: http://docker.srv.int.52north.org:8082/sta/v2/
     mqtt:
+      #url: tcp://sta:1883
       url: tcp://docker.srv.int.52north.org:8083
       password: null
       username: null
@@ -27,6 +28,6 @@ feeder:
     id: ES_GDC
     name: R/V García del Cid
     description: R/V García del Cid
-    observedArea: [-180, -90, 180, 90]
-    metadata: https://www.eurofleets.eu/vessel/rv-sarmiento-de-gamboa/
-    metadataEncoding: text/html
+    observedArea: null
+    metadata: null
+    metadataEncoding: http://www.opengis.net/doc/IS/SensorML/2.0

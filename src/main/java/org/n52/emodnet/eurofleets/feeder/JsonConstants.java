@@ -29,4 +29,5 @@ public interface JsonConstants {
     String DATASTREAM = "Datastream";
     String FEATURE_OF_INTEREST = "FeatureOfInterest";
     String RESULT_TIME = "resultTime";
+    String THING = "Thing";
 }

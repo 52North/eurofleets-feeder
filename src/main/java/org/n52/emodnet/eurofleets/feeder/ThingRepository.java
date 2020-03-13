@@ -9,12 +9,7 @@ import org.n52.emodnet.eurofleets.feeder.model.FeatureOfInterest;
 import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
 import org.n52.emodnet.eurofleets.feeder.model.Sensor;
 import org.n52.emodnet.eurofleets.feeder.model.Thing;
-import org.n52.emodnet.eurofleets.feeder.model.UnitOfMeasurement;
-import org.n52.emodnet.eurofleets.feeder.sta.FeatureOfInterestCreator;
-import org.n52.emodnet.eurofleets.feeder.sta.ObservedPropertyCreator;
-import org.n52.emodnet.eurofleets.feeder.sta.SensorCreator;
-import org.n52.emodnet.eurofleets.feeder.sta.ThingCreator;
-import org.n52.emodnet.eurofleets.feeder.sta.ThingUpdater;
+import org.n52.emodnet.eurofleets.feeder.sta.SensorThingsApi;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,119 +33,127 @@ public class ThingRepository {
     private static final ZoneId TIME_ZONE_ID = ZoneId.of(TIME_ZONE);
     private static final String UPDATE_FOI_PROPERTY = "updateFOI";
     private static final String APPLICATION_VND_GEO_JSON = "application/vnd.geo+json";
-    private final ThingConfiguration thingConfiguration;
-    private final ThingCreator thingCreator;
-    private final FeatureOfInterestCreator featureOfInterestCreator;
-    private final ThingUpdater thingUpdater;
-    private final SensorCreator sensorCreator;
-    private final ObservedPropertyCreator observedPropertyCreator;
-    private final GeometryFactory geometryFactory;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ThingConfiguration thingConfiguration;
+    private final GeometryFactory geometryFactory;
+    private final SensorThingsApi sta;
     private Thing thing;
     private Sensor sensor;
     private Datastreams datastreams;
     private FeatureOfInterest featureOfInterest;
 
     @Autowired
-    public ThingRepository(ThingConfiguration thingConfiguration,
-                           ThingCreator thingCreator,
-                           FeatureOfInterestCreator featureOfInterestCreator,
-                           ThingUpdater thingUpdater,
-                           SensorCreator sensorCreator,
-                           ObservedPropertyCreator observedPropertyCreator,
+    public ThingRepository(ThingConfiguration thingConfiguration, SensorThingsApi sta,
                            GeometryFactory geometryFactory) {
         this.thingConfiguration = Objects.requireNonNull(thingConfiguration);
-        this.thingCreator = Objects.requireNonNull(thingCreator);
-        this.featureOfInterestCreator = Objects.requireNonNull(featureOfInterestCreator);
-        this.thingUpdater = Objects.requireNonNull(thingUpdater);
-        this.sensorCreator = Objects.requireNonNull(sensorCreator);
-        this.observedPropertyCreator = Objects.requireNonNull(observedPropertyCreator);
+        this.sta = Objects.requireNonNull(sta);
         this.geometryFactory = Objects.requireNonNull(geometryFactory);
     }
 
     public Datastreams getDatastreams() {
-        return datastreams;
+        lock.readLock().lock();
+        try {
+            return datastreams;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     @PostConstruct
     public void init() {
         lock.writeLock().lock();
         try {
+            createObservedProperties();
             thing = createThing();
             sensor = createSensor(thing);
-            sensorCreator.create(sensor);
-            datastreams = createDatastreams(thing, sensor);
-
-            ObservedProperties.ALL.forEach(observedPropertyCreator::create);
-
-            thing.setDatastreams(datastreams.all());
             featureOfInterest = createFeatureOfInterest(thing);
-            featureOfInterestCreator.create(featureOfInterest);
-            thing.setProperties(Collections.singletonMap(UPDATE_FOI_PROPERTY, featureOfInterest.getId()));
-            thingCreator.create(thing);
+            datastreams = createDatastreams(thing, sensor);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private void createObservedProperties() {
+        lock.writeLock().lock();
+        try {
+            ObservedProperties.ALL.forEach(sta::create);
         } finally {
             lock.writeLock().unlock();
         }
     }
 
     private Datastreams createDatastreams(Thing thing, Sensor sensor) {
-        return new Datastreams(ObservedProperties.ALL.stream()
-                                                     .map(op -> createDatastream(thing, sensor, op,
-                                                                                 ObservedProperties.UNITS.get(op)))
-                                                     .toArray(Datastream[]::new));
+        lock.writeLock().lock();
+        try {
+            return new Datastreams(ObservedProperties.ALL.stream()
+                                                         .map(op -> createDatastream(thing, sensor, op))
+                                                         .peek(sta::create)
+                                                         .toArray(Datastream[]::new));
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     private Sensor createSensor(Thing thing) {
-        Sensor sensor = new Sensor();
-        sensor.setId(thing.getId());
-        sensor.setDescription(thing.getDescription());
-        sensor.setName(thing.getName());
-        sensor.setMetadata(Optional.ofNullable(thingConfiguration.getMetadata()).map(URL::toExternalForm).orElse(""));
-        sensor.setEncodingType(thingConfiguration.getMetadataType());
-        return sensor;
+        lock.writeLock().lock();
+        try {
+            Sensor sensor = new Sensor();
+            sensor.setId(thing.getId());
+            sensor.setDescription(thing.getDescription());
+            sensor.setName(thing.getName());
+            sensor.setMetadata(Optional.ofNullable(thingConfiguration.getMetadata()).map(URL::toExternalForm)
+                                       .orElse(""));
+            sensor.setEncodingType(thingConfiguration.getMetadataType());
+            sta.create(sensor);
+            return sensor;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
-    /*
-        private Sensor createSensor(Thing thing, ObservedProperty observedProperty) {
-            Sensor sensor = new Sensor();
-            sensor.setId(String.format("%s_%s", thing.getId(), observedProperty.getId()));
-            sensor.setDescription(String.format("Sensor for %s of %s", observedProperty.getName(), thing.getName()));
-            sensor.setName(String.format("%s Sensor", observedProperty.getName()));
-            sensor.setMetadata(thingConfiguration.getMetadata().toExternalForm());
-            sensor.setEncodingType(thingConfiguration.getMetadataType());
-            return sensor;
+    private Datastream createDatastream(Thing thing, Sensor sensor, ObservedProperty observedProperty) {
+        lock.writeLock().lock();
+        try {
+            Datastream datastream = new Datastream();
+            datastream.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
+            datastream.setObservedProperty(observedProperty);
+            datastream.setUnitOfMeasurement(ObservedProperties.UNITS.get(observedProperty));
+            datastream.setSensor(sensor);
+            datastream.setThing(thing);
+
+            double[] observedArea = thingConfiguration.getObservedArea();
+            if (observedArea != null && observedArea.length > 0) {
+                datastream.setObservedArea(geometryFactory.createPolygon(new Coordinate[]{
+                        new CoordinateXY(observedArea[0], observedArea[1]),
+                        new CoordinateXY(observedArea[2], observedArea[1]),
+                        new CoordinateXY(observedArea[2], observedArea[3]),
+                        new CoordinateXY(observedArea[0], observedArea[3]),
+                        new CoordinateXY(observedArea[0], observedArea[1])
+                }));
+            }
+
+            datastream.setId(String.format("%s_%s", thing.getId(), observedProperty.getId()));
+            datastream.setName(observedProperty.getName());
+            datastream.setDescription(String.format("%s measured by the %s", observedProperty
+                                                                                     .getName(), thing.getName()));
+            return datastream;
+        } finally {
+            lock.writeLock().unlock();
         }
-    */
-    private Datastream createDatastream(Thing thing, Sensor sensor, ObservedProperty property, UnitOfMeasurement uom) {
-        Datastream datastream = new Datastream();
-        datastream.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
-        datastream.setObservedProperty(property);
-        datastream.setUnitOfMeasurement(uom);
-        datastream.setSensor(sensor);
-
-        double[] observedArea = thingConfiguration.getObservedArea();
-
-        datastream.setObservedArea(geometryFactory.createPolygon(new Coordinate[]{
-                new CoordinateXY(observedArea[0], observedArea[1]),
-                new CoordinateXY(observedArea[2], observedArea[1]),
-                new CoordinateXY(observedArea[2], observedArea[3]),
-                new CoordinateXY(observedArea[0], observedArea[3]),
-                new CoordinateXY(observedArea[0], observedArea[1])
-        }));
-
-        datastream.setId(String.format("%s_%s", thing.getId(), property.getId()));
-        datastream.setName(property.getName());
-        datastream.setDescription(String.format("%s measured by the %s", property.getName(), thing.getName()));
-        return datastream;
     }
 
     private Thing createThing() {
-        Thing thing = new Thing();
-        thing.setId(thingConfiguration.getId());
-        thing.setName(thingConfiguration.getName());
-        thing.setDescription(thingConfiguration.getDescription());
-        thing.setProperties(Collections.singletonMap("updateFOI", "foiName"));
-        return thing;
+        lock.writeLock().lock();
+        try {
+            Thing thing = new Thing();
+            thing.setId(thingConfiguration.getId());
+            thing.setName(thingConfiguration.getName());
+            thing.setDescription(thingConfiguration.getDescription());
+            sta.create(thing);
+            return thing;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public Sensor getSensor() {
@@ -181,16 +184,23 @@ public class ThingRepository {
     }
 
     private FeatureOfInterest createFeatureOfInterest(Thing thing) {
-        FeatureOfInterest featureOfInterest = new FeatureOfInterest();
-        OffsetDateTime now = OffsetDateTime.now(TIME_ZONE_ID);
-        int year = now.get(IsoFields.WEEK_BASED_YEAR);
-        int week = now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-        featureOfInterest.setId(getFeatureOfInterestId(thing, year, week));
-        featureOfInterest.setName(getFeatureOfInterestName(thing, year, week));
-        featureOfInterest.setDescription(thing.getDescription());
-        featureOfInterest.setEncodingType(APPLICATION_VND_GEO_JSON);
-        featureOfInterest.setFeature(createEmptyFeature());
-        return featureOfInterest;
+        lock.writeLock().lock();
+        try {
+            FeatureOfInterest featureOfInterest = new FeatureOfInterest();
+            OffsetDateTime now = OffsetDateTime.now(TIME_ZONE_ID);
+            int year = now.get(IsoFields.WEEK_BASED_YEAR);
+            int week = now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+            featureOfInterest.setId(getFeatureOfInterestId(thing, year, week));
+            featureOfInterest.setName(getFeatureOfInterestName(thing, year, week));
+            featureOfInterest.setDescription(thing.getDescription());
+            featureOfInterest.setEncodingType(APPLICATION_VND_GEO_JSON);
+            featureOfInterest.setFeature(createEmptyFeature());
+            this.sta.create(featureOfInterest);
+            updateThingWithFeatureId(thing, featureOfInterest);
+            return featureOfInterest;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     private String getFeatureOfInterestName(Thing thing, int year, int week) {
@@ -216,14 +226,20 @@ public class ThingRepository {
             lock.writeLock().lock();
             try {
                 this.featureOfInterest = createFeatureOfInterest(thing);
-                this.featureOfInterestCreator.create(featureOfInterest);
-                this.thing.setProperties(Collections.singletonMap(UPDATE_FOI_PROPERTY, this.featureOfInterest.getId()));
-                Thing update = new Thing();
-                update.setProperties(thing.getProperties());
-                thingUpdater.update(thing.getId(), update);
             } finally {
                 lock.writeLock().unlock();
             }
+        }
+    }
+
+    private void updateThingWithFeatureId(Thing thing, FeatureOfInterest featureOfInterest) {
+        lock.writeLock().lock();
+        try {
+            Thing update = new Thing();
+            update.setProperties(Collections.singletonMap(UPDATE_FOI_PROPERTY, featureOfInterest.getId()));
+            sta.update(thing.getId(), update);
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 

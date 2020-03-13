@@ -16,12 +16,6 @@ services:
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
-      #FEEDER_THING_METADATA: https://www.eurofleets.eu/vessel/rv-sarmiento-de-gamboa/
-      FEEDER_THING_METADATA: ""
-      #FEEDER_THING_METADATA_TYPE: text/html
-      #FEEDER_THING_METADATA_TYPE: application/pdf
-      #FEEDER_THING_METADATA_TYPE: http://www.opengis.net/doc/IS/SensorML/2.0
-      FEEDER_THING_METADATA_TYPE: http://www.opengis.net/sensorml/2.0
       FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
       #FEEDER_STA_HTTP_URL: http://docker.srv.int.52north.org:8082/sta/v2/
       FEEDER_STA_MQTT_URL: tcp://sta:1883

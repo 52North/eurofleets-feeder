@@ -16,24 +16,21 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
-public class SensorThingsMqttClient implements ObservationCreator, LocationCreator {
-    private static final Logger LOG = LoggerFactory.getLogger(SensorThingsMqttClient.class);
+public class SensorThingsApiMqttClient {
+    private static final Logger LOG = LoggerFactory.getLogger(SensorThingsApiMqttClient.class);
     private final IMqttAsyncClient mqttClient;
     private final ObjectWriter objectWriter;
-    private boolean closed;
 
     @Autowired
-    public SensorThingsMqttClient(IMqttAsyncClient mqttClient, ObjectWriter objectWriter) {
+    public SensorThingsApiMqttClient(IMqttAsyncClient mqttClient, ObjectWriter objectWriter) {
         this.mqttClient = Objects.requireNonNull(mqttClient);
         this.objectWriter = Objects.requireNonNull(objectWriter);
     }
 
-    @Override
     public void create(Location location) {
         publish("Locations", location);
     }
 
-    @Override
     public void create(Observation observation) {
         publish("Observations", observation);
     }

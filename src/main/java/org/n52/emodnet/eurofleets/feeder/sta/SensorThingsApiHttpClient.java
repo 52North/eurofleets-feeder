@@ -3,7 +3,7 @@ package org.n52.emodnet.eurofleets.feeder.sta;
 import com.google.common.base.Throwables;
 import okhttp3.ResponseBody;
 import org.apache.http.HttpStatus;
-import org.n52.emodnet.eurofleets.feeder.SensorThingsAPI;
+import org.n52.emodnet.eurofleets.feeder.model.Datastream;
 import org.n52.emodnet.eurofleets.feeder.model.FeatureOfInterest;
 import org.n52.emodnet.eurofleets.feeder.model.Intentified;
 import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
@@ -25,14 +25,13 @@ import java.util.function.IntToLongFunction;
 import java.util.function.Predicate;
 
 @Service
-public class SensorThingsHttpClient
-        implements FeatureOfInterestCreator, ThingCreator, ThingUpdater, SensorCreator, ObservedPropertyCreator {
-    public static final Logger LOG = LoggerFactory.getLogger(SensorThingsHttpClient.class);
-    private final SensorThingsAPI api;
+public class SensorThingsApiHttpClient {
+    public static final Logger LOG = LoggerFactory.getLogger(SensorThingsApiHttpClient.class);
+    private final RetrofitSensorThingsAPI api;
     private final Retrier retrier;
 
     @Autowired
-    public SensorThingsHttpClient(SensorThingsAPI api) {
+    public SensorThingsApiHttpClient(RetrofitSensorThingsAPI api) {
         this.api = Objects.requireNonNull(api);
         this.retrier = new Retrier.Builder()
                                .withWaitStrategy(getWaitStrategy())
@@ -69,7 +68,6 @@ public class SensorThingsHttpClient
         return attempts -> 1000L * exponential.applyAsLong(attempts);
     }
 
-    @Override
     public void create(FeatureOfInterest featureOfInterest) {
         LOG.info("creating feature of interest {}", featureOfInterest);
         retryingExecute(() -> {
@@ -84,7 +82,6 @@ public class SensorThingsHttpClient
         });
     }
 
-    @Override
     public void update(String id, Thing thing) {
         LOG.info("updating thing {}", thing);
         retryingExecute(() -> {
@@ -101,7 +98,6 @@ public class SensorThingsHttpClient
         });
     }
 
-    @Override
     public void create(Thing thing) {
         LOG.info("creating thing {}", thing);
         retryingExecute(() -> {
@@ -116,7 +112,6 @@ public class SensorThingsHttpClient
         });
     }
 
-    @Override
     public void create(ObservedProperty observedProperty) {
         LOG.info("creating observed property {}", observedProperty);
         retryingExecute(() -> {
@@ -131,7 +126,6 @@ public class SensorThingsHttpClient
         });
     }
 
-    @Override
     public void create(Sensor sensor) {
         LOG.info("creating sensor {}", sensor);
         retryingExecute(() -> {
@@ -141,6 +135,20 @@ public class SensorThingsHttpClient
                 Response<Void> response = api.createSensor(sensor).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(sensor, response);
+                }
+            }
+        });
+    }
+
+    public void create(Datastream datastream) {
+        LOG.info("creating datastream {}", datastream);
+        retryingExecute(() -> {
+            if (api.getDataStream(datastream.getId()).execute().isSuccessful()) {
+                LOG.info("{} does already exist", datastream);
+            } else {
+                Response<Void> response = api.createDataStream(datastream).execute();
+                if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
+                    checkForConflict(datastream, response);
                 }
             }
         });

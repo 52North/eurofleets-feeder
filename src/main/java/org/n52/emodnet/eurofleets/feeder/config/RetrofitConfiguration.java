@@ -2,7 +2,7 @@ package org.n52.emodnet.eurofleets.feeder.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
-import org.n52.emodnet.eurofleets.feeder.SensorThingsAPI;
+import org.n52.emodnet.eurofleets.feeder.sta.RetrofitSensorThingsAPI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +23,9 @@ public class RetrofitConfiguration {
     }
 
     @Bean
-    public SensorThingsAPI sensorThingsAPI(JacksonConverterFactory factory, OkHttpClient client,
-                                           @Value("${feeder.sta.http.url}") URL endpoint) {
-        return retrofit(factory, client).baseUrl(endpoint).build().create(SensorThingsAPI.class);
+    public RetrofitSensorThingsAPI sensorThingsAPI(JacksonConverterFactory factory, OkHttpClient client,
+                                                   @Value("${feeder.sta.http.url}") URL endpoint) {
+        return retrofit(factory, client).baseUrl(endpoint).build().create(RetrofitSensorThingsAPI.class);
     }
 
 }

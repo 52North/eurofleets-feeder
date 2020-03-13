@@ -12,6 +12,18 @@ public class Datastream extends DescribedEntity {
     private Polygon observedArea;
     private ObservedProperty observedProperty;
     private Sensor sensor;
+    private Thing thing;
+
+    @JsonGetter(JsonConstants.THING)
+    @JsonSerialize(as = IdentifiedEntity.class)
+    public Thing getThing() {
+        return thing;
+    }
+
+    @JsonSetter(JsonConstants.THING)
+    public void setThing(Thing thing) {
+        this.thing = thing;
+    }
 
     @JsonGetter(JsonConstants.UNIT_OF_MEASUREMENT)
     public UnitOfMeasurement getUnitOfMeasurement() {

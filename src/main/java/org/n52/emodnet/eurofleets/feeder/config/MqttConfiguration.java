@@ -56,10 +56,11 @@ public class MqttConfiguration {
         IntToLongFunction exponential = Retrier.Strategies.waitExponential();
         IntToLongFunction waitStrategy = attempts -> 1000L * exponential.applyAsLong(attempts);
         return new Retrier.Builder()
-                                  .withWaitStrategy(waitStrategy)
-                                  .withStopStrategy(Retrier.Strategies.stopAfter(10))
-                                  .withFailedRetryStrategy(Retrier.Strategies.retryOn(ConnectException.class))
-                                  .build();
+                       .withWaitStrategy(waitStrategy)
+                       .withStopStrategy(Retrier.Strategies.stopAfter(10))
+                       .withFailedRetryStrategy(e -> e instanceof ConnectException ||
+                                                     e.getCause() instanceof ConnectException)
+                       .build();
     }
 
     private String mqttClientId() {

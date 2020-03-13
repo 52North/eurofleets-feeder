@@ -13,7 +13,7 @@ public class ThingConfiguration {
     private String description;
     private double[] observedArea;
     private URL metadata;
-    private String metadataType;
+    private String metadataType = "http://www.opengis.net/doc/IS/SensorML/2.0";
 
     public String getMetadataType() {
         return metadataType;
