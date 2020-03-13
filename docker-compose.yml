@@ -17,11 +17,9 @@ services:
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
       FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
-      #FEEDER_STA_HTTP_URL: http://docker.srv.int.52north.org:8082/sta/v2/
       FEEDER_STA_MQTT_URL: tcp://sta:1883
     depends_on:
       - sta
-    restart: on-failure:10
 
   sta:
     image: ${REGISTRY}eurofleets/sta:latest
@@ -47,13 +45,12 @@ services:
       SERVER_FEATURE_VARIABLE_ENCODING_TYPE: "true"
     depends_on:
       - database
-    restart: on-failure:10
 
   sos:
     image: ${REGISTRY}eurofleets/sos:latest
     build: ./sos
     ports:
-    - 8080:8080
+      - 8080:8080
     environment:
       SOS_DATASOURCE_TYPE: postgres
       SOS_DATASOURCE_HOST: database
@@ -74,8 +71,6 @@ services:
       ALLOW_IP_RANGE: 0.0.0.0/0
     volumes:
       - postgres:/var/lib/postgresql/data
-    restart: on-failure:10
-
 volumes:
   postgres:
     driver: local
