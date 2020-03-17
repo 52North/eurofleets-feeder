@@ -7,19 +7,57 @@ services:
     environment:
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_ORG_N52: DEBUG
-      FEEDER_RETRIEVAL_BASE_URL: http://eurofleets.utm.csic.es/data/ES/SDG
-      FEEDER_RETRIEVAL_POSITION_URL: http://eurofleets.utm.csic.es/data/ES/SDG/NAV/20200214
-      FEEDER_RETRIEVAL_POSITION_REPEATING: "true"
+
+      FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
+      FEEDER_STA_MQTT_URL: tcp://sta:1883
+
       FEEDER_RETRIEVAL_POSITION_SCHEDULE: PT1S
       FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: PT5S
       FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: PT5S
+
+      FEEDER_RETRIEVAL_BASE_URL: http://eurofleets.utm.csic.es/data/ES/SDG
+      FEEDER_RETRIEVAL_POSITION_URL: http://eurofleets.utm.csic.es/data/ES/SDG/NAV/20200214
+      FEEDER_RETRIEVAL_POSITION_REPEATING: "true"
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
-      FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
-      FEEDER_STA_MQTT_URL: tcp://sta:1883
-    depends_on:
+
+      #FEEDER_THING_ID: BE_BEL
+      #FEEDER_THING_NAME: R/V Belgica
+      #FEEDER_THING_DESCRIPTION: R/V Belgica
+      #FEEDER_RETRIEVAL_POSITION_URL: https://ears.bmdc.be/ears2Nav/nav/getLast/datagram
+      #FEEDER_RETRIEVAL_METEOROLOGY_URL: https://ears.bmdc.be/ears2Nav/met/getLast/datagram
+      #FEEDER_RETRIEVAL_THERMOSALINITY_URL: https://ears.bmdc.be/ears2Nav/tss/getLast/datagram
+
+      depends_on:
       - sta
+
+
+#  feeder-belgica:
+#    image: ${REGISTRY}eurofleets/feeder:latest
+#    #build: https://github.com/52North/eurofleets-feeder.git
+#    build: .
+#    environment:
+#      LOGGING_LEVEL_ROOT: INFO
+#      LOGGING_LEVEL_ORG_N52: DEBUG
+#
+#      FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
+#      FEEDER_STA_MQTT_URL: tcp://sta:1883
+#
+#      FEEDER_RETRIEVAL_POSITION_SCHEDULE: PT5S
+#      FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: PT5S
+#      FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: PT5S
+#
+#      FEEDER_THING_ID: BE_BEL
+#      FEEDER_THING_NAME: R/V Belgica
+#      FEEDER_THING_DESCRIPTION: R/V Belgica
+#      FEEDER_RETRIEVAL_POSITION_URL: https://ears.bmdc.be/ears2Nav/nav/getLast/datagram
+#      FEEDER_RETRIEVAL_METEOROLOGY_URL: https://ears.bmdc.be/ears2Nav/met/getLast/datagram
+#      FEEDER_RETRIEVAL_THERMOSALINITY_URL: https://ears.bmdc.be/ears2Nav/tss/getLast/datagram
+#
+#    depends_on:
+#      - sta
+
 
   sta:
     image: ${REGISTRY}eurofleets/sta:latest
