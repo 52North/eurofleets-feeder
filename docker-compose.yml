@@ -60,6 +60,7 @@ services:
       SOS_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SOS_ADMIN_USERNAME: ${SOS_ADMIN_USERNAME}
       SOS_ADMIN_PASSWORD: ${SOS_ADMIN_PASSWORD}
+      SERVICE_SERVICE_URL: http://localhost:8080/service
     depends_on:
       - database
 
