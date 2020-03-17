@@ -21,7 +21,8 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.IsoFields;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -32,6 +33,7 @@ public class ThingRepository {
     private static final String TIME_ZONE = "UTC";
     private static final ZoneId TIME_ZONE_ID = ZoneId.of(TIME_ZONE);
     private static final String UPDATE_FOI_PROPERTY = "updateFOI";
+    private static final String IS_MOBILE = "isMobile";
     private static final String APPLICATION_VND_GEO_JSON = "application/vnd.geo+json";
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final ThingConfiguration thingConfiguration;
@@ -149,6 +151,7 @@ public class ThingRepository {
             thing.setId(thingConfiguration.getId());
             thing.setName(thingConfiguration.getName());
             thing.setDescription(thingConfiguration.getDescription());
+            thing.setProperties(createProperties(null));
             sta.create(thing);
             return thing;
         } finally {
@@ -236,11 +239,20 @@ public class ThingRepository {
         lock.writeLock().lock();
         try {
             Thing update = new Thing();
-            update.setProperties(Collections.singletonMap(UPDATE_FOI_PROPERTY, featureOfInterest.getId()));
+            update.setProperties(createProperties(featureOfInterest));
             sta.update(thing.getId(), update);
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    private Map<String, Object> createProperties(FeatureOfInterest featureOfInterest) {
+        Map<String, Object> properties = new HashMap<>();
+        if (featureOfInterest != null) {
+            properties.put(UPDATE_FOI_PROPERTY, featureOfInterest.getId());
+        }
+        properties.put(IS_MOBILE, true);
+        return properties;
     }
 
     private boolean isNewWeek() {
