@@ -15,9 +15,7 @@ feeder:
   retrieval:
     baseURL: http://eurofleets.utm.csic.es/data/ES/SDG
     position:
-      #url: ${feeder.retrieval.baseURL}/NAV/0
-      url: http://eurofleets.utm.csic.es/data/ES/SDG/NAV/20200214
-      repeating: true
+      url: ${feeder.retrieval.baseURL}/NAV/0
       schedule: PT1S
     meteorology:
       url: ${feeder.retrieval.baseURL}/MET/0
