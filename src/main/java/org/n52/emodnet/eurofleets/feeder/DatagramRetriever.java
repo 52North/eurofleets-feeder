@@ -155,7 +155,7 @@ public class DatagramRetriever {
         }
 
         private Request createRequest() {
-            return new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, TEXT_PLAIN).build();
+            return new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, "*/*").build();
         }
 
         @Override
