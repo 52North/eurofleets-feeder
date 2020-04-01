@@ -113,6 +113,21 @@ services:
       ALLOW_IP_RANGE: 0.0.0.0/0
     volumes:
       - postgres:/var/lib/postgresql/data
+
+  dashboard:
+    image: ${REGISTRY}eurofleets/dashboard:latest
+    build: https://github.com/52North/eurofleets-dashboard.git#master
+    ports:
+      - 8079:80
+    environment:
+      STA_URL: http://localhost:8081/sta/
+      MQTT_HOSTNAME: localhost
+      MQTT_PORT: 8883
+      MQTT_PATH: /mqtt
+      API_URL: http://localhost:8080/api/
+    depends_on: 
+      - sta
+      - sos
 volumes:
   postgres:
     driver: local
