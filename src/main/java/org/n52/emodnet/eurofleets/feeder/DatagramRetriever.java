@@ -185,6 +185,8 @@ public class DatagramRetriever {
                         LOG.error("could not parse datagram", e);
                     }
                 }
+            } else {
+                response.close();
             }
         }
     }
