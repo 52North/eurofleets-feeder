@@ -45,11 +45,11 @@ public class OkHttpConfiguration {
             Instant after = Instant.now();
 
             if (response.isSuccessful()) {
-                log.debug("{} {}: {} {}",
-                          request.method(),
-                          request.url(),
-                          response.code(),
-                          Duration.between(before, after));
+                log.info("{} {}: {} {}",
+                         request.method(),
+                         request.url(),
+                         response.code(),
+                         Duration.between(before, after));
             } else {
                 log.warn("{} {}: {} {}",
                          request.method(),
