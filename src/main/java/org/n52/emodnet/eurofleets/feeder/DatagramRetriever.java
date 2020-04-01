@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 public class DatagramRetriever {
     private static final Logger LOG = LoggerFactory.getLogger(DatagramRetriever.class);
     private static final String TEXT_PLAIN = "text/plain";
+    public static final String ACCEPT_HEADER = "*/*";
     private final Retriever positionRetriever;
     private final Retriever meteorologyRetriever;
     private final Retriever thermosalinityRetriever;
@@ -97,7 +98,7 @@ public class DatagramRetriever {
                                    Call.Factory callFactory) {
             this.parser = Objects.requireNonNull(parser);
             this.listener = Objects.requireNonNull(listener);
-            callFactory.newCall(new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, TEXT_PLAIN)
+            callFactory.newCall(new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, ACCEPT_HEADER)
                                                      .build()).enqueue(this);
         }
 
@@ -155,7 +156,7 @@ public class DatagramRetriever {
         }
 
         private Request createRequest() {
-            return new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, "*/*").build();
+            return new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, ACCEPT_HEADER).build();
         }
 
         @Override
