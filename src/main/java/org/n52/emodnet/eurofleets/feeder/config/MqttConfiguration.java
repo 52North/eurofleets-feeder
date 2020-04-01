@@ -24,6 +24,8 @@ public class MqttConfiguration {
     private String username;
     @Value("${feeder.sta.mqtt.password}")
     private String password;
+    @Value("${feeder.sta.mqtt.maxInflight}")
+    private int maxInflight;
 
     @Bean
     public MqttConnectOptions mqttConnectOptions() {
@@ -33,6 +35,7 @@ public class MqttConfiguration {
             options.setPassword(password.toCharArray());
         }
         options.setCleanSession(true);
+        options.setMaxInflight(maxInflight);
         options.setAutomaticReconnect(true);
         return options;
     }
