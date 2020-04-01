@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Stream;
 
@@ -33,7 +36,10 @@ public class SensorThingsDatagramListener implements DatagramListener {
     private final Datastreams ds;
     private final FeatureOfInterest featureOfInterest;
     private final SensorThingsApi sta;
-    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock readLock = lock.readLock();
+    private final Lock writeLock = lock.writeLock();
+    private final Condition hasPosition = writeLock.newCondition();
     private Point latestPoint;
 
     @Autowired
@@ -61,7 +67,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
     }
 
     private Observation createObservation(Datastream datastream, OffsetDateTime time, Number result) {
-        readWriteLock.readLock().lock();
+        readLock.lock();
         try {
             Observation observation = new Observation();
             observation.setDatastream(datastream);
@@ -72,7 +78,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
             observation.setResult(result);
             return observation;
         } finally {
-            readWriteLock.readLock().unlock();
+            readLock.unlock();
         }
     }
 
@@ -91,31 +97,52 @@ public class SensorThingsDatagramListener implements DatagramListener {
 
     @Override
     public void onDatagram(Datagram dg) {
-        if (dg.hasValue(ObservedProperties.LONGITUDE) &&
-            dg.hasValue(ObservedProperties.LATITUDE)) {
-            readWriteLock.writeLock().lock();
+
+        if (hasPosition(dg)) {
+            writeLock.lock();
             try {
-                latestPoint = geometryFactory.createPoint(new CoordinateXY(
-                        dg.getValue(ObservedProperties.LONGITUDE).doubleValue(),
-                        dg.getValue(ObservedProperties.LATITUDE).doubleValue()));
+                latestPoint = getPosition(dg);
                 publish(createLocationUpdate(latestPoint));
+                hasPosition.signalAll();
             } finally {
-                readWriteLock.writeLock().unlock();
+                writeLock.unlock();
             }
         }
-        readWriteLock.readLock().lock();
+
+        readLock.lock();
         try {
             if (latestPoint == null) {
-                LOG.warn("Did not yet receive any position, ignoring datagram {}", dg);
-                return;
+                LOG.warn("Did not yet receive any position, waiting to publish datagram");
+                readLock.unlock();
+                writeLock.lock();
+                try {
+                    while (latestPoint == null) {
+                        try {
+                            hasPosition.await();
+                        } catch (InterruptedException ex) {
+                            LOG.warn("Did not yet receive any position, interrupted");
+                            return;
+                        }
+                    }
+                    readLock.lock();
+                } finally {
+                    writeLock.unlock();
+                }
             }
-
-            publish(dg.getObservedProperties().stream()
-                      .filter(dg::hasValue)
+            publish(dg.getObservedProperties().stream().filter(dg::hasValue)
                       .map(op -> createObservation(ds.get(op), dg.getDateTime(), dg.getValue(op))));
         } finally {
-            readWriteLock.readLock().unlock();
+            readLock.unlock();
         }
+    }
 
+    private Point getPosition(Datagram dg) {
+        double lon = dg.getValue(ObservedProperties.LONGITUDE).doubleValue();
+        double lat = dg.getValue(ObservedProperties.LATITUDE).doubleValue();
+        return geometryFactory.createPoint(new CoordinateXY(lon, lat));
+    }
+
+    private boolean hasPosition(Datagram dg) {
+        return dg.hasValue(ObservedProperties.LONGITUDE) && dg.hasValue(ObservedProperties.LATITUDE);
     }
 }
