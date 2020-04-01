@@ -35,25 +35,35 @@ public class Datagram {
         this.line = parseLine(value, observedProperties.length + 3);
         //ignore split[0]
         LocalDate date;
+
+        if (line[1].length() == 6) {
+            line[1] = "20" + line[1];
+        }
+
         try {
             date = LocalDate.parse(line[1], DATE_FORMATTER);
-        } catch (DateTimeParseException e1) {
-            throw new DatagramParseException("error parsing date", e1);
+        } catch (DateTimeParseException e) {
+            throw new DatagramParseException("error parsing date", e);
         }
+
         LocalTime time;
         try {
             time = LocalTime.parse(line[2], TIME_FORMATTER);
-        } catch (DateTimeParseException e) {
+        } catch (
+                  DateTimeParseException e) {
             throw new DatagramParseException("error parsing date", e);
         }
         this.dateTime = LocalDateTime.of(date, time).atOffset(ZoneOffset.UTC);
         this.values = new HashMap<>();
-        for (int i = 0; i < observedProperties.length; i++) {
+        for (
+                int i = 0;
+                i < observedProperties.length; i++) {
             String stringValue = line[3 + i];
             if (!stringValue.isEmpty()) {
                 values.put(observedProperties[i], Double.parseDouble(stringValue));
             }
         }
+
     }
 
     public Set<ObservedProperty> getObservedProperties() {
@@ -72,7 +82,7 @@ public class Datagram {
         if (value == null || value.isEmpty()) {
             throw new DatagramParseException(String.format("invalid datagram: <%s>", value));
         }
-        String[] split = value.split(",");
+        String[] split = value.split(",", -1);
         if (split.length < expectedValues) {
             throw new DatagramParseException(String.format("invalid datagram: <%s>", value));
         }
