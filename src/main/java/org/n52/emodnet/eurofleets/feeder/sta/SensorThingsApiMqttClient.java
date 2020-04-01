@@ -37,6 +37,9 @@ public class SensorThingsApiMqttClient {
 
     private void publish(String topic, Object writable) {
         try {
+            if (!mqttClient.isConnected()) {
+                mqttClient.connect().waitForCompletion();
+            }
             mqttClient.publish(topic, objectWriter.writeValueAsBytes(writable), 1, false)
                       .setActionCallback(new IMqttActionListener() {
                           @Override
