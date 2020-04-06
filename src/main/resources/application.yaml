@@ -16,12 +16,15 @@ feeder:
     baseURL: http://eurofleets.utm.csic.es/data/ES/SDG
     position:
       url: ${feeder.retrieval.baseURL}/NAV/0
+      repeating: false
       schedule: PT1S
     meteorology:
       url: ${feeder.retrieval.baseURL}/MET/0
+      repeating: false
       schedule: PT5S
     thermosalinity:
       url: ${feeder.retrieval.baseURL}/TSS/0
+      repeating: false
       schedule: PT5S
   thing:
     id: ES_GDC
