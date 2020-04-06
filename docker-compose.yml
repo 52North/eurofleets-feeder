@@ -94,8 +94,7 @@ services:
 
 
   sta:
-    image: ${REGISTRY}eurofleets/sta:2.0.0
-    build: https://github.com/52North/sensorweb-server-sta.git#v2.0.0
+    image: 52north/sensorweb-server-sta:2.0.1
     ports:
       - 8081:8081 # http
       - 1883:1883 # mqtt
