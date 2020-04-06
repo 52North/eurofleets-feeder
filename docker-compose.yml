@@ -53,8 +53,8 @@ services:
 
 
   sta:
-    image: docker.pkg.github.com/52north/sensorweb-server-sta/sensorweb-server-sta:2.0.0
-    # build: https://github.com/52North/sensorweb-server-sta.git#develop
+    image: ${REGISTRY}eurofleets/sta:2.0.0
+    build: https://github.com/52North/sensorweb-server-sta.git#v2.0.0
     ports:
       - 8081:8081 # http
       - 1883:1883 # mqtt
