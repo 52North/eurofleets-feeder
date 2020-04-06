@@ -15,9 +15,18 @@ services:
       FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: PT5S
       FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: PT5S
 
-      FEEDER_RETRIEVAL_BASE_URL: http://eurofleets.utm.csic.es/data/ES/SDG
-      FEEDER_RETRIEVAL_POSITION_URL: http://eurofleets.utm.csic.es/data/ES/SDG/NAV/20200214
+      #FEEDER_RETRIEVAL_POSITION_URL: http://data.utm.csic.es/coda/udp/GDCNAV
+      #FEEDER_RETRIEVAL_METEOROLOGY_URL: http://data.utm.csic.es/coda/udp/GDCMET
+      #FEEDER_RETRIEVAL_THERMOSALINITY_URL: http://data.utm.csic.es/coda/udp/GDCTSS
+      
+      FEEDER_RETRIEVAL_POSITION_URL: http://data.utm.csic.es/coda/serie/GDCNAV/20200211
       FEEDER_RETRIEVAL_POSITION_REPEATING: "true"
+      FEEDER_RETRIEVAL_METEOROLOGY_URL: http://data.utm.csic.es/coda/serie/SDGMET/20200211
+      FEEDER_RETRIEVAL_METEOROLOGY_REPEATING: "true"
+      FEEDER_RETRIEVAL_THERMOSALINITY_URL: http://data.utm.csic.es/coda/serie/SDGTSS/20200211
+      FEEDER_RETRIEVAL_THERMOSALINITY_REPEATING: "true"
+      
+
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
@@ -25,6 +34,38 @@ services:
     depends_on:
       - sta
 
+  feeder-sdg:
+    image: ${REGISTRY}eurofleets/feeder:latest
+    #build: https://github.com/52North/eurofleets-feeder.git
+    build: .
+    environment:
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_ORG_N52: DEBUG
+
+      FEEDER_STA_HTTP_URL: http://sta:8081${STA_CONTEXT_PATH}/
+      FEEDER_STA_MQTT_URL: tcp://sta:1883
+
+      FEEDER_RETRIEVAL_POSITION_SCHEDULE: PT1S
+      FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: PT5S
+      FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: PT5S
+
+      #FEEDER_RETRIEVAL_POSITION_URL: http://data.utm.csic.es/coda/udp/SDGNAV
+      #FEEDER_RETRIEVAL_METEOROLOGY_URL: http://data.utm.csic.es/coda/udp/SDGMET
+      #FEEDER_RETRIEVAL_THERMOSALINITY_URL: http://data.utm.csic.es/coda/udp/SDGTSS
+      
+      FEEDER_RETRIEVAL_POSITION_URL: http://data.utm.csic.es/coda/serie/SDGNAV/20200211
+      FEEDER_RETRIEVAL_POSITION_REPEATING: "true"
+      FEEDER_RETRIEVAL_METEOROLOGY_URL: http://data.utm.csic.es/coda/serie/SDGMET/20200211
+      FEEDER_RETRIEVAL_METEOROLOGY_REPEATING: "true"
+      FEEDER_RETRIEVAL_THERMOSALINITY_URL: http://data.utm.csic.es/coda/serie/SDGTSS/20200211
+      FEEDER_RETRIEVAL_THERMOSALINITY_REPEATING: "true"
+
+      FEEDER_THING_ID: ES_SDG
+      FEEDER_THING_NAME: R/V Sarmiento de Gamboa
+      FEEDER_THING_DESCRIPTION: R/V Sarmiento de Gamboa
+
+    depends_on:
+      - sta
 
   feeder-bel:
     image: ${REGISTRY}eurofleets/feeder:latest
