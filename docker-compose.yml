@@ -120,8 +120,7 @@ services:
       - database
 
   sos:
-    image: ${REGISTRY}eurofleets/sos:latest
-    build: ./sos
+    image: 52north/sos:5.0.2
     ports:
       - 8080:8080
     environment:
