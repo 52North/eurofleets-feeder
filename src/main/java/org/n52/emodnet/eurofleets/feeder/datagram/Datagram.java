@@ -3,30 +3,17 @@ package org.n52.emodnet.eurofleets.feeder.datagram;
 import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoField;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Datagram {
-    private static final DateTimeFormatter TIME_FORMATTER = new DateTimeFormatterBuilder()
-                                                                    .appendValue(ChronoField.HOUR_OF_DAY, 2)
-                                                                    .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
-                                                                    .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-                                                                    .toFormatter();
-    private static final DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()
-                                                                    .appendValue(ChronoField.YEAR, 4)
-                                                                    .appendValue(ChronoField.MONTH_OF_YEAR, 2)
-                                                                    .appendValue(ChronoField.DAY_OF_MONTH, 2)
-                                                                    .toFormatter();
+
     private final String[] line;
     private final OffsetDateTime dateTime;
     private final Map<ObservedProperty, Number> values;
@@ -34,26 +21,15 @@ public class Datagram {
     public Datagram(String value, ObservedProperty... observedProperties) throws DatagramParseException {
         this.line = parseLine(value, observedProperties.length + 3);
         //ignore split[0]
-        LocalDate date;
-
-        if (line[1].length() == 6) {
-            line[1] = "20" + line[1];
-        }
-
+        LocalDate date = parseDate(line[1]);
+        LocalTime time;
         try {
-            date = LocalDate.parse(line[1], DATE_FORMATTER);
+            time = LocalTime.parse(line[2], DateTimeFormatters.HHMMSS);
         } catch (DateTimeParseException e) {
             throw new DatagramParseException("error parsing date", e);
         }
 
-        LocalTime time;
-        try {
-            time = LocalTime.parse(line[2], TIME_FORMATTER);
-        } catch (
-                  DateTimeParseException e) {
-            throw new DatagramParseException("error parsing date", e);
-        }
-        this.dateTime = LocalDateTime.of(date, time).atOffset(ZoneOffset.UTC);
+        this.dateTime = date.atTime(time).atOffset(ZoneOffset.UTC);
         this.values = new HashMap<>();
         for (
                 int i = 0;
@@ -64,6 +40,44 @@ public class Datagram {
             }
         }
 
+    }
+
+    private LocalDate parseDate(String value) throws DatagramParseException {
+        LocalDate date1 = null;
+        LocalDate date2 = null;
+        DateTimeParseException e1 = null;
+        DateTimeParseException e2 = null;
+
+        try {
+            date1 = LocalDate.parse(value, DateTimeFormatters.YYYYMMDD);
+        } catch (DateTimeParseException e) {
+            e1 = e;
+        }
+
+        try {
+            date2 = LocalDate.parse(value, DateTimeFormatters.DDMMYYYY);
+        } catch (DateTimeParseException e) {
+            e2 = e;
+        }
+
+        if (e1 == null) {
+            if (e2 == null) {
+                if (date1.compareTo(date2) < 0) {
+                    return date2;
+                } else {
+                    return date1;
+                }
+            } else {
+                return date1;
+            }
+        } else {
+            if (e2 == null) {
+                return date2;
+            } else {
+                e1.addSuppressed(e2);
+                throw new DatagramParseException("error parsing date", e1);
+            }
+        }
     }
 
     public Set<ObservedProperty> getObservedProperties() {

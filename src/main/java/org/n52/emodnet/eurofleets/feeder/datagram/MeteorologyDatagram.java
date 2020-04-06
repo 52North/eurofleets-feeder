@@ -12,7 +12,7 @@ public class MeteorologyDatagram extends Datagram {
               ObservedProperties.AIR_TEMPERATURE,
               ObservedProperties.HUMIDITY,
               ObservedProperties.SOLAR_RADIATION,
-              ObservedProperties.PRESSURE,
-              ObservedProperties.WATER_TEMPERATURE);
+              ObservedProperties.PRESSURE/*,
+              ObservedProperties.WATER_TEMPERATURE*/);
     }
 }

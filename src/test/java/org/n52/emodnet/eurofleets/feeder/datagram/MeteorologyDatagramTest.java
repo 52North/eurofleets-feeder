@@ -3,6 +3,7 @@ package org.n52.emodnet.eurofleets.feeder.datagram;
 import org.junit.jupiter.api.Test;
 import org.n52.emodnet.eurofleets.feeder.ObservedProperties;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -41,4 +42,25 @@ class MeteorologyDatagramTest {
         assertThat(parse.getValue(ObservedProperties.SOLAR_RADIATION), is(nullValue()));
         assertThat(parse.getValue(ObservedProperties.PRESSURE), is(1011.3877));
     }
+
+    @Test
+    public void testDDMMYY() {
+        assertThat(LocalDate.parse("190220", DateTimeFormatters.DDMMYYYY),
+                   is(LocalDate.of(2020, 2, 19)));
+    }
+
+    @Test
+    public void testParsePsdOld() throws DatagramParseException {
+        final MeteorologyDatagram parse = new MeteorologyDatagram("$PSDGMET,190220,115715,1.81411,1.81411,140,13.23305,61.39138,283.5505,1038.438");
+
+        assertThat(parse.getDateTime(), is(OffsetDateTime.of(2020, 2, 19, 11, 57, 15, 0, ZoneOffset.UTC)));
+        assertThat(parse.getValue(ObservedProperties.WIND_MEAN), is(1.81411));
+        assertThat(parse.getValue(ObservedProperties.WIND_GUST), is(1.81411));
+        assertThat(parse.getValue(ObservedProperties.WIND_DIRECTION), is(140.0));
+        assertThat(parse.getValue(ObservedProperties.AIR_TEMPERATURE), is(13.23305));
+        assertThat(parse.getValue(ObservedProperties.HUMIDITY), is(61.39138));
+        assertThat(parse.getValue(ObservedProperties.SOLAR_RADIATION), is(283.5505));
+        assertThat(parse.getValue(ObservedProperties.PRESSURE), is(1038.438));
+    }
+
 }
