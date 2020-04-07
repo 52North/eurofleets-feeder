@@ -148,7 +148,7 @@ services:
 
   dashboard:
     image: ${REGISTRY}eurofleets/dashboard:latest
-    build: https://github.com/52North/eurofleets-dashboard.git#master
+    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.0
     ports:
       - 8079:80
     environment:
