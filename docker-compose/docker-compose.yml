@@ -49,20 +49,6 @@ services:
     depends_on:
       - sta
 
-  feeder-bel:
-    image: ${REGISTRY}eurofleets/feeder:latest
-    build: https://github.com/52North/eurofleets-feeder.git
-    environment:
-      <<: *x-feeder-environment
-      FEEDER_THING_ID: BE_BEL
-      FEEDER_THING_NAME: R/V Belgica
-      FEEDER_THING_DESCRIPTION: R/V Belgica
-      FEEDER_RETRIEVAL_NAVIGATION_URL: https://ears.bmdc.be/ears2Nav/nav/getLast/datagram
-      FEEDER_RETRIEVAL_METEOROLOGY_URL: https://ears.bmdc.be/ears2Nav/met/getLast/datagram
-      FEEDER_RETRIEVAL_THERMOSALINITY_URL: https://ears.bmdc.be/ears2Nav/tss/getLast/datagram
-    depends_on:
-      - sta
-
   sta:
     image: 52north/sensorweb-server-sta:2.0.1
     environment:
