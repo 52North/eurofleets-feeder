@@ -1,23 +1,23 @@
 version: '3.4'
 
-x-common:
-  feederEnvironment: &feederEnvironment
-    LOGGING_LEVEL_ROOT: INFO
-    LOGGING_LEVEL_ORG_N52: DEBUG
-
-    FEEDER_STA_HTTP_URL: http://sta:${STA_INTERNAL_HTTP_PORT}${STA_CONTEXT_PATH}/
-    FEEDER_STA_MQTT_URL: tcp://sta:${STA_INTERNAL_MQTT_PORT}
-
-    FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE: ${FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE}
-    FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: ${FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE}
-    FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: ${FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE}
+x-api-url: &x-api-url "${EXTERNAL_SCHEME}://${EXTERNAL_HOST}:${EXTERNAL_PORT}${SOS_CONTEXT_PATH}/api/"
+x-sos-url: &x-sos-url "${EXTERNAL_SCHEME}://${EXTERNAL_HOST}:${EXTERNAL_PORT}${SOS_CONTEXT_PATH}/service"
+x-sta-url: &x-sta-url "${EXTERNAL_SCHEME}://${EXTERNAL_HOST}:${EXTERNAL_PORT}${STA_CONTEXT_PATH}/"
+x-feeder-environment: &x-feeder-environment
+  LOGGING_LEVEL_ROOT: INFO
+  LOGGING_LEVEL_ORG_N52: DEBUG
+  FEEDER_STA_HTTP_URL: http://sta:${STA_INTERNAL_HTTP_PORT}${STA_CONTEXT_PATH}/
+  FEEDER_STA_MQTT_URL: tcp://sta:${STA_INTERNAL_MQTT_PORT}
+  FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE: ${FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE}
+  FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: ${FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE}
+  FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: ${FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE}
 
 services:
   feeder-gdc:
     image: ${REGISTRY}eurofleets/feeder:latest
     build: https://github.com/52North/eurofleets-feeder.git
     environment:
-      <<: *feederEnvironment
+      <<: *x-feeder-environment
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
@@ -29,7 +29,7 @@ services:
     image: ${REGISTRY}eurofleets/feeder:latest
     build: https://github.com/52North/eurofleets-feeder.git
     environment:
-      <<: *feederEnvironment
+      <<: *x-feeder-environment
       FEEDER_THING_ID: ES_SDG
       FEEDER_THING_NAME: R/V Sarmiento de Gamboa
       FEEDER_THING_DESCRIPTION: R/V Sarmiento de Gamboa
@@ -41,7 +41,7 @@ services:
     image: ${REGISTRY}eurofleets/feeder:latest
     build: https://github.com/52North/eurofleets-feeder.git
     environment:
-      <<: *feederEnvironment
+      <<: *x-feeder-environment
       FEEDER_THING_ID: ES_HES
       FEEDER_THING_NAME: R/V Hesperides
       FEEDER_THING_DESCRIPTION: R/V Hesperides
@@ -53,7 +53,7 @@ services:
     image: ${REGISTRY}eurofleets/feeder:latest
     build: https://github.com/52North/eurofleets-feeder.git
     environment:
-      <<: *feederEnvironment
+      <<: *x-feeder-environment
       FEEDER_THING_ID: BE_BEL
       FEEDER_THING_NAME: R/V Belgica
       FEEDER_THING_DESCRIPTION: R/V Belgica
@@ -76,7 +76,7 @@ services:
       MQTT_BROKER_PLAINTCP_ENABLED: "true"
       MQTT_BROKER_WEBSOCKET_ENABLED: "true"
       MQTT_BROKER_PERSISTENCE_ENABLED: "false"
-      SERVER_ROOTURL: ${STA_EXTERNAL_URL}/
+      SERVER_ROOTURL: *x-sta-url
       SERVER_SERVLET_CONTEXT_PATH: ${STA_CONTEXT_PATH}
       SERVER_FEATURE_UPDATEFOI: "true"
       SERVER_FEATURE_MQTTPUBLISHTOPICS: Locations, Observations
@@ -100,8 +100,8 @@ services:
       SOS_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SOS_ADMIN_USERNAME: ${SOS_ADMIN_USERNAME}
       SOS_ADMIN_PASSWORD: ${SOS_ADMIN_PASSWORD}
-      SERVICE_SERVICE_URL: ${SOS_EXTERNAL_URL}/service
-      EXTERNAL_URL: ${SOS_EXTERNAL_URL}/api/
+      SERVICE_SERVICE_URL: *x-sos-url
+      EXTERNAL_URL: *x-api-url
       SOS_CONTEXT_PATH: ${SOS_CONTEXT_PATH}
     depends_on:
       - database
@@ -113,7 +113,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DATABASE}
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      ALLOW_IP_RANGE: 0.0.0.0/0
     volumes:
       - postgres:/var/lib/postgresql/data
 
@@ -121,11 +120,11 @@ services:
     image: ${REGISTRY}eurofleets/dashboard:latest
     build: https://github.com/52North/eurofleets-dashboard.git#v1.0.1
     environment:
-      STA_URL: ${STA_EXTERNAL_URL}/
-      MQTT_HOSTNAME: jamaika
-      MQTT_PORT: 80
+      STA_URL: *x-sta-url
+      MQTT_HOSTNAME: ${EXTERNAL_HOST}
+      MQTT_PORT: ${EXTERNAL_PORT}
       MQTT_PATH: ${STA_CONTEXT_PATH}/mqtt
-      API_URL: ${SOS_EXTERNAL_URL}/api/
+      API_URL: *x-api-url
     depends_on: 
       - sta
       - sos
@@ -134,12 +133,12 @@ services:
     image: ${REGISTRY}eurofleets/proxy:latest
     build: ./proxy
     ports:
-      - 80:80
+      - ${EXTERNAL_PORT}:80
     environment:
       STA_HTTP_UPSTREAM: sta:${STA_INTERNAL_HTTP_PORT}
       SOS_UPSTREAM: sos:${SOS_INTERNAL_HTTP_PORT}
       STA_WEBSOCKET_UPSTREAM: sta:${STA_INTERNAL_WEBSOCKET_PORT}
-      DASHBOARD_UPSTREAM: dashboard:80
+      DASHBOARD_UPSTREAM: dashboard:${DASHBOARD_INTERNAL_HTTP_PORT}
     depends_on:
       - sos
       - sta
