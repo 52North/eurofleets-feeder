@@ -75,7 +75,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
         lock.lock();
         try {
             Point position = dg.getGeometry();
-            if (!position.equalsExact(latestPoint)) {
+            if (latestPoint == null || !position.equalsExact(latestPoint)) {
                 latestPoint = position;
                 LOG.info("publishing location {}", latestPoint);
                 sta.create(createLocationUpdate(latestPoint));
