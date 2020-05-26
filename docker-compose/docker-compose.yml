@@ -119,7 +119,7 @@ services:
 
   dashboard:
     image: ${REGISTRY}eurofleets/dashboard:latest
-    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.0
+    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.1
     environment:
       STA_URL: ${STA_EXTERNAL_URL}/
       MQTT_HOSTNAME: jamaika
