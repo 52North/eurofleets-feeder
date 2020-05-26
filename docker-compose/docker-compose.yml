@@ -1,0 +1,151 @@
+version: '3.4'
+
+x-common:
+  feederEnvironment: &feederEnvironment
+    LOGGING_LEVEL_ROOT: INFO
+    LOGGING_LEVEL_ORG_N52: DEBUG
+
+    FEEDER_STA_HTTP_URL: http://sta:${STA_INTERNAL_HTTP_PORT}${STA_CONTEXT_PATH}/
+    FEEDER_STA_MQTT_URL: tcp://sta:${STA_INTERNAL_MQTT_PORT}
+
+    FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE: ${FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE}
+    FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: ${FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE}
+    FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: ${FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE}
+
+services:
+  feeder-gdc:
+    image: ${REGISTRY}eurofleets/feeder:latest
+    build: https://github.com/52North/eurofleets-feeder.git
+    environment:
+      <<: *feederEnvironment
+      FEEDER_THING_ID: ES_GDC
+      FEEDER_THING_NAME: R/V García del Cid
+      FEEDER_THING_DESCRIPTION: R/V García del Cid
+      FEEDER_RETRIEVAL_BASEURL: http://eurofleets.utm.csic.es/ws/getLast/GDC
+    depends_on:
+      - sta
+
+  feeder-sdg:
+    image: ${REGISTRY}eurofleets/feeder:latest
+    build: https://github.com/52North/eurofleets-feeder.git
+    environment:
+      <<: *feederEnvironment
+      FEEDER_THING_ID: ES_SDG
+      FEEDER_THING_NAME: R/V Sarmiento de Gamboa
+      FEEDER_THING_DESCRIPTION: R/V Sarmiento de Gamboa
+      FEEDER_RETRIEVAL_BASEURL: http://eurofleets.utm.csic.es/ws/getLast/SDG
+    depends_on:
+      - sta
+
+  feeder-hes:
+    image: ${REGISTRY}eurofleets/feeder:latest
+    build: https://github.com/52North/eurofleets-feeder.git
+    environment:
+      <<: *feederEnvironment
+      FEEDER_THING_ID: ES_HES
+      FEEDER_THING_NAME: R/V Hesperides
+      FEEDER_THING_DESCRIPTION: R/V Hesperides
+      FEEDER_RETRIEVAL_BASEURL: http://eurofleets.utm.csic.es/ws/getLast/HES
+    depends_on:
+      - sta
+
+  feeder-bel:
+    image: ${REGISTRY}eurofleets/feeder:latest
+    build: https://github.com/52North/eurofleets-feeder.git
+    environment:
+      <<: *feederEnvironment
+      FEEDER_THING_ID: BE_BEL
+      FEEDER_THING_NAME: R/V Belgica
+      FEEDER_THING_DESCRIPTION: R/V Belgica
+      FEEDER_RETRIEVAL_NAVIGATION_URL: https://ears.bmdc.be/ears2Nav/nav/getLast/datagram
+      FEEDER_RETRIEVAL_METEOROLOGY_URL: https://ears.bmdc.be/ears2Nav/met/getLast/datagram
+      FEEDER_RETRIEVAL_THERMOSALINITY_URL: https://ears.bmdc.be/ears2Nav/tss/getLast/datagram
+    depends_on:
+      - sta
+
+
+  sta:
+    image: 52north/sensorweb-server-sta:2.0.1
+    environment:
+      LOGGING_LEVEL_ROOT: WARN
+      LOGGING_LEVEL_ORG_N52: INFO
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPING_JPA_PROPERTIES_HIBERNATE_HBM2DDL: update
+      MQTT_BROKER_PLAINTCP_ENABLED: "true"
+      MQTT_BROKER_WEBSOCKET_ENABLED: "true"
+      MQTT_BROKER_PERSISTENCE_ENABLED: "false"
+      SERVER_ROOTURL: ${STA_EXTERNAL_URL}/
+      SERVER_SERVLET_CONTEXT_PATH: ${STA_CONTEXT_PATH}
+      SERVER_FEATURE_UPDATEFOI: "true"
+      SERVER_FEATURE_MQTTPUBLISHTOPICS: Locations, Observations
+      SERVER_FEATURE_VARIABLEENCODINGTYPE: "true"
+      SERVER_FEATURE_ISMOBILE: "true"
+      SERVER_PORT: ${STA_INTERNAL_HTTP_PORT}
+      MQTT_BROKER_WEBSOCKET_PORT: ${STA_INTERNAL_WEBSOCKET_PORT}
+      MQTT_BROKER_PLAINTCP_PORT: ${STA_INTERNAL_MQTT_PORT}
+    depends_on:
+      - database
+
+  sos:
+    image: ${REGISTRY}eurofleets/sos:latest
+    build: ./sos
+    environment:
+      SOS_DATASOURCE_TYPE: postgres
+      SOS_DATASOURCE_HOST: database
+      SOS_DATASOURCE_PORT: ${POSTGRES_PORT}
+      SOS_DATASOURCE_DATABASE: ${POSTGRES_DATABASE}
+      SOS_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
+      SOS_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SOS_ADMIN_USERNAME: ${SOS_ADMIN_USERNAME}
+      SOS_ADMIN_PASSWORD: ${SOS_ADMIN_PASSWORD}
+      SERVICE_SERVICE_URL: ${SOS_EXTERNAL_URL}/service
+      EXTERNAL_URL: ${SOS_EXTERNAL_URL}/api/
+      SOS_CONTEXT_PATH: ${SOS_CONTEXT_PATH}
+    depends_on:
+      - database
+
+  database:
+    image: ${REGISTRY}eurofleets/database:latest
+    build: ./database
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ALLOW_IP_RANGE: 0.0.0.0/0
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  dashboard:
+    image: ${REGISTRY}eurofleets/dashboard:latest
+    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.0
+    environment:
+      STA_URL: ${STA_EXTERNAL_URL}/
+      MQTT_HOSTNAME: jamaika
+      MQTT_PORT: 80
+      MQTT_PATH: ${STA_CONTEXT_PATH}/mqtt
+      API_URL: ${SOS_EXTERNAL_URL}/api/
+    depends_on: 
+      - sta
+      - sos
+
+  proxy:
+    image: ${REGISTRY}eurofleets/proxy:latest
+    build: ./proxy
+    ports:
+      - 80:80
+    environment:
+      STA_HTTP_UPSTREAM: sta:${STA_INTERNAL_HTTP_PORT}
+      SOS_UPSTREAM: sos:${SOS_INTERNAL_HTTP_PORT}
+      STA_WEBSOCKET_UPSTREAM: sta:${STA_INTERNAL_WEBSOCKET_PORT}
+      DASHBOARD_UPSTREAM: dashboard:80
+    depends_on:
+      - sos
+      - sta
+      - dashboard
+
+
+volumes:
+  postgres:
+    driver: local
