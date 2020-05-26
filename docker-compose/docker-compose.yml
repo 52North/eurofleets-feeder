@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 x-api-url: &x-api-url "${EXTERNAL_SCHEME}://${EXTERNAL_HOST}:${EXTERNAL_PORT}${SOS_CONTEXT_PATH}/api/"
 x-sos-url: &x-sos-url "${EXTERNAL_SCHEME}://${EXTERNAL_HOST}:${EXTERNAL_PORT}${SOS_CONTEXT_PATH}/service"
@@ -63,7 +63,6 @@ services:
     depends_on:
       - sta
 
-
   sta:
     image: 52north/sensorweb-server-sta:2.0.1
     environment:
@@ -123,9 +122,9 @@ services:
       STA_URL: *x-sta-url
       MQTT_HOSTNAME: ${EXTERNAL_HOST}
       MQTT_PORT: ${EXTERNAL_PORT}
-      MQTT_PATH: ${STA_CONTEXT_PATH}/mqtt
+      MQTT_PATH: ${MQTT_CONTEXT_PATH}
       API_URL: *x-api-url
-    depends_on: 
+    depends_on:
       - sta
       - sos
 
@@ -143,7 +142,6 @@ services:
       - sos
       - sta
       - dashboard
-
 
 volumes:
   postgres:
