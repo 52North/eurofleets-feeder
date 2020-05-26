@@ -38,15 +38,12 @@ public class SensorMLCreator {
     public static void main(String[] args) throws EncodingException {
         final PhysicalComponent physicalComponent = new PhysicalComponent();
 
-        final ObservedProperty[] position = {ObservedProperties.LONGITUDE,
-                                             ObservedProperties.LATITUDE,
-                                             ObservedProperties.HEADING,
+        final ObservedProperty[] position = {ObservedProperties.HEADING,
                                              ObservedProperties.SPEED,
                                              ObservedProperties.DEPTH,
                                              ObservedProperties.COURSE_OVER_GROUND,
                                              ObservedProperties.SPEED_OVER_GROUND};
-        final ObservedProperty[] meteorolgy = {ObservedProperties.WIND_MEAN,
-                                               ObservedProperties.WIND_GUST,
+        final ObservedProperty[] meteorolgy = {ObservedProperties.WIND_SPEED,
                                                ObservedProperties.WIND_DIRECTION,
                                                ObservedProperties.AIR_TEMPERATURE,
                                                ObservedProperties.HUMIDITY,

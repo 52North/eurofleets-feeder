@@ -51,4 +51,11 @@ class NavigationDatagramTest {
         assertThat(parse.getValue(ObservedProperties.SPEED_OVER_GROUND), is(0.041));
 
     }
+
+    @Test
+    public void testNew() throws DatagramParseException {
+        final NavigationDatagram parse = new NavigationDatagram("$HESNAV,20200416,211444,-15.2985287,27.4632204,353.30,,,359.04,3.40");
+        assertThat(parse.getGeometry(), is(geometryFactory.createPoint(new CoordinateXY(-15.2985287, 27.4632204))));
+
+    }
 }

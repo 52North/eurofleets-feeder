@@ -6,8 +6,7 @@ public class MeteorologyDatagram extends Datagram {
 
     public MeteorologyDatagram(String value) throws DatagramParseException {
         super(value,
-              ObservedProperties.WIND_MEAN,
-              ObservedProperties.WIND_GUST,
+              ObservedProperties.WIND_SPEED,
               ObservedProperties.WIND_DIRECTION,
               ObservedProperties.AIR_TEMPERATURE,
               ObservedProperties.HUMIDITY,
