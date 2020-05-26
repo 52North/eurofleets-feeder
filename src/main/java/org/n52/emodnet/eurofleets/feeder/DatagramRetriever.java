@@ -9,7 +9,7 @@ import org.apache.http.HttpHeaders;
 import org.n52.emodnet.eurofleets.feeder.datagram.Datagram;
 import org.n52.emodnet.eurofleets.feeder.datagram.DatagramParseException;
 import org.n52.emodnet.eurofleets.feeder.datagram.MeteorologyDatagram;
-import org.n52.emodnet.eurofleets.feeder.datagram.PositionDatagram;
+import org.n52.emodnet.eurofleets.feeder.datagram.NavigationDatagram;
 import org.n52.emodnet.eurofleets.feeder.datagram.ThermosalinityDatagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +39,13 @@ public class DatagramRetriever {
 
     @Autowired
     public DatagramRetriever(DatagramListener listener, Call.Factory httpClient,
-                             @Value("${feeder.retrieval.position.url}") URL positionURL,
-                             @Value("${feeder.retrieval.position.repeating:false}") boolean positionRepeating,
+                             @Value("${feeder.retrieval.navigation.url}") URL positionURL,
+                             @Value("${feeder.retrieval.navigation.repeating:false}") boolean positionRepeating,
                              @Value("${feeder.retrieval.meteorology.url}") URL meteorologyURL,
                              @Value("${feeder.retrieval.meteorology.repeating:false}") boolean meteorologyRepeating,
                              @Value("${feeder.retrieval.thermosalinity.url}") URL thermosalinityURL,
                              @Value("${feeder.retrieval.thermosalinity.repeating:false}") boolean thermosalinityRepeating) {
-        this.positionRetriever = createRetriever(PositionDatagram::new, positionURL, listener, httpClient, positionRepeating);
+        this.positionRetriever = createRetriever(NavigationDatagram::new, positionURL, listener, httpClient, positionRepeating);
         this.meteorologyRetriever = createRetriever(MeteorologyDatagram::new, meteorologyURL, listener, httpClient, meteorologyRepeating);
         this.thermosalinityRetriever = createRetriever(ThermosalinityDatagram::new, thermosalinityURL, listener, httpClient, thermosalinityRepeating);
 
@@ -57,7 +57,7 @@ public class DatagramRetriever {
                          : new DefaultRetriever(parser, url, listener, httpClient);
     }
 
-    @Scheduled(fixedDelayString = "${feeder.retrieval.position.schedule}")
+    @Scheduled(fixedDelayString = "${feeder.retrieval.navigation.schedule}")
     public void retrievePosition() {
         this.positionRetriever.retrieve();
     }

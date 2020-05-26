@@ -1,5 +1,9 @@
 package org.n52.emodnet.eurofleets.feeder.datagram;
 
+import org.locationtech.jts.geom.CoordinateXY;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
 
 import java.time.LocalDate;
@@ -13,14 +17,16 @@ import java.util.Map;
 import java.util.Set;
 
 public class Datagram {
-
+    private static final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
     private final String[] line;
     private final OffsetDateTime dateTime;
+    private final Point geometry;
     private final Map<ObservedProperty, Number> values;
 
     public Datagram(String value, ObservedProperty... observedProperties) throws DatagramParseException {
-        this.line = parseLine(value, observedProperties.length + 3);
+        this.line = parseLine(value, observedProperties.length + 5);
         //ignore split[0]
+
         LocalDate date = parseDate(line[1]);
         LocalTime time;
         try {
@@ -29,12 +35,18 @@ public class Datagram {
             throw new DatagramParseException("error parsing date", e);
         }
 
+        try {
+            double x = Double.parseDouble(line[3]);
+            double y = Double.parseDouble(line[4]);
+            this.geometry = geometryFactory.createPoint(new CoordinateXY(x, y));
+        } catch (NumberFormatException e) {
+            throw new DatagramParseException("error parsing coordinate", e);
+        }
+
         this.dateTime = date.atTime(time).atOffset(ZoneOffset.UTC);
         this.values = new HashMap<>();
-        for (
-                int i = 0;
-                i < observedProperties.length; i++) {
-            String stringValue = line[3 + i];
+        for (int i = 0; i < observedProperties.length; i++) {
+            String stringValue = line[5 + i];
             if (!stringValue.isEmpty()) {
                 values.put(observedProperties[i], Double.parseDouble(stringValue));
             }
@@ -90,6 +102,10 @@ public class Datagram {
 
     public boolean hasValue(ObservedProperty observedProperty) {
         return values.containsKey(observedProperty) && values.get(observedProperty) != null;
+    }
+
+    public Point getGeometry() {
+        return geometry;
     }
 
     private static String[] parseLine(String value, int expectedValues) throws DatagramParseException {

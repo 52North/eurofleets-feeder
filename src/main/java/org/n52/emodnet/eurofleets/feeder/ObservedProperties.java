@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ObservedProperties {
+    @Deprecated
     ObservedProperty LONGITUDE = new ObservedProperty("longitude", "longitude", "http://vocab.nerc.ac.uk/collection/P06/current/DEGE/");
     ObservedProperty PRESSURE = new ObservedProperty("pressure", "Atmospheric Pressure", "http://vocab.nerc.ac.uk/collection/P02/current/CAPH/");
     ObservedProperty WATER_TEMPERATURE = new ObservedProperty("water_temperature", "Water Temperature", "http://vocab.nerc.ac.uk/collection/P02/current/TEMP/");
@@ -15,6 +16,7 @@ public interface ObservedProperties {
     ObservedProperty CONDUCTIVITY = new ObservedProperty("conductivity", "Conductivity", "http://vocab.nerc.ac.uk/collection/P02/current/CNDC/");
     ObservedProperty DENSITY = new ObservedProperty("density", "Density (SIGMA-T)", "http://vocab.nerc.ac.uk/collection/P02/current/SIGT/");
     ObservedProperty SALINITY = new ObservedProperty("salinity", "Salinity", "http://vocab.nerc.ac.uk/collection/P02/current/PSAL/");
+    @Deprecated
     ObservedProperty LATITUDE = new ObservedProperty("latitude", "Latitude", "http://vocab.nerc.ac.uk/collection/P06/current/DEGN/");
     ObservedProperty HEADING = new ObservedProperty("heading", "Heading", "http://vocab.nerc.ac.uk/collection/P01/current/HDNGGP01/");
     ObservedProperty SPEED = new ObservedProperty("speed", "Speed", "http://vocab.nerc.ac.uk/collection/P01/current/APSAWM01/");
