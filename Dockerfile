@@ -1,5 +1,7 @@
 FROM adoptopenjdk/openjdk8:alpine-slim AS BUILDER
 
+RUN apk add --no-cache ca-certificates
+
 WORKDIR /app
 COPY .mvn ./.mvn
 COPY mvnw ./mvnw
