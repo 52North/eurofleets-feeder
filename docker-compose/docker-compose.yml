@@ -74,8 +74,7 @@ services:
       - database
 
   sos:
-    image: ${REGISTRY}eurofleets/sos:latest
-    build: ./sos
+    image: 52north/sos:5.1.0
     environment:
       SOS_DATASOURCE_TYPE: postgres
       SOS_DATASOURCE_HOST: database
