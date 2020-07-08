@@ -21,7 +21,7 @@ services:
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
-      FEEDER_RETRIEVAL_BASEURL: http://eurofleets.utm.csic.es/ws/getLast/GDC
+      FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/GDC
     depends_on:
       - sta
 
@@ -33,7 +33,7 @@ services:
       FEEDER_THING_ID: ES_SDG
       FEEDER_THING_NAME: R/V Sarmiento de Gamboa
       FEEDER_THING_DESCRIPTION: R/V Sarmiento de Gamboa
-      FEEDER_RETRIEVAL_BASEURL: http://eurofleets.utm.csic.es/ws/getLast/SDG
+      FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/SDG
     depends_on:
       - sta
 
@@ -45,7 +45,7 @@ services:
       FEEDER_THING_ID: ES_HES
       FEEDER_THING_NAME: R/V Hesperides
       FEEDER_THING_DESCRIPTION: R/V Hesperides
-      FEEDER_RETRIEVAL_BASEURL: http://eurofleets.utm.csic.es/ws/getLast/HES
+      FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/HES
     depends_on:
       - sta
 
