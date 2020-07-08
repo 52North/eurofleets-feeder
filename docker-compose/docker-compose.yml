@@ -50,7 +50,7 @@ services:
       - sta
 
   sta:
-    image: 52north/sensorweb-server-sta:2.0.1
+    image: 52north/sensorweb-server-sta:2.1.2
     environment:
       LOGGING_LEVEL_ROOT: WARN
       LOGGING_LEVEL_ORG_N52: INFO
