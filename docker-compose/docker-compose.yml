@@ -101,8 +101,8 @@ services:
       - postgres:/var/lib/postgresql/data
 
   dashboard:
-    image: ${REGISTRY}eurofleets/dashboard:1.0.4
-    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.4
+    image: ${REGISTRY}eurofleets/dashboard:1.0.5
+    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.5
     environment:
       STA_URL: *x-sta-url
       MQTT_HOSTNAME: ${EXTERNAL_HOST}
