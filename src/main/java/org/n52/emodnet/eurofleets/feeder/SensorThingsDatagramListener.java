@@ -1,5 +1,6 @@
 package org.n52.emodnet.eurofleets.feeder;
 
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.n52.emodnet.eurofleets.feeder.datagram.Datagram;
@@ -8,6 +9,7 @@ import org.n52.emodnet.eurofleets.feeder.model.Feature;
 import org.n52.emodnet.eurofleets.feeder.model.FeatureOfInterest;
 import org.n52.emodnet.eurofleets.feeder.model.Location;
 import org.n52.emodnet.eurofleets.feeder.model.Observation;
+import org.n52.emodnet.eurofleets.feeder.model.ObservedProperty;
 import org.n52.emodnet.eurofleets.feeder.model.Parameter;
 import org.n52.emodnet.eurofleets.feeder.model.Thing;
 import org.n52.emodnet.eurofleets.feeder.sta.SensorThingsApi;
@@ -22,12 +24,13 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 @Service
 public class SensorThingsDatagramListener implements DatagramListener {
     private static final Logger LOG = LoggerFactory.getLogger(SensorThingsDatagramListener.class);
     private final ThingRepository thingRepository;
-    private final Datastreams ds;
+    private final Datastreams datastreams;
     private final FeatureOfInterest featureOfInterest;
     private final SensorThingsApi sta;
     private final Lock lock = new ReentrantLock();
@@ -37,7 +40,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
     public SensorThingsDatagramListener(ThingRepository thingRepository, SensorThingsApi sta) {
         this.thingRepository = Objects.requireNonNull(thingRepository);
         this.sta = Objects.requireNonNull(sta);
-        this.ds = thingRepository.getDatastreams();
+        this.datastreams = thingRepository.getDatastreams();
         this.featureOfInterest = thingRepository.getFeatureOfInterest();
     }
 
@@ -70,12 +73,13 @@ public class SensorThingsDatagramListener implements DatagramListener {
     }
 
     @Override
-    public void onDatagram(Datagram dg) {
-
+    public void onDatagram(Datagram datagram) {
+        boolean includeLocation = false;
         lock.lock();
         try {
-            Point position = dg.getGeometry();
-            if (latestPoint == null || !position.equalsExact(latestPoint)) {
+            Point position = datagram.getGeometry();
+            includeLocation = latestPoint == null || !position.equalsExact(latestPoint);
+            if (includeLocation) {
                 latestPoint = position;
                 LOG.info("publishing location {}", latestPoint);
                 sta.create(createLocationUpdate(latestPoint));
@@ -83,10 +87,33 @@ public class SensorThingsDatagramListener implements DatagramListener {
         } finally {
             lock.unlock();
         }
-        dg.getObservedProperties().stream().filter(dg::hasValue)
-          .map(op -> createObservation(ds.get(op), dg.getDateTime(), dg.getGeometry(), dg.getValue(op)))
-          .peek(observation -> LOG.info("publishing observation {}", observation))
-          .forEach(sta::create);
+
+        Stream<Observation> observationStream = datagram.getObservedProperties().stream()
+                                                        .filter(datagram::hasValue)
+                                                        .map(observedProperty -> createObservation(datagram,
+                                                                                                   observedProperty));
+
+        Stream.concat(includeLocation ? createLocationObservations(datagram) : Stream.empty(), observationStream)
+              .peek(observation -> LOG.info("publishing observation {}", observation))
+              .forEach(sta::create);
+    }
+
+    private Observation createObservation(Datagram datagram, ObservedProperty observedProperty) {
+        Datastream datastream = datastreams.get(observedProperty);
+        Number value = datagram.getValue(observedProperty);
+        OffsetDateTime time = datagram.getDateTime();
+        return createObservation(datastream, time, datagram.getGeometry(), value);
+    }
+
+    private Stream<Observation> createLocationObservations(Datagram dg) {
+        Point geometry = dg.getGeometry();
+        OffsetDateTime time = dg.getDateTime();
+        Coordinate coordinate = geometry.getCoordinate();
+        Datastream lonDatastream = datastreams.get(ObservedProperties.LONGITUDE);
+        Datastream latDatastream = datastreams.get(ObservedProperties.LATITUDE);
+        Observation lon = createObservation(lonDatastream, time, geometry, coordinate.getX());
+        Observation lat = createObservation(latDatastream, time, geometry, coordinate.getY());
+        return Stream.of(lon, lat);
     }
 
 }

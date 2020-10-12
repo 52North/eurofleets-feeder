@@ -24,6 +24,8 @@ public interface ObservedProperties {
     ObservedProperty AIR_TEMPERATURE = new ObservedProperty("air_temperature", "Air temperature", "http://vocab.nerc.ac.uk/collection/P02/current/CDTA/");
     ObservedProperty HUMIDITY = new ObservedProperty("humidity", "Relative Humidity", "http://vocab.nerc.ac.uk/collection/P01/current/CHUMZZ01/");
     ObservedProperty SOLAR_RADIATION = new ObservedProperty("solar_radiation", "Solar Radiation", "http://vocab.nerc.ac.uk/collection/P02/current/CSLR/");
+    ObservedProperty LONGITUDE = new ObservedProperty("longitude", "Longitude", "http://vocab.nerc.ac.uk/collection/P01/current/ALONZZ01/");
+    ObservedProperty LATITUDE = new ObservedProperty("latitude", "Latitude", "http://vocab.nerc.ac.uk/collection/P01/current/ALATZZ01/");
 
     Map<ObservedProperty, UnitOfMeasurement> UNITS = ImmutableMap.<ObservedProperty, UnitOfMeasurement>builder()
                                                              .put(ObservedProperties.HEADING, Units.DEGREES)
@@ -42,6 +44,8 @@ public interface ObservedProperties {
                                                              .put(ObservedProperties.RAW_FLUOROMETRY, Units.VOLTS)
                                                              .put(ObservedProperties.CONDUCTIVITY, Units.SIEMENS_PER_METRE)
                                                              .put(ObservedProperties.DENSITY, Units.KILOGRAMS_PER_CUBIC_METRE)
+                                                             .put(ObservedProperties.LATITUDE, Units.DEGREES)
+                                                             .put(ObservedProperties.LONGITUDE, Units.DEGREES)
                                                              .build();
 
     Set<ObservedProperty> ALL = UNITS.keySet();
