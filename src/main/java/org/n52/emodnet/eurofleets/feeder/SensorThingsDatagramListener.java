@@ -31,7 +31,6 @@ public class SensorThingsDatagramListener implements DatagramListener {
     private static final Logger LOG = LoggerFactory.getLogger(SensorThingsDatagramListener.class);
     private final ThingRepository thingRepository;
     private final Datastreams datastreams;
-    private final FeatureOfInterest featureOfInterest;
     private final SensorThingsApi sta;
     private final Lock lock = new ReentrantLock();
     private Point latestPoint;
@@ -41,7 +40,6 @@ public class SensorThingsDatagramListener implements DatagramListener {
         this.thingRepository = Objects.requireNonNull(thingRepository);
         this.sta = Objects.requireNonNull(sta);
         this.datastreams = thingRepository.getDatastreams();
-        this.featureOfInterest = thingRepository.getFeatureOfInterest();
     }
 
     private Location createLocationUpdate(Geometry geometry) {
@@ -60,7 +58,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
     private Observation createObservation(Datastream datastream, OffsetDateTime time, Point geometry, Number result) {
         Observation observation = new Observation();
         observation.setDatastream(datastream);
-        observation.setFeatureOfInterest(featureOfInterest);
+        observation.setFeatureOfInterest(thingRepository.getFeatureOfInterest());
         observation.setParameters(Collections.singletonList(createLocationParameter(geometry)));
         observation.setPhenomenonTime(time);
         observation.setResultTime(time);
