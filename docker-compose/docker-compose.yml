@@ -101,7 +101,7 @@ services:
       - postgres:/var/lib/postgresql/data
 
   dashboard:
-    image: ${REGISTRY}eurofleets/dashboard:1.0.6
+    image: ${REGISTRY}eurofleets/dashboard:1.0.7
     build: https://github.com/52North/eurofleets-dashboard.git#v1.0.6
     environment:
       STA_URL: *x-sta-url
