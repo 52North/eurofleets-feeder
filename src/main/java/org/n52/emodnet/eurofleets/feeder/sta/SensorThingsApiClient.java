@@ -23,41 +23,41 @@ public class SensorThingsApiClient implements SensorThingsApi {
 
     @Override
     public void create(Thing thing) {
-        http.create(thing);
+        this.http.create(thing);
     }
 
     @Override
     public void create(Sensor sensor) {
-        http.create(sensor);
+        this.http.create(sensor);
     }
 
     @Override
     public void create(Datastream datastream) {
-        http.create(datastream);
+        this.http.create(datastream);
     }
 
     @Override
     public void create(ObservedProperty observedProperty) {
-        http.create(observedProperty);
+        this.http.create(observedProperty);
     }
 
     @Override
     public void create(FeatureOfInterest featureOfInterest) {
-        http.create(featureOfInterest);
+        this.http.create(featureOfInterest);
     }
 
     @Override
     public void update(String id, Thing thing) {
-        http.update(id, thing);
+        this.http.update(id, thing);
     }
 
     @Override
     public void create(Location location) {
-        mqtt.create(location);
+        this.mqtt.create(location);
     }
 
     @Override
     public void create(Observation observation) {
-        mqtt.create(observation);
+        this.mqtt.create(observation);
     }
 }

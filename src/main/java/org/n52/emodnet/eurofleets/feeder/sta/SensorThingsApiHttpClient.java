@@ -1,5 +1,6 @@
 package org.n52.emodnet.eurofleets.feeder.sta;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import okhttp3.ResponseBody;
 import org.apache.http.HttpStatus;
@@ -30,9 +31,12 @@ public class SensorThingsApiHttpClient {
     private final RetrofitSensorThingsAPI api;
     private final Retrier retrier;
 
+    private final ObjectMapper mapper;
+
     @Autowired
-    public SensorThingsApiHttpClient(RetrofitSensorThingsAPI api) {
+    public SensorThingsApiHttpClient(RetrofitSensorThingsAPI api, ObjectMapper mapper) {
         this.api = Objects.requireNonNull(api);
+        this.mapper = Objects.requireNonNull(mapper);
         this.retrier = new Retrier.Builder()
                                .withWaitStrategy(getWaitStrategy())
                                .withStopStrategy(getStopStrategy())
@@ -69,12 +73,12 @@ public class SensorThingsApiHttpClient {
     }
 
     public void create(FeatureOfInterest featureOfInterest) {
-        LOG.info("creating feature of interest {}", featureOfInterest);
+        LOG.info("creating feature of interest: {}", featureOfInterest);
         retryingExecute(() -> {
-            if (api.getFeature(featureOfInterest.getId()).execute().isSuccessful()) {
+            if (this.api.getFeature(featureOfInterest.getId()).execute().isSuccessful()) {
                 LOG.info("{} does already exist", featureOfInterest);
             } else {
-                Response<Void> response = api.createFeature(featureOfInterest).execute();
+                Response<Void> response = this.api.createFeature(featureOfInterest).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(featureOfInterest, response);
                 }
@@ -85,7 +89,7 @@ public class SensorThingsApiHttpClient {
     public void update(String id, Thing thing) {
         LOG.info("updating thing {}", thing);
         retryingExecute(() -> {
-            Response<Void> response = api.updateThing(id, thing).execute();
+            Response<Void> response = this.api.updateThing(id, thing).execute();
             if (!response.isSuccessful()) {
                 String body = null;
                 ResponseBody errorBody = response.errorBody();
@@ -101,10 +105,10 @@ public class SensorThingsApiHttpClient {
     public void create(Thing thing) {
         LOG.info("creating thing {}", thing);
         retryingExecute(() -> {
-            if (api.getThing(thing.getId()).execute().isSuccessful()) {
+            if (this.api.getThing(thing.getId()).execute().isSuccessful()) {
                 LOG.info("{} does already exist", thing);
             } else {
-                Response<Void> response = api.createThing(thing).execute();
+                Response<Void> response = this.api.createThing(thing).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(thing, response);
                 }
@@ -115,10 +119,10 @@ public class SensorThingsApiHttpClient {
     public void create(ObservedProperty observedProperty) {
         LOG.info("creating observed property {}", observedProperty);
         retryingExecute(() -> {
-            if (api.getObservedProperty(observedProperty.getId()).execute().isSuccessful()) {
+            if (this.api.getObservedProperty(observedProperty.getId()).execute().isSuccessful()) {
                 LOG.info("{} does already exist", observedProperty);
             } else {
-                Response<Void> response = api.createObservedProperty(observedProperty).execute();
+                Response<Void> response = this.api.createObservedProperty(observedProperty).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(observedProperty, response);
                 }
@@ -129,10 +133,10 @@ public class SensorThingsApiHttpClient {
     public void create(Sensor sensor) {
         LOG.info("creating sensor {}", sensor);
         retryingExecute(() -> {
-            if (api.getSensor(sensor.getId()).execute().isSuccessful()) {
+            if (this.api.getSensor(sensor.getId()).execute().isSuccessful()) {
                 LOG.info("{} does already exist", sensor);
             } else {
-                Response<Void> response = api.createSensor(sensor).execute();
+                Response<Void> response = this.api.createSensor(sensor).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(sensor, response);
                 }
@@ -143,10 +147,10 @@ public class SensorThingsApiHttpClient {
     public void create(Datastream datastream) {
         LOG.info("creating datastream {}", datastream);
         retryingExecute(() -> {
-            if (api.getDataStream(datastream.getId()).execute().isSuccessful()) {
+            if (this.api.getDataStream(datastream.getId()).execute().isSuccessful()) {
                 LOG.info("{} does already exist", datastream);
             } else {
-                Response<Void> response = api.createDataStream(datastream).execute();
+                Response<Void> response = this.api.createDataStream(datastream).execute();
                 if (!response.isSuccessful() && response.code() != HttpStatus.SC_CONFLICT) {
                     checkForConflict(datastream, response);
                 }
@@ -170,7 +174,7 @@ public class SensorThingsApiHttpClient {
 
     private void retryingExecute(ThrowingRunnable<Exception> runnable) {
         try {
-            retrier.execute(runnable);
+            this.retrier.execute(runnable);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } catch (Exception e) {

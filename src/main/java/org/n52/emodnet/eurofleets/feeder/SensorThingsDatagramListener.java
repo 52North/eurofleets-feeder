@@ -58,7 +58,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
     private Observation createObservation(Datastream datastream, OffsetDateTime time, Point geometry, Number result) {
         Observation observation = new Observation();
         observation.setDatastream(datastream);
-        observation.setFeatureOfInterest(thingRepository.getFeatureOfInterest());
+        observation.setFeatureOfInterest(this.thingRepository.getFeatureOfInterest());
         observation.setParameters(Collections.singletonList(createLocationParameter(geometry)));
         observation.setPhenomenonTime(time);
         observation.setResultTime(time);
@@ -73,17 +73,17 @@ public class SensorThingsDatagramListener implements DatagramListener {
     @Override
     public void onDatagram(Datagram datagram) {
         boolean includeLocation = false;
-        lock.lock();
+        this.lock.lock();
         try {
             Point position = datagram.getGeometry();
-            includeLocation = latestPoint == null || !position.equalsExact(latestPoint);
+            includeLocation = this.latestPoint == null || !position.equalsExact(this.latestPoint);
             if (includeLocation) {
-                latestPoint = position;
-                LOG.info("publishing location {}", latestPoint);
-                sta.create(createLocationUpdate(latestPoint));
+                this.latestPoint = position;
+                LOG.info("publishing location {}", this.latestPoint);
+                this.sta.create(createLocationUpdate(this.latestPoint));
             }
         } finally {
-            lock.unlock();
+            this.lock.unlock();
         }
 
         Stream<Observation> observationStream = datagram.getObservedProperties().stream()
@@ -93,11 +93,11 @@ public class SensorThingsDatagramListener implements DatagramListener {
 
         Stream.concat(includeLocation ? createLocationObservations(datagram) : Stream.empty(), observationStream)
               .peek(observation -> LOG.info("publishing observation {}", observation))
-              .forEach(sta::create);
+              .forEach(this.sta::create);
     }
 
     private Observation createObservation(Datagram datagram, ObservedProperty observedProperty) {
-        Datastream datastream = datastreams.get(observedProperty);
+        Datastream datastream = this.datastreams.get(observedProperty);
         Number value = datagram.getValue(observedProperty);
         OffsetDateTime time = datagram.getDateTime();
         return createObservation(datastream, time, datagram.getGeometry(), value);
@@ -107,8 +107,8 @@ public class SensorThingsDatagramListener implements DatagramListener {
         Point geometry = dg.getGeometry();
         OffsetDateTime time = dg.getDateTime();
         Coordinate coordinate = geometry.getCoordinate();
-        Datastream lonDatastream = datastreams.get(ObservedProperties.LONGITUDE);
-        Datastream latDatastream = datastreams.get(ObservedProperties.LATITUDE);
+        Datastream lonDatastream = this.datastreams.get(ObservedProperties.LONGITUDE);
+        Datastream latDatastream = this.datastreams.get(ObservedProperties.LATITUDE);
         Observation lon = createObservation(lonDatastream, time, geometry, coordinate.getX());
         Observation lat = createObservation(latDatastream, time, geometry, coordinate.getY());
         return Stream.of(lon, lat);

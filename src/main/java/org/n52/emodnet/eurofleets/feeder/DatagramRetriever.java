@@ -79,17 +79,16 @@ public class DatagramRetriever {
     private static class RepeatingRetriever implements Callback, Retriever {
         private static final Pattern DATE_TIME_PATTERN = Pattern.compile(",[\\d]{8},[\\d]{6},");
         private static final ZoneId UTC = ZoneId.of("UTC");
-        private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
-                                                                   .appendLiteral(",")
-                                                                   .appendValue(ChronoField.YEAR, 4)
-                                                                   .appendValue(ChronoField.MONTH_OF_YEAR, 2)
-                                                                   .appendValue(ChronoField.DAY_OF_MONTH, 2)
-                                                                   .appendLiteral(",")
-                                                                   .appendValue(ChronoField.HOUR_OF_DAY, 2)
-                                                                   .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
-                                                                   .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-                                                                   .appendLiteral(",")
-                                                                   .toFormatter();
+        private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder().appendLiteral(",")
+                                                                                         .appendValue(ChronoField.YEAR, 4)
+                                                                                         .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+                                                                                         .appendValue(ChronoField.DAY_OF_MONTH, 2)
+                                                                                         .appendLiteral(",")
+                                                                                         .appendValue(ChronoField.HOUR_OF_DAY, 2)
+                                                                                         .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+                                                                                         .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+                                                                                         .appendLiteral(",")
+                                                                                         .toFormatter();
         private final DatagramParser parser;
         private final DatagramListener listener;
         private String[] stringBody;
@@ -98,18 +97,18 @@ public class DatagramRetriever {
                                    Call.Factory callFactory) {
             this.parser = Objects.requireNonNull(parser);
             this.listener = Objects.requireNonNull(listener);
-            callFactory.newCall(new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, ACCEPT_HEADER)
-                                                     .build()).enqueue(this);
+            Request request = new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, ACCEPT_HEADER).build();
+            callFactory.newCall(request).enqueue(this);
         }
 
         @Override
         public void retrieve() {
-            if (stringBody != null) {
+            if (this.stringBody != null) {
                 OffsetDateTime now = OffsetDateTime.now(UTC);
                 try {
-                    String line = DATE_TIME_PATTERN.matcher(stringBody[(int) (now.toEpochSecond() % stringBody.length)])
+                    String line = DATE_TIME_PATTERN.matcher(this.stringBody[(int) (now.toEpochSecond() % this.stringBody.length)])
                                                    .replaceFirst(FORMATTER.format(now));
-                    listener.onDatagram(parser.parse(line));
+                    this.listener.onDatagram(this.parser.parse(line));
                 } catch (DatagramParseException e) {
                     LOG.error("could not parse datagram", e);
                 }
@@ -125,11 +124,11 @@ public class DatagramRetriever {
         @Override
         public synchronized void onResponse(Call call, Response response) throws IOException {
             if (response.code() == 200) {
-                final ResponseBody body = response.body();
+                ResponseBody body = response.body();
                 if (body == null) {
                     LOG.error("call to {} didn't return a response body", call.request().url());
                 } else {
-                    stringBody = body.string().split("\n");
+                    this.stringBody = body.string().split("\n");
                 }
             }
         }
@@ -152,11 +151,11 @@ public class DatagramRetriever {
 
         @Override
         public void retrieve() {
-            callFactory.newCall(createRequest()).enqueue(this);
+            this.callFactory.newCall(createRequest()).enqueue(this);
         }
 
         private Request createRequest() {
-            return new Request.Builder().get().url(url).header(HttpHeaders.ACCEPT, ACCEPT_HEADER).build();
+            return new Request.Builder().get().url(this.url).header(HttpHeaders.ACCEPT, ACCEPT_HEADER).build();
         }
 
         @Override
@@ -167,20 +166,20 @@ public class DatagramRetriever {
         @Override
         public synchronized void onResponse(Call call, Response response) throws IOException {
             if (response.code() == 200) {
-                final ResponseBody body = response.body();
+                ResponseBody body = response.body();
 
                 if (body == null) {
                     LOG.error("call to {} didn't return a response body", call.request().url());
                 } else {
                     try {
 
-                        Datagram datagram = parser.parse(body.string());
-                        if (last == null || !last.getDateTime().isEqual(datagram.getDateTime())) {
-                            listener.onDatagram(datagram);
+                        Datagram datagram = this.parser.parse(body.string());
+                        if (this.last == null || !this.last.getDateTime().isEqual(datagram.getDateTime())) {
+                            this.listener.onDatagram(datagram);
                         } else {
-                            LOG.debug("No new datagram since {}", last.getDateTime());
+                            LOG.debug("No new datagram since {}", this.last.getDateTime());
                         }
-                        last = datagram;
+                        this.last = datagram;
                     } catch (DatagramParseException e) {
                         LOG.error("could not parse datagram", e);
                     }

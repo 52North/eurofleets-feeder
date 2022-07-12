@@ -15,4 +15,6 @@ public interface Units {
     UnitOfMeasurement VOLTS = new UnitOfMeasurement("Volts", "V", "http://vocab.nerc.ac.uk/collection/P06/current/UVLT/");
     UnitOfMeasurement SIEMENS_PER_METRE = new UnitOfMeasurement("Siemens per metre", "S/m", "http://vocab.nerc.ac.uk/collection/P06/current/UECA/");
     UnitOfMeasurement KILOGRAMS_PER_CUBIC_METRE = new UnitOfMeasurement("Kilograms per cubic metre", "kg/m^3", "http://vocab.nerc.ac.uk/collection/P06/current/UKMC/");
+
+    UnitOfMeasurement INAPPLICABLE = new UnitOfMeasurement("inapplicable", "", "http://www.opengis.net/def/nil/OGC/0/inapplicable");
 }

@@ -16,7 +16,7 @@ public class ThingConfiguration {
     private String metadataType = "http://www.opengis.net/doc/IS/SensorML/2.0";
 
     public String getMetadataType() {
-        return metadataType;
+        return this.metadataType;
     }
 
     public void setMetadataType(String metadataType) {
@@ -24,7 +24,7 @@ public class ThingConfiguration {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -32,7 +32,7 @@ public class ThingConfiguration {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -40,7 +40,7 @@ public class ThingConfiguration {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
@@ -48,7 +48,7 @@ public class ThingConfiguration {
     }
 
     public double[] getObservedArea() {
-        return observedArea;
+        return this.observedArea;
     }
 
     public void setObservedArea(double[] observedArea) {
@@ -56,7 +56,7 @@ public class ThingConfiguration {
     }
 
     public URL getMetadata() {
-        return metadata;
+        return this.metadata;
     }
 
     public void setMetadata(URL metadata) {

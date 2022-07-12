@@ -27,17 +27,17 @@ public class Datagram {
         this.line = parseLine(value, observedProperties.length + 5);
         //ignore split[0]
 
-        LocalDate date = parseDate(line[1]);
+        LocalDate date = parseDate(this.line[1]);
         LocalTime time;
         try {
-            time = LocalTime.parse(line[2], DateTimeFormatters.HHMMSS);
+            time = LocalTime.parse(this.line[2], DateTimeFormatters.HHMMSS);
         } catch (DateTimeParseException e) {
             throw new DatagramParseException("error parsing date", e);
         }
 
         try {
-            double x = Double.parseDouble(line[3]);
-            double y = Double.parseDouble(line[4]);
+            double x = Double.parseDouble(this.line[3]);
+            double y = Double.parseDouble(this.line[4]);
             this.geometry = geometryFactory.createPoint(new CoordinateXY(x, y));
         } catch (NumberFormatException e) {
             throw new DatagramParseException("error parsing coordinate", e);
@@ -46,9 +46,9 @@ public class Datagram {
         this.dateTime = date.atTime(time).atOffset(ZoneOffset.UTC);
         this.values = new HashMap<>();
         for (int i = 0; i < observedProperties.length; i++) {
-            String stringValue = line[5 + i];
+            String stringValue = this.line[5 + i];
             if (!stringValue.isEmpty()) {
-                values.put(observedProperties[i], Double.parseDouble(stringValue));
+                this.values.put(observedProperties[i], Double.parseDouble(stringValue));
             }
         }
 
@@ -93,19 +93,19 @@ public class Datagram {
     }
 
     public Set<ObservedProperty> getObservedProperties() {
-        return Collections.unmodifiableSet(values.keySet());
+        return Collections.unmodifiableSet(this.values.keySet());
     }
 
     public Number getValue(ObservedProperty observedProperty) {
-        return values.get(observedProperty);
+        return this.values.get(observedProperty);
     }
 
     public boolean hasValue(ObservedProperty observedProperty) {
-        return values.containsKey(observedProperty) && values.get(observedProperty) != null;
+        return this.values.containsKey(observedProperty) && this.values.get(observedProperty) != null;
     }
 
     public Point getGeometry() {
-        return geometry;
+        return this.geometry;
     }
 
     private static String[] parseLine(String value, int expectedValues) throws DatagramParseException {
@@ -123,7 +123,8 @@ public class Datagram {
         return this.dateTime;
     }
 
+    @Override
     public String toString() {
-        return String.join(",", line);
+        return String.join(",", this.line);
     }
 }

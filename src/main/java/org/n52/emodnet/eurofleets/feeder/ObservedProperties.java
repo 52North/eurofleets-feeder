@@ -26,27 +26,27 @@ public interface ObservedProperties {
     ObservedProperty SOLAR_RADIATION = new ObservedProperty("solar_radiation", "Solar Radiation", "http://vocab.nerc.ac.uk/collection/P02/current/CSLR/");
     ObservedProperty LONGITUDE = new ObservedProperty("longitude", "Longitude", "http://vocab.nerc.ac.uk/collection/P01/current/ALONZZ01/");
     ObservedProperty LATITUDE = new ObservedProperty("latitude", "Latitude", "http://vocab.nerc.ac.uk/collection/P01/current/ALATZZ01/");
-
+    ObservedProperty EVENTS = new ObservedProperty("events", "Events", "http://www.opengis.net/sensorml/2.0#Event");
     Map<ObservedProperty, UnitOfMeasurement> UNITS = ImmutableMap.<ObservedProperty, UnitOfMeasurement>builder()
-                                                             .put(ObservedProperties.HEADING, Units.DEGREES)
-                                                             .put(ObservedProperties.SPEED, Units.KNOTS)
-                                                             .put(ObservedProperties.DEPTH, Units.METRES)
-                                                             .put(ObservedProperties.SPEED_OVER_GROUND, Units.KNOTS)
-                                                             .put(ObservedProperties.COURSE_OVER_GROUND, Units.DEGREES)
-                                                             .put(ObservedProperties.WIND_SPEED, Units.METRES_PER_SECOND)
-                                                             .put(ObservedProperties.WIND_DIRECTION, Units.DEGREES)
-                                                             .put(ObservedProperties.AIR_TEMPERATURE, Units.DEGREES_CELSIUS)
-                                                             .put(ObservedProperties.HUMIDITY, Units.PERCENT)
-                                                             .put(ObservedProperties.SOLAR_RADIATION, Units.WATTS_PER_SQUARE_METRE)
-                                                             .put(ObservedProperties.PRESSURE, Units.HECTOPASCALS)
-                                                             .put(ObservedProperties.WATER_TEMPERATURE, Units.DEGREES_CELSIUS)
-                                                             .put(ObservedProperties.SALINITY, Units.PSU)
-                                                             .put(ObservedProperties.RAW_FLUOROMETRY, Units.VOLTS)
-                                                             .put(ObservedProperties.CONDUCTIVITY, Units.SIEMENS_PER_METRE)
-                                                             .put(ObservedProperties.DENSITY, Units.KILOGRAMS_PER_CUBIC_METRE)
-                                                             .put(ObservedProperties.LATITUDE, Units.DEGREES)
-                                                             .put(ObservedProperties.LONGITUDE, Units.DEGREES)
-                                                             .build();
+                                                                 .put(HEADING, Units.DEGREES).put(SPEED, Units.KNOTS)
+                                                                 .put(DEPTH, Units.METRES)
+                                                                 .put(SPEED_OVER_GROUND, Units.KNOTS)
+                                                                 .put(COURSE_OVER_GROUND, Units.DEGREES)
+                                                                 .put(WIND_SPEED, Units.METRES_PER_SECOND)
+                                                                 .put(WIND_DIRECTION, Units.DEGREES)
+                                                                 .put(AIR_TEMPERATURE, Units.DEGREES_CELSIUS)
+                                                                 .put(HUMIDITY, Units.PERCENT)
+                                                                 .put(SOLAR_RADIATION, Units.WATTS_PER_SQUARE_METRE)
+                                                                 .put(PRESSURE, Units.HECTOPASCALS)
+                                                                 .put(WATER_TEMPERATURE, Units.DEGREES_CELSIUS)
+                                                                 .put(SALINITY, Units.PSU)
+                                                                 .put(RAW_FLUOROMETRY, Units.VOLTS)
+                                                                 .put(CONDUCTIVITY, Units.SIEMENS_PER_METRE)
+                                                                 .put(DENSITY, Units.KILOGRAMS_PER_CUBIC_METRE)
+                                                                 .put(LATITUDE, Units.DEGREES)
+                                                                 .put(LONGITUDE, Units.DEGREES)
+                                                                 .put(EVENTS, Units.INAPPLICABLE)
+                                                                 .build();
 
     Set<ObservedProperty> ALL = UNITS.keySet();
 

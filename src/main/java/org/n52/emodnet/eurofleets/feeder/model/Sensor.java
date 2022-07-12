@@ -12,7 +12,7 @@ public class Sensor extends EncodedEntity {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonGetter(JsonConstants.METADATA)
     public String getMetadata() {
-        return metadata;
+        return this.metadata;
     }
 
     @JsonSetter(JsonConstants.METADATA)

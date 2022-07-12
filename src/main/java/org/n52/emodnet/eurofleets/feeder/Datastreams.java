@@ -20,11 +20,11 @@ public class Datastreams {
     }
 
     public Collection<Datastream> all() {
-        return Collections.unmodifiableCollection(datastreams.values());
+        return Collections.unmodifiableCollection(this.datastreams.values());
     }
 
     public Datastream get(ObservedProperty observedProperty) {
-        return datastreams.get(observedProperty);
+        return this.datastreams.get(observedProperty);
     }
 
 }

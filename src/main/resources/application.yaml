@@ -4,12 +4,12 @@ trace: false
 feeder:
   sta:
     http:
-      #url: http://sta:8082/sta/
-      url: http://docker.srv.int.52north.org:8082/sta/v2/
+      url: http://sta:8082/sta/
+      #url: http://docker.srv.int.52north.org:8082/sta/v2/
     mqtt:
       maxInflight: 1000
-      #url: tcp://sta:1883
-      url: tcp://docker.srv.int.52north.org:8083
+      url: tcp://sta:1883
+      #url: tcp://docker.srv.int.52north.org:8083
       password: null
       username: null
   retrieval:

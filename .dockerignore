@@ -1,6 +1,9 @@
 target/
 Dockerfile
+docker-compose/
 docker-compose.yml
 *.iml
-.mvn/wrapper/maven-wrapper.jar
 sos/
+.idea/
+.mvn/wrapper/maven-wrapper.jar
+.git/

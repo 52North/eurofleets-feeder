@@ -41,7 +41,7 @@ public class JacksonConfiguration {
                                  .registerModule(jdk8Module())
                                  .registerModule(javaTimeModule())
                                  .registerModule(jtsModule)
-                                 .configure(SerializationFeature.INDENT_OUTPUT, true)
+                                 .configure(SerializationFeature.INDENT_OUTPUT, false)
                                  .configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false)
                                  .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                                  .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)

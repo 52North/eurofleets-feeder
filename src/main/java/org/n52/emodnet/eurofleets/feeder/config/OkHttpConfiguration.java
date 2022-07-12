@@ -4,12 +4,14 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okio.Buffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
@@ -29,11 +31,11 @@ public class OkHttpConfiguration {
     private static class LoggingInterceptor implements Interceptor {
         private final Logger log;
 
-        public LoggingInterceptor(Logger log) {
+        LoggingInterceptor(Logger log) {
             this.log = Objects.requireNonNull(log);
         }
 
-        public LoggingInterceptor() {
+        LoggingInterceptor() {
             this(LoggerFactory.getLogger("okhttp3"));
         }
 
@@ -43,19 +45,46 @@ public class OkHttpConfiguration {
             Request request = chain.request();
             Response response = chain.proceed(request);
             Instant after = Instant.now();
+            String body = null;
+            if (request.body() != null) {
+                if (!request.body().isOneShot()) {
+                    Buffer sink = new Buffer();
+                    request.body().writeTo(sink);
+                    body = new String(sink.readByteArray(), StandardCharsets.UTF_8);
+                }
+            }
 
+            Duration duration = Duration.between(before, after);
             if (response.isSuccessful()) {
-                log.info("{} {}: {} {}",
-                         request.method(),
-                         request.url(),
-                         response.code(),
-                         Duration.between(before, after));
+                if (body != null && !body.isEmpty()) {
+                    this.log.info("{} {} {}: {} {}",
+                                  request.method(),
+                                  body,
+                                  request.url(),
+                                  response.code(),
+                                  duration);
+                } else {
+                    this.log.info("{} {}: {} {}",
+                                  request.method(),
+                                  request.url(),
+                                  response.code(),
+                                  duration);
+                }
             } else {
-                log.warn("{} {}: {} {}",
-                         request.method(),
-                         request.url(),
-                         response.code(),
-                         Duration.between(before, after));
+                if (body != null && !body.isEmpty()) {
+                    this.log.warn("{} {} {}: {} {}",
+                                  request.method(),
+                                  body,
+                                  request.url(),
+                                  response.code(),
+                                  duration);
+                } else {
+                    this.log.warn("{} {}: {} {}",
+                                  request.method(),
+                                  request.url(),
+                                  response.code(),
+                                  duration);
+                }
             }
             return response;
         }

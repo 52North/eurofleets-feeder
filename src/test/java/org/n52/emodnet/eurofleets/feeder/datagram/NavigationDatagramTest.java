@@ -18,12 +18,12 @@ class NavigationDatagramTest {
 
     @Test
     public void testParsePsd() throws DatagramParseException {
-        final NavigationDatagram parse = new NavigationDatagram("$PSDGPOS,20160524,122542,-003.871477,35.664951,112.5,7.5,1366.2,112.03,7.5");
+        NavigationDatagram parse = new NavigationDatagram("$PSDGPOS,20160524,122542,-003.871477,35.664951,112.5,7.5,1366.2,112.03,7.5");
 
         assertThat(parse.getDateTime(), is(OffsetDateTime
                                                    .of(2016, 5, 24, 12, 25, 42, 0, ZoneOffset.UTC)));
 
-        assertThat(parse.getGeometry(), is(geometryFactory
+        assertThat(parse.getGeometry(), is(this.geometryFactory
                                                    .createPoint(new CoordinateXY(-3.871477, 35.664951))));
 
         assertThat(parse.getValue(ObservedProperties.HEADING), is(112.5));
@@ -36,12 +36,12 @@ class NavigationDatagramTest {
 
     @Test
     public void testParseBel() throws DatagramParseException {
-        final NavigationDatagram parse = new NavigationDatagram("$BELPOS,200312,071900,3.198552,51.335977,211.10001,,8.9,,0.041");
+        NavigationDatagram parse = new NavigationDatagram("$BELPOS,200312,071900,3.198552,51.335977,211.10001,,8.9,,0.041");
 
         assertThat(parse.getDateTime(), is(OffsetDateTime
                                                    .of(2020, 3, 12, 7, 19, 0, 0, ZoneOffset.UTC)));
 
-        assertThat(parse.getGeometry(), is(geometryFactory
+        assertThat(parse.getGeometry(), is(this.geometryFactory
                                                    .createPoint(new CoordinateXY(3.198552, 51.335977))));
 
         assertThat(parse.getValue(ObservedProperties.HEADING), is(211.10001));
@@ -54,8 +54,12 @@ class NavigationDatagramTest {
 
     @Test
     public void testNew() throws DatagramParseException {
-        final NavigationDatagram parse = new NavigationDatagram("$HESNAV,20200416,211444,-15.2985287,27.4632204,353.30,,,359.04,3.40");
-        assertThat(parse.getGeometry(), is(geometryFactory.createPoint(new CoordinateXY(-15.2985287, 27.4632204))));
-
+        NavigationDatagram parse = new NavigationDatagram("$HESNAV,20200416,211444,-15.2985287,27.4632204,353.30,,,359.04,3.40");
+        assertThat(parse.getGeometry(), is(this.geometryFactory.createPoint(new CoordinateXY(-15.2985287, 27.4632204))));
+    }
+    @Test
+    public void testEmpty() throws DatagramParseException {
+        NavigationDatagram parse = new NavigationDatagram("$HESNAV,20200416,211444,-15.2985287,27.4632204,,,,,");
+        assertThat(parse.getGeometry(), is(this.geometryFactory.createPoint(new CoordinateXY(-15.2985287, 27.4632204))));
     }
 }
