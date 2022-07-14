@@ -50,7 +50,9 @@ services:
       - sta
 
   sta:
-    image: 52north/sensorweb-server-sta:v3.1.0
+    #image: 52north/sensorweb-server-sta:v3.1.0
+    image: 52north/sensorweb-server-sta:5448d9053c66e185bf867da845f3469210a8a60e
+    build: https://github.com/52North/sensorweb-server-sta.git#5448d9053c66e185bf867da845f3469210a8a60e
     environment:
       LOGGING_LEVEL_ROOT: WARN
       LOGGING_LEVEL_ORG_N52: INFO
