@@ -11,43 +11,40 @@ x-feeder-environment: &x-feeder-environment
   FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE: ${FEEDER_RETRIEVAL_NAVIGATION_SCHEDULE}
   FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE: ${FEEDER_RETRIEVAL_METEOROLOGY_SCHEDULE}
   FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE: ${FEEDER_RETRIEVAL_THERMOSALINITY_SCHEDULE}
+x-feeder-service: &x-feeder-service
+  image: ${REGISTRY}eurofleets/feeder:latest
+  build: https://github.com/52North/eurofleets-feeder.git
+  restart: on-failure
+  depends_on:
+    - sta
 
 services:
   feeder-gdc:
-    image: ${REGISTRY}eurofleets/feeder:latest
-    build: https://github.com/52North/eurofleets-feeder.git
+    <<: *x-feeder-service
     environment:
       <<: *x-feeder-environment
       FEEDER_THING_ID: ES_GDC
       FEEDER_THING_NAME: R/V García del Cid
       FEEDER_THING_DESCRIPTION: R/V García del Cid
       FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/GDC
-    depends_on:
-      - sta
 
   feeder-sdg:
-    image: ${REGISTRY}eurofleets/feeder:latest
-    build: https://github.com/52North/eurofleets-feeder.git
+    <<: *x-feeder-service
     environment:
       <<: *x-feeder-environment
       FEEDER_THING_ID: ES_SDG
       FEEDER_THING_NAME: R/V Sarmiento de Gamboa
       FEEDER_THING_DESCRIPTION: R/V Sarmiento de Gamboa
       FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/SDG
-    depends_on:
-      - sta
 
   feeder-hes:
-    image: ${REGISTRY}eurofleets/feeder:latest
-    build: https://github.com/52North/eurofleets-feeder.git
+    <<: *x-feeder-service
     environment:
       <<: *x-feeder-environment
       FEEDER_THING_ID: ES_HES
       FEEDER_THING_NAME: R/V Hesperides
       FEEDER_THING_DESCRIPTION: R/V Hesperides
       FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/HES
-    depends_on:
-      - sta
 
   sta:
     #image: 52north/sensorweb-server-sta:v3.1.0
