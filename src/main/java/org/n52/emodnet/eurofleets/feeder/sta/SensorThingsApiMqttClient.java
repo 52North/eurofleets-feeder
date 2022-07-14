@@ -58,7 +58,7 @@ public class SensorThingsApiMqttClient {
 
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            LOG.info("Published message for topic {}: {}", this.topic, this.writable);
+            LOG.debug("Published message for topic {}: {}", this.topic, this.writable);
         }
 
         @Override

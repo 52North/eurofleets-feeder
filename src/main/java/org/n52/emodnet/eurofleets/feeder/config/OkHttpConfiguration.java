@@ -57,18 +57,18 @@ public class OkHttpConfiguration {
             Duration duration = Duration.between(before, after);
             if (response.isSuccessful()) {
                 if (body != null && !body.isEmpty()) {
-                    this.log.info("{} {} {}: {} {}",
-                                  request.method(),
-                                  body,
-                                  request.url(),
-                                  response.code(),
-                                  duration);
+                    this.log.debug("{} {} {}: {} {}",
+                                   request.method(),
+                                   body,
+                                   request.url(),
+                                   response.code(),
+                                   duration);
                 } else {
-                    this.log.info("{} {}: {} {}",
-                                  request.method(),
-                                  request.url(),
-                                  response.code(),
-                                  duration);
+                    this.log.debug("{} {}: {} {}",
+                                   request.method(),
+                                   request.url(),
+                                   response.code(),
+                                   duration);
                 }
             } else {
                 if (body != null && !body.isEmpty()) {

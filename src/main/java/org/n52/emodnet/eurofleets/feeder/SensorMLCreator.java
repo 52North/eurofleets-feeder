@@ -78,12 +78,12 @@ public class SensorMLCreator {
     }
 
     private static SweQuantity createQuantity(ObservedProperty op) {
-        final SweQuantity ioValue = new SweQuantity();
+        SweQuantity ioValue = new SweQuantity();
         ioValue.setLabel(op.getName());
         ioValue.setDefinition(op.getDefinition());
         ioValue.setDescription(op.getDescription());
         ioValue.setName(op.getId());
-        final UnitOfMeasurement unitOfMeasurement = ObservedProperties.UNITS.get(op);
+        UnitOfMeasurement unitOfMeasurement = ObservedProperties.UNITS.get(op);
         ioValue.setUom(new UoM(unitOfMeasurement.getName())
                                .setUom(unitOfMeasurement.getSymbol())
                                .setLink(unitOfMeasurement.getDefinition()));

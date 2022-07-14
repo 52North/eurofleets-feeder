@@ -79,7 +79,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
             includeLocation = this.latestPoint == null || !position.equalsExact(this.latestPoint);
             if (includeLocation) {
                 this.latestPoint = position;
-                LOG.info("publishing location {}", this.latestPoint);
+                LOG.debug("publishing location {}", this.latestPoint);
                 this.sta.create(createLocationUpdate(this.latestPoint));
             }
         } finally {
@@ -92,7 +92,7 @@ public class SensorThingsDatagramListener implements DatagramListener {
                                                                                                    observedProperty));
 
         Stream.concat(includeLocation ? createLocationObservations(datagram) : Stream.empty(), observationStream)
-              .peek(observation -> LOG.info("publishing observation {}", observation))
+              .peek(observation -> LOG.debug("publishing observation {}", observation))
               .forEach(this.sta::create);
     }
 

@@ -17,7 +17,7 @@ public class Datastream extends DescribedEntity {
     @JsonGetter(JsonConstants.THING)
     @JsonSerialize(as = IdentifiedEntity.class)
     public Thing getThing() {
-        return thing;
+        return this.thing;
     }
 
     @JsonSetter(JsonConstants.THING)
@@ -27,7 +27,7 @@ public class Datastream extends DescribedEntity {
 
     @JsonGetter(JsonConstants.UNIT_OF_MEASUREMENT)
     public UnitOfMeasurement getUnitOfMeasurement() {
-        return unitOfMeasurement;
+        return this.unitOfMeasurement;
     }
 
     @JsonSetter(JsonConstants.UNIT_OF_MEASUREMENT)
@@ -37,7 +37,7 @@ public class Datastream extends DescribedEntity {
 
     @JsonGetter(JsonConstants.OBSERVATION_TYPE)
     public String getObservationType() {
-        return observationType;
+        return this.observationType;
     }
 
     @JsonSetter(JsonConstants.OBSERVATION_TYPE)
@@ -47,7 +47,7 @@ public class Datastream extends DescribedEntity {
 
     @JsonGetter(JsonConstants.OBSERVED_AREA)
     public Polygon getObservedArea() {
-        return observedArea;
+        return this.observedArea;
     }
 
     @JsonSetter(JsonConstants.OBSERVED_AREA)
@@ -58,7 +58,7 @@ public class Datastream extends DescribedEntity {
     @JsonGetter(JsonConstants.OBSERVED_PROPERTY)
     @JsonSerialize(as = IdentifiedEntity.class)
     public ObservedProperty getObservedProperty() {
-        return observedProperty;
+        return this.observedProperty;
     }
 
     @JsonSetter(JsonConstants.OBSERVED_PROPERTY)
@@ -69,7 +69,7 @@ public class Datastream extends DescribedEntity {
     @JsonGetter(JsonConstants.SENSOR)
     @JsonSerialize(as = IdentifiedEntity.class)
     public Sensor getSensor() {
-        return sensor;
+        return this.sensor;
     }
 
     @JsonSetter(JsonConstants.SENSOR)
