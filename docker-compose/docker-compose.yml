@@ -73,7 +73,7 @@ services:
       - database
 
   sos:
-    image: 52north/sos:v6.0.0-PR.6
+    image: 52north/sos:6.0.0-PR.8
     environment:
       SOS_DATASOURCE_TYPE: postgres
       SOS_DATASOURCE_HOST: database
