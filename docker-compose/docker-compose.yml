@@ -19,6 +19,7 @@ x-feeder-service: &x-feeder-service
     - sta
 
 services:
+    
   feeder-gdc:
     <<: *x-feeder-service
     environment:
@@ -47,14 +48,15 @@ services:
       FEEDER_RETRIEVAL_BASEURL: http://datahub.utm.csic.es/ws/getLast/HES
 
   sta:
-    image: 52north/sensorweb-server-sta:v3.1.1
+    image: 52north/sensorweb-server-sta:v3.3.7
+    build: https://github.com/52North/sensorweb-server-sta.git#v3.3.7
     environment:
       LOGGING_LEVEL_ROOT: WARN
       LOGGING_LEVEL_ORG_N52: INFO
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:${POSTGRES_PORT}/${POSTGRES_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPING_JPA_PROPERTIES_HIBERNATE_HBM2DDL: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO: validate
       MQTT_BROKER_PLAINTCP_ENABLED: "true"
       MQTT_BROKER_WEBSOCKET_ENABLED: "true"
       MQTT_BROKER_PERSISTENCE_ENABLED: "false"
@@ -67,11 +69,12 @@ services:
       SERVER_PORT: ${STA_INTERNAL_HTTP_PORT}
       MQTT_BROKER_WEBSOCKET_PORT: ${STA_INTERNAL_WEBSOCKET_PORT}
       MQTT_BROKER_PLAINTCP_PORT: ${STA_INTERNAL_MQTT_PORT}
+      MQTT_BROKER_CREDENTIALS: ""
     depends_on:
       - database
 
   sos:
-    image: 52north/sos:6.0.0-PR.8
+    image: 52north/sos:6.1.0
     environment:
       SOS_DATASOURCE_TYPE: postgres
       SOS_DATASOURCE_HOST: database
@@ -84,6 +87,8 @@ services:
       SERVICE_SERVICE_URL: *x-sos-url
       EXTERNAL_URL: *x-api-url
       SOS_CONTEXT_PATH: ${SOS_CONTEXT_PATH}
+    volumes:
+      - ./sos/:/etc/sos
     depends_on:
       - database
 
@@ -98,10 +103,8 @@ services:
       - postgres:/var/lib/postgresql/data
 
   dashboard:
-    image: ${REGISTRY}eurofleets/dashboard:1.0.9
-    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.9
-    #image: ${REGISTRY}eurofleets/dashboard:latest
-    #build: ../../eurofleets-dashboard
+    image: ${REGISTRY}eurofleets/dashboard:1.0.10
+    build: https://github.com/52North/eurofleets-dashboard.git#v1.0.10
     environment:
       STA_URL: *x-sta-url
       MQTT_HOSTNAME: ${EXTERNAL_HOST}

@@ -1,13 +1,136 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 14.5
+-- Dumped by pg_dump version 14.7
+
+-- Started on 2023-05-05 14:31:01 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
 --
--- TOC entry 3 (class 3079 OID 18020)
+-- TOC entry 12 (class 2615 OID 19192)
+-- Name: tiger; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA tiger;
+
+
+ALTER SCHEMA tiger OWNER TO postgres;
+
+--
+-- TOC entry 10 (class 2615 OID 19448)
+-- Name: tiger_data; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA tiger_data;
+
+
+ALTER SCHEMA tiger_data OWNER TO postgres;
+
+--
+-- TOC entry 8 (class 2615 OID 19020)
+-- Name: topology; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA topology;
+
+
+ALTER SCHEMA topology OWNER TO postgres;
+
+--
+-- TOC entry 5406 (class 0 OID 0)
+-- Dependencies: 8
+-- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
+
+
+--
+-- TOC entry 4 (class 3079 OID 19181)
+-- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
+
+
+--
+-- TOC entry 5407 (class 0 OID 0)
+-- Dependencies: 4
+-- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
+
+
+--
+-- TOC entry 2 (class 3079 OID 17989)
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
+
 --
--- TOC entry 271 (class 1259 OID 19676)
+-- TOC entry 5408 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+
+
+--
+-- TOC entry 5 (class 3079 OID 19193)
+-- Name: postgis_tiger_geocoder; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;
+
+
+--
+-- TOC entry 5409 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: EXTENSION postgis_tiger_geocoder; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION postgis_tiger_geocoder IS 'PostGIS tiger geocoder and reverse geocoder';
+
+
+--
+-- TOC entry 3 (class 3079 OID 19021)
+-- Name: postgis_topology; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
+
+
+--
+-- TOC entry 5410 (class 0 OID 0)
+-- Dependencies: 3
+-- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 309 (class 1259 OID 37095)
 -- Name: category; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -22,8 +145,8 @@ CREATE TABLE public.category (
 ALTER TABLE public.category OWNER TO postgres;
 
 --
--- TOC entry 5079 (class 0 OID 0)
--- Dependencies: 271
+-- TOC entry 5411 (class 0 OID 0)
+-- Dependencies: 309
 -- Name: TABLE category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -31,8 +154,8 @@ COMMENT ON TABLE public.category IS 'Storage of the categories which should be u
 
 
 --
--- TOC entry 5080 (class 0 OID 0)
--- Dependencies: 271
+-- TOC entry 5412 (class 0 OID 0)
+-- Dependencies: 309
 -- Name: COLUMN category.category_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -40,8 +163,8 @@ COMMENT ON COLUMN public.category.category_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5081 (class 0 OID 0)
--- Dependencies: 271
+-- TOC entry 5413 (class 0 OID 0)
+-- Dependencies: 309
 -- Name: COLUMN category.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -49,8 +172,8 @@ COMMENT ON COLUMN public.category.identifier IS 'Unique identifier of the catego
 
 
 --
--- TOC entry 5082 (class 0 OID 0)
--- Dependencies: 271
+-- TOC entry 5414 (class 0 OID 0)
+-- Dependencies: 309
 -- Name: COLUMN category.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -58,8 +181,8 @@ COMMENT ON COLUMN public.category.name IS 'The human readable name of the catego
 
 
 --
--- TOC entry 5083 (class 0 OID 0)
--- Dependencies: 271
+-- TOC entry 5415 (class 0 OID 0)
+-- Dependencies: 309
 -- Name: COLUMN category.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -67,7 +190,7 @@ COMMENT ON COLUMN public.category.description IS 'A short description of the cat
 
 
 --
--- TOC entry 272 (class 1259 OID 19684)
+-- TOC entry 310 (class 1259 OID 37102)
 -- Name: category_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -83,8 +206,8 @@ CREATE TABLE public.category_i18n (
 ALTER TABLE public.category_i18n OWNER TO postgres;
 
 --
--- TOC entry 5084 (class 0 OID 0)
--- Dependencies: 272
+-- TOC entry 5416 (class 0 OID 0)
+-- Dependencies: 310
 -- Name: TABLE category_i18n; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -92,8 +215,8 @@ COMMENT ON TABLE public.category_i18n IS 'Storage for internationalizations of c
 
 
 --
--- TOC entry 5085 (class 0 OID 0)
--- Dependencies: 272
+-- TOC entry 5417 (class 0 OID 0)
+-- Dependencies: 310
 -- Name: COLUMN category_i18n.category_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -101,8 +224,8 @@ COMMENT ON COLUMN public.category_i18n.category_i18n_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5086 (class 0 OID 0)
--- Dependencies: 272
+-- TOC entry 5418 (class 0 OID 0)
+-- Dependencies: 310
 -- Name: COLUMN category_i18n.fk_category_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -110,8 +233,8 @@ COMMENT ON COLUMN public.category_i18n.fk_category_id IS 'Reference to the categ
 
 
 --
--- TOC entry 5087 (class 0 OID 0)
--- Dependencies: 272
+-- TOC entry 5419 (class 0 OID 0)
+-- Dependencies: 310
 -- Name: COLUMN category_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -119,8 +242,8 @@ COMMENT ON COLUMN public.category_i18n.locale IS 'Locale/language specification 
 
 
 --
--- TOC entry 5088 (class 0 OID 0)
--- Dependencies: 272
+-- TOC entry 5420 (class 0 OID 0)
+-- Dependencies: 310
 -- Name: COLUMN category_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -128,8 +251,8 @@ COMMENT ON COLUMN public.category_i18n.name IS 'Locale/language specific name of
 
 
 --
--- TOC entry 5089 (class 0 OID 0)
--- Dependencies: 272
+-- TOC entry 5421 (class 0 OID 0)
+-- Dependencies: 310
 -- Name: COLUMN category_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -137,7 +260,7 @@ COMMENT ON COLUMN public.category_i18n.description IS 'Locale/language specific 
 
 
 --
--- TOC entry 322 (class 1259 OID 20240)
+-- TOC entry 278 (class 1259 OID 37064)
 -- Name: category_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -152,7 +275,7 @@ CREATE SEQUENCE public.category_i18n_seq
 ALTER TABLE public.category_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 323 (class 1259 OID 20242)
+-- TOC entry 279 (class 1259 OID 37065)
 -- Name: category_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -167,7 +290,7 @@ CREATE SEQUENCE public.category_seq
 ALTER TABLE public.category_seq OWNER TO postgres;
 
 --
--- TOC entry 273 (class 1259 OID 19692)
+-- TOC entry 311 (class 1259 OID 37109)
 -- Name: codespace; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -180,8 +303,8 @@ CREATE TABLE public.codespace (
 ALTER TABLE public.codespace OWNER TO postgres;
 
 --
--- TOC entry 5090 (class 0 OID 0)
--- Dependencies: 273
+-- TOC entry 5422 (class 0 OID 0)
+-- Dependencies: 311
 -- Name: TABLE codespace; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -189,8 +312,8 @@ COMMENT ON TABLE public.codespace IS 'Storage of codespaces which can be domain 
 
 
 --
--- TOC entry 5091 (class 0 OID 0)
--- Dependencies: 273
+-- TOC entry 5423 (class 0 OID 0)
+-- Dependencies: 311
 -- Name: COLUMN codespace.codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -198,8 +321,8 @@ COMMENT ON COLUMN public.codespace.codespace_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5092 (class 0 OID 0)
--- Dependencies: 273
+-- TOC entry 5424 (class 0 OID 0)
+-- Dependencies: 311
 -- Name: COLUMN codespace.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -207,7 +330,7 @@ COMMENT ON COLUMN public.codespace.name IS 'Name/definition of the codespace, e.
 
 
 --
--- TOC entry 324 (class 1259 OID 20244)
+-- TOC entry 280 (class 1259 OID 37066)
 -- Name: codespace_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -222,7 +345,7 @@ CREATE SEQUENCE public.codespace_seq
 ALTER TABLE public.codespace_seq OWNER TO postgres;
 
 --
--- TOC entry 274 (class 1259 OID 19697)
+-- TOC entry 312 (class 1259 OID 37114)
 -- Name: composite_phenomenon; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -235,8 +358,8 @@ CREATE TABLE public.composite_phenomenon (
 ALTER TABLE public.composite_phenomenon OWNER TO postgres;
 
 --
--- TOC entry 5093 (class 0 OID 0)
--- Dependencies: 274
+-- TOC entry 5425 (class 0 OID 0)
+-- Dependencies: 312
 -- Name: TABLE composite_phenomenon; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -244,8 +367,8 @@ COMMENT ON TABLE public.composite_phenomenon IS 'Storage of hierarchies between 
 
 
 --
--- TOC entry 5094 (class 0 OID 0)
--- Dependencies: 274
+-- TOC entry 5426 (class 0 OID 0)
+-- Dependencies: 312
 -- Name: COLUMN composite_phenomenon.fk_child_phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -253,8 +376,8 @@ COMMENT ON COLUMN public.composite_phenomenon.fk_child_phenomenon_id IS 'Referen
 
 
 --
--- TOC entry 5095 (class 0 OID 0)
--- Dependencies: 274
+-- TOC entry 5427 (class 0 OID 0)
+-- Dependencies: 312
 -- Name: COLUMN composite_phenomenon.fk_parent_phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -262,7 +385,7 @@ COMMENT ON COLUMN public.composite_phenomenon.fk_parent_phenomenon_id IS 'Refere
 
 
 --
--- TOC entry 275 (class 1259 OID 19702)
+-- TOC entry 313 (class 1259 OID 37119)
 -- Name: dataset; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -297,8 +420,8 @@ CREATE TABLE public.dataset (
     is_deleted smallint DEFAULT 0 NOT NULL,
     is_disabled smallint DEFAULT 0 NOT NULL,
     is_published smallint DEFAULT 1 NOT NULL,
-    is_mobile smallint DEFAULT 0,
-    is_insitu smallint DEFAULT 1,
+    is_mobile smallint DEFAULT 0 NOT NULL,
+    is_insitu smallint DEFAULT 1 NOT NULL,
     is_hidden smallint DEFAULT 0 NOT NULL,
     origin_timezone character varying(40),
     decimals integer,
@@ -320,8 +443,8 @@ CREATE TABLE public.dataset (
 ALTER TABLE public.dataset OWNER TO postgres;
 
 --
--- TOC entry 5096 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5428 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: TABLE dataset; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -329,8 +452,8 @@ COMMENT ON TABLE public.dataset IS 'Storage of the dataset, the core table of th
 
 
 --
--- TOC entry 5097 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5429 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -338,8 +461,8 @@ COMMENT ON COLUMN public.dataset.dataset_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5098 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5430 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.discriminator; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -347,8 +470,8 @@ COMMENT ON COLUMN public.dataset.discriminator IS 'Indicator used by Hibernate t
 
 
 --
--- TOC entry 5099 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5431 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -356,8 +479,8 @@ COMMENT ON COLUMN public.dataset.identifier IS 'Unique identifier of the dataset
 
 
 --
--- TOC entry 5100 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5432 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -365,8 +488,8 @@ COMMENT ON COLUMN public.dataset.sta_identifier IS 'Unique identifier used by Se
 
 
 --
--- TOC entry 5101 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5433 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -374,8 +497,8 @@ COMMENT ON COLUMN public.dataset.name IS 'The human readable name of the dataset
 
 
 --
--- TOC entry 5102 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5434 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -383,8 +506,8 @@ COMMENT ON COLUMN public.dataset.description IS 'A short description of the data
 
 
 --
--- TOC entry 5103 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5435 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.first_time; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -392,8 +515,8 @@ COMMENT ON COLUMN public.dataset.first_time IS 'The timestamp of the temporally 
 
 
 --
--- TOC entry 5104 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5436 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.last_time; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -401,8 +524,8 @@ COMMENT ON COLUMN public.dataset.last_time IS 'The timestamp of the temporally l
 
 
 --
--- TOC entry 5105 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5437 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.result_time_start; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -410,8 +533,8 @@ COMMENT ON COLUMN public.dataset.result_time_start IS 'The timestamp of the earl
 
 
 --
--- TOC entry 5106 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5438 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.result_time_end; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -419,8 +542,8 @@ COMMENT ON COLUMN public.dataset.result_time_end IS 'The timestamp of the latest
 
 
 --
--- TOC entry 5107 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5439 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_procedure_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -428,8 +551,8 @@ COMMENT ON COLUMN public.dataset.fk_procedure_id IS 'Reference to the procedure 
 
 
 --
--- TOC entry 5108 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5440 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -437,8 +560,8 @@ COMMENT ON COLUMN public.dataset.fk_phenomenon_id IS 'Reference to the phenomeno
 
 
 --
--- TOC entry 5109 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5441 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -446,8 +569,8 @@ COMMENT ON COLUMN public.dataset.fk_offering_id IS 'Reference to the offering th
 
 
 --
--- TOC entry 5110 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5442 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_category_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -455,8 +578,8 @@ COMMENT ON COLUMN public.dataset.fk_category_id IS 'Reference to the category th
 
 
 --
--- TOC entry 5111 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5443 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -464,8 +587,8 @@ COMMENT ON COLUMN public.dataset.fk_feature_id IS 'Reference to the feature that
 
 
 --
--- TOC entry 5112 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5444 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_platform_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -473,8 +596,8 @@ COMMENT ON COLUMN public.dataset.fk_platform_id IS 'Reference to the platform th
 
 
 --
--- TOC entry 5113 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5445 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -482,8 +605,8 @@ COMMENT ON COLUMN public.dataset.fk_unit_id IS 'Reference to the unit of the obs
 
 
 --
--- TOC entry 5114 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5446 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_format_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -491,8 +614,8 @@ COMMENT ON COLUMN public.dataset.fk_format_id IS 'Reference to the observationTy
 
 
 --
--- TOC entry 5115 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5447 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_aggregation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -500,8 +623,8 @@ COMMENT ON COLUMN public.dataset.fk_aggregation_id IS 'Reference to the aggregat
 
 
 --
--- TOC entry 5116 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5448 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.first_value; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -509,8 +632,8 @@ COMMENT ON COLUMN public.dataset.first_value IS 'The value of the temporally fir
 
 
 --
--- TOC entry 5117 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5449 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.last_value; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -518,8 +641,8 @@ COMMENT ON COLUMN public.dataset.last_value IS 'The value of the temporally last
 
 
 --
--- TOC entry 5118 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5450 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_first_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -527,8 +650,8 @@ COMMENT ON COLUMN public.dataset.fk_first_observation_id IS 'Reference to the te
 
 
 --
--- TOC entry 5119 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5451 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_last_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -536,8 +659,8 @@ COMMENT ON COLUMN public.dataset.fk_last_observation_id IS 'Reference to the tem
 
 
 --
--- TOC entry 5120 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5452 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.dataset_type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -545,8 +668,8 @@ COMMENT ON COLUMN public.dataset.dataset_type IS 'Indicator whether the dataset 
 
 
 --
--- TOC entry 5121 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5453 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.observation_type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -554,8 +677,8 @@ COMMENT ON COLUMN public.dataset.observation_type IS 'Indicator whether the data
 
 
 --
--- TOC entry 5122 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5454 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.value_type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -563,8 +686,8 @@ COMMENT ON COLUMN public.dataset.value_type IS 'Indicator of the type of the sin
 
 
 --
--- TOC entry 5123 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5455 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.is_deleted; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -572,8 +695,8 @@ COMMENT ON COLUMN public.dataset.is_deleted IS 'Flag that indicates if this data
 
 
 --
--- TOC entry 5124 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5456 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.is_disabled; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -581,8 +704,8 @@ COMMENT ON COLUMN public.dataset.is_disabled IS 'Flag that indicates if this dat
 
 
 --
--- TOC entry 5125 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5457 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.is_published; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -590,8 +713,8 @@ COMMENT ON COLUMN public.dataset.is_published IS 'Flag that indicates if this da
 
 
 --
--- TOC entry 5126 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5458 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.is_mobile; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -599,8 +722,8 @@ COMMENT ON COLUMN public.dataset.is_mobile IS 'Flag that indicates if the proced
 
 
 --
--- TOC entry 5127 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5459 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.is_insitu; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -608,8 +731,8 @@ COMMENT ON COLUMN public.dataset.is_insitu IS 'Flag that indicates if the proced
 
 
 --
--- TOC entry 5128 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5460 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.is_hidden; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -617,8 +740,8 @@ COMMENT ON COLUMN public.dataset.is_hidden IS 'Flag that indicates if this datas
 
 
 --
--- TOC entry 5129 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5461 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.origin_timezone; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -626,8 +749,8 @@ COMMENT ON COLUMN public.dataset.origin_timezone IS 'Define the origin timezone 
 
 
 --
--- TOC entry 5130 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5462 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.decimals; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -635,8 +758,8 @@ COMMENT ON COLUMN public.dataset.decimals IS 'Number of decimals that should be 
 
 
 --
--- TOC entry 5131 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5463 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_identifier_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -644,8 +767,8 @@ COMMENT ON COLUMN public.dataset.fk_identifier_codespace_id IS 'The codespace of
 
 
 --
--- TOC entry 5132 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5464 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_name_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -653,8 +776,8 @@ COMMENT ON COLUMN public.dataset.fk_name_codespace_id IS 'The codespace of the d
 
 
 --
--- TOC entry 5133 (class 0 OID 0)
--- Dependencies: 275
+-- TOC entry 5465 (class 0 OID 0)
+-- Dependencies: 313
 -- Name: COLUMN dataset.fk_value_profile_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -662,7 +785,7 @@ COMMENT ON COLUMN public.dataset.fk_value_profile_id IS 'Reference to the vertic
 
 
 --
--- TOC entry 276 (class 1259 OID 19728)
+-- TOC entry 314 (class 1259 OID 37144)
 -- Name: dataset_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -678,8 +801,8 @@ CREATE TABLE public.dataset_i18n (
 ALTER TABLE public.dataset_i18n OWNER TO postgres;
 
 --
--- TOC entry 5134 (class 0 OID 0)
--- Dependencies: 276
+-- TOC entry 5466 (class 0 OID 0)
+-- Dependencies: 314
 -- Name: COLUMN dataset_i18n.dataset_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -687,8 +810,8 @@ COMMENT ON COLUMN public.dataset_i18n.dataset_i18n_id IS 'PK column of the table
 
 
 --
--- TOC entry 5135 (class 0 OID 0)
--- Dependencies: 276
+-- TOC entry 5467 (class 0 OID 0)
+-- Dependencies: 314
 -- Name: COLUMN dataset_i18n.fk_dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -696,8 +819,8 @@ COMMENT ON COLUMN public.dataset_i18n.fk_dataset_id IS 'Reference to the dataset
 
 
 --
--- TOC entry 5136 (class 0 OID 0)
--- Dependencies: 276
+-- TOC entry 5468 (class 0 OID 0)
+-- Dependencies: 314
 -- Name: COLUMN dataset_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -705,8 +828,8 @@ COMMENT ON COLUMN public.dataset_i18n.locale IS 'Locale/language specification f
 
 
 --
--- TOC entry 5137 (class 0 OID 0)
--- Dependencies: 276
+-- TOC entry 5469 (class 0 OID 0)
+-- Dependencies: 314
 -- Name: COLUMN dataset_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -714,8 +837,8 @@ COMMENT ON COLUMN public.dataset_i18n.name IS 'Locale/language specific name of 
 
 
 --
--- TOC entry 5138 (class 0 OID 0)
--- Dependencies: 276
+-- TOC entry 5470 (class 0 OID 0)
+-- Dependencies: 314
 -- Name: COLUMN dataset_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -723,7 +846,7 @@ COMMENT ON COLUMN public.dataset_i18n.description IS 'Locale/language specific d
 
 
 --
--- TOC entry 325 (class 1259 OID 20246)
+-- TOC entry 281 (class 1259 OID 37067)
 -- Name: dataset_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -738,7 +861,7 @@ CREATE SEQUENCE public.dataset_i18n_seq
 ALTER TABLE public.dataset_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 277 (class 1259 OID 19736)
+-- TOC entry 315 (class 1259 OID 37151)
 -- Name: dataset_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -750,6 +873,7 @@ CREATE TABLE public.dataset_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_dataset_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_boolean smallint,
     value_category character varying(255),
     fk_unit_id bigint,
@@ -760,7 +884,6 @@ CREATE TABLE public.dataset_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT dataset_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -768,8 +891,8 @@ CREATE TABLE public.dataset_parameter (
 ALTER TABLE public.dataset_parameter OWNER TO postgres;
 
 --
--- TOC entry 5139 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5471 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: TABLE dataset_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -777,8 +900,8 @@ COMMENT ON TABLE public.dataset_parameter IS 'Storage for additional information
 
 
 --
--- TOC entry 5140 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5472 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -786,8 +909,8 @@ COMMENT ON COLUMN public.dataset_parameter.parameter_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5141 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5473 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -795,8 +918,8 @@ COMMENT ON COLUMN public.dataset_parameter.type IS 'Indicator used by Hibernate 
 
 
 --
--- TOC entry 5142 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5474 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -804,8 +927,8 @@ COMMENT ON COLUMN public.dataset_parameter.name IS 'The name of the parameter';
 
 
 --
--- TOC entry 5143 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5475 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -813,8 +936,8 @@ COMMENT ON COLUMN public.dataset_parameter.description IS 'A short description o
 
 
 --
--- TOC entry 5144 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5476 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -822,8 +945,8 @@ COMMENT ON COLUMN public.dataset_parameter.last_update IS 'Timestamp that provid
 
 
 --
--- TOC entry 5145 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5477 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -831,8 +954,8 @@ COMMENT ON COLUMN public.dataset_parameter.domain IS 'The domain this parameter 
 
 
 --
--- TOC entry 5146 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5478 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.fk_dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -840,8 +963,17 @@ COMMENT ON COLUMN public.dataset_parameter.fk_dataset_id IS 'Reference to the Da
 
 
 --
--- TOC entry 5147 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5479 (class 0 OID 0)
+-- Dependencies: 315
+-- Name: COLUMN dataset_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.dataset_parameter.fk_parent_parameter_id IS 'Reference to the Dataset this Parameter describes.';
+
+
+--
+-- TOC entry 5480 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -849,8 +981,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_boolean IS 'Storage of a boolea
 
 
 --
--- TOC entry 5148 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5481 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -858,8 +990,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_category IS 'Storage of a categ
 
 
 --
--- TOC entry 5149 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5482 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -867,8 +999,8 @@ COMMENT ON COLUMN public.dataset_parameter.fk_unit_id IS 'Reference to the unit 
 
 
 --
--- TOC entry 5150 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5483 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -876,8 +1008,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_count IS 'Storage of a count pa
 
 
 --
--- TOC entry 5151 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5484 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -885,8 +1017,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_quantity IS 'Storage of a quant
 
 
 --
--- TOC entry 5152 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5485 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -894,8 +1026,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_text IS 'Storage of a textual p
 
 
 --
--- TOC entry 5153 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5486 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -903,8 +1035,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_xml IS 'Storage of a XML encode
 
 
 --
--- TOC entry 5154 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5487 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -912,8 +1044,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_json IS 'Storage of a JSON enco
 
 
 --
--- TOC entry 5155 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5488 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -921,8 +1053,8 @@ COMMENT ON COLUMN public.dataset_parameter.value_temporal_from IS 'Storage of a 
 
 
 --
--- TOC entry 5156 (class 0 OID 0)
--- Dependencies: 277
+-- TOC entry 5489 (class 0 OID 0)
+-- Dependencies: 315
 -- Name: COLUMN dataset_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -930,16 +1062,7 @@ COMMENT ON COLUMN public.dataset_parameter.value_temporal_to IS 'Storage of a te
 
 
 --
--- TOC entry 5157 (class 0 OID 0)
--- Dependencies: 277
--- Name: COLUMN dataset_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.dataset_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 278 (class 1259 OID 19745)
+-- TOC entry 316 (class 1259 OID 37159)
 -- Name: dataset_reference; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -953,8 +1076,8 @@ CREATE TABLE public.dataset_reference (
 ALTER TABLE public.dataset_reference OWNER TO postgres;
 
 --
--- TOC entry 5158 (class 0 OID 0)
--- Dependencies: 278
+-- TOC entry 5490 (class 0 OID 0)
+-- Dependencies: 316
 -- Name: TABLE dataset_reference; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -962,8 +1085,8 @@ COMMENT ON TABLE public.dataset_reference IS 'Storage of reference datasets, e.g
 
 
 --
--- TOC entry 5159 (class 0 OID 0)
--- Dependencies: 278
+-- TOC entry 5491 (class 0 OID 0)
+-- Dependencies: 316
 -- Name: COLUMN dataset_reference.fk_dataset_id_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -971,8 +1094,8 @@ COMMENT ON COLUMN public.dataset_reference.fk_dataset_id_from IS 'Reference to t
 
 
 --
--- TOC entry 5160 (class 0 OID 0)
--- Dependencies: 278
+-- TOC entry 5492 (class 0 OID 0)
+-- Dependencies: 316
 -- Name: COLUMN dataset_reference.sort_order; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -980,8 +1103,8 @@ COMMENT ON COLUMN public.dataset_reference.sort_order IS 'Provides the sort orde
 
 
 --
--- TOC entry 5161 (class 0 OID 0)
--- Dependencies: 278
+-- TOC entry 5493 (class 0 OID 0)
+-- Dependencies: 316
 -- Name: COLUMN dataset_reference.fk_dataset_id_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -989,7 +1112,7 @@ COMMENT ON COLUMN public.dataset_reference.fk_dataset_id_to IS 'Reference to the
 
 
 --
--- TOC entry 326 (class 1259 OID 20248)
+-- TOC entry 282 (class 1259 OID 37068)
 -- Name: dataset_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1004,7 +1127,7 @@ CREATE SEQUENCE public.dataset_seq
 ALTER TABLE public.dataset_seq OWNER TO postgres;
 
 --
--- TOC entry 279 (class 1259 OID 19750)
+-- TOC entry 317 (class 1259 OID 37164)
 -- Name: feature; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1027,8 +1150,8 @@ CREATE TABLE public.feature (
 ALTER TABLE public.feature OWNER TO postgres;
 
 --
--- TOC entry 5162 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5494 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: TABLE feature; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1036,8 +1159,8 @@ COMMENT ON TABLE public.feature IS 'Storage of the features (OfInterest). A feat
 
 
 --
--- TOC entry 5163 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5495 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1045,8 +1168,8 @@ COMMENT ON COLUMN public.feature.feature_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5164 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5496 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.discriminator; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1054,8 +1177,8 @@ COMMENT ON COLUMN public.feature.discriminator IS 'Indicator used by Hibernate t
 
 
 --
--- TOC entry 5165 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5497 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.fk_format_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1063,8 +1186,8 @@ COMMENT ON COLUMN public.feature.fk_format_id IS 'Reference to the featureType i
 
 
 --
--- TOC entry 5166 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5498 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1072,8 +1195,8 @@ COMMENT ON COLUMN public.feature.identifier IS 'Unique identifier of the feature
 
 
 --
--- TOC entry 5167 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5499 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1081,8 +1204,8 @@ COMMENT ON COLUMN public.feature.sta_identifier IS 'Unique identifier used by Se
 
 
 --
--- TOC entry 5168 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5500 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.fk_identifier_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1090,8 +1213,8 @@ COMMENT ON COLUMN public.feature.fk_identifier_codespace_id IS 'The codespace of
 
 
 --
--- TOC entry 5169 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5501 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1099,8 +1222,8 @@ COMMENT ON COLUMN public.feature.name IS 'The human readable name of the feature
 
 
 --
--- TOC entry 5170 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5502 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.fk_name_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1108,8 +1231,8 @@ COMMENT ON COLUMN public.feature.fk_name_codespace_id IS 'The codespace of the f
 
 
 --
--- TOC entry 5171 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5503 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1117,8 +1240,8 @@ COMMENT ON COLUMN public.feature.description IS 'A short description of the feat
 
 
 --
--- TOC entry 5172 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5504 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1126,8 +1249,8 @@ COMMENT ON COLUMN public.feature.xml IS 'The XML encoded representation of the f
 
 
 --
--- TOC entry 5173 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5505 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.url; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1135,8 +1258,8 @@ COMMENT ON COLUMN public.feature.url IS 'Optional URL to an external resource th
 
 
 --
--- TOC entry 5174 (class 0 OID 0)
--- Dependencies: 279
+-- TOC entry 5506 (class 0 OID 0)
+-- Dependencies: 317
 -- Name: COLUMN feature.geom; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1144,7 +1267,7 @@ COMMENT ON COLUMN public.feature.geom IS 'The geometry/location of feature';
 
 
 --
--- TOC entry 280 (class 1259 OID 19758)
+-- TOC entry 318 (class 1259 OID 37171)
 -- Name: feature_hierarchy; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1157,8 +1280,8 @@ CREATE TABLE public.feature_hierarchy (
 ALTER TABLE public.feature_hierarchy OWNER TO postgres;
 
 --
--- TOC entry 5175 (class 0 OID 0)
--- Dependencies: 280
+-- TOC entry 5507 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: TABLE feature_hierarchy; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1166,8 +1289,8 @@ COMMENT ON TABLE public.feature_hierarchy IS 'Storage of hierarchies between fea
 
 
 --
--- TOC entry 5176 (class 0 OID 0)
--- Dependencies: 280
+-- TOC entry 5508 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: COLUMN feature_hierarchy.fk_child_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1175,8 +1298,8 @@ COMMENT ON COLUMN public.feature_hierarchy.fk_child_feature_id IS 'Reference to 
 
 
 --
--- TOC entry 5177 (class 0 OID 0)
--- Dependencies: 280
+-- TOC entry 5509 (class 0 OID 0)
+-- Dependencies: 318
 -- Name: COLUMN feature_hierarchy.fk_parent_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1184,7 +1307,7 @@ COMMENT ON COLUMN public.feature_hierarchy.fk_parent_feature_id IS 'Reference to
 
 
 --
--- TOC entry 281 (class 1259 OID 19763)
+-- TOC entry 319 (class 1259 OID 37176)
 -- Name: feature_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1200,8 +1323,8 @@ CREATE TABLE public.feature_i18n (
 ALTER TABLE public.feature_i18n OWNER TO postgres;
 
 --
--- TOC entry 5178 (class 0 OID 0)
--- Dependencies: 281
+-- TOC entry 5510 (class 0 OID 0)
+-- Dependencies: 319
 -- Name: TABLE feature_i18n; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1209,8 +1332,8 @@ COMMENT ON TABLE public.feature_i18n IS 'Storage for internationalizations of fe
 
 
 --
--- TOC entry 5179 (class 0 OID 0)
--- Dependencies: 281
+-- TOC entry 5511 (class 0 OID 0)
+-- Dependencies: 319
 -- Name: COLUMN feature_i18n.feature_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1218,8 +1341,8 @@ COMMENT ON COLUMN public.feature_i18n.feature_i18n_id IS 'PK column of the table
 
 
 --
--- TOC entry 5180 (class 0 OID 0)
--- Dependencies: 281
+-- TOC entry 5512 (class 0 OID 0)
+-- Dependencies: 319
 -- Name: COLUMN feature_i18n.fk_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1227,8 +1350,8 @@ COMMENT ON COLUMN public.feature_i18n.fk_feature_id IS 'Reference to the feature
 
 
 --
--- TOC entry 5181 (class 0 OID 0)
--- Dependencies: 281
+-- TOC entry 5513 (class 0 OID 0)
+-- Dependencies: 319
 -- Name: COLUMN feature_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1236,8 +1359,8 @@ COMMENT ON COLUMN public.feature_i18n.locale IS 'Locale/language specification f
 
 
 --
--- TOC entry 5182 (class 0 OID 0)
--- Dependencies: 281
+-- TOC entry 5514 (class 0 OID 0)
+-- Dependencies: 319
 -- Name: COLUMN feature_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1245,8 +1368,8 @@ COMMENT ON COLUMN public.feature_i18n.name IS 'Locale/language specific name of 
 
 
 --
--- TOC entry 5183 (class 0 OID 0)
--- Dependencies: 281
+-- TOC entry 5515 (class 0 OID 0)
+-- Dependencies: 319
 -- Name: COLUMN feature_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1254,7 +1377,7 @@ COMMENT ON COLUMN public.feature_i18n.description IS 'Locale/language specific d
 
 
 --
--- TOC entry 327 (class 1259 OID 20250)
+-- TOC entry 283 (class 1259 OID 37069)
 -- Name: feature_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1269,7 +1392,7 @@ CREATE SEQUENCE public.feature_i18n_seq
 ALTER TABLE public.feature_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 282 (class 1259 OID 19771)
+-- TOC entry 320 (class 1259 OID 37183)
 -- Name: feature_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1281,6 +1404,7 @@ CREATE TABLE public.feature_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_feature_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_boolean smallint,
     value_category character varying(255),
     fk_unit_id bigint,
@@ -1291,7 +1415,6 @@ CREATE TABLE public.feature_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT feature_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -1299,8 +1422,8 @@ CREATE TABLE public.feature_parameter (
 ALTER TABLE public.feature_parameter OWNER TO postgres;
 
 --
--- TOC entry 5184 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5516 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: TABLE feature_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1308,8 +1431,8 @@ COMMENT ON TABLE public.feature_parameter IS 'Storage for additional information
 
 
 --
--- TOC entry 5185 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5517 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1317,8 +1440,8 @@ COMMENT ON COLUMN public.feature_parameter.parameter_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5186 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5518 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1326,8 +1449,8 @@ COMMENT ON COLUMN public.feature_parameter.type IS 'Indicator used by Hibernate 
 
 
 --
--- TOC entry 5187 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5519 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1335,8 +1458,8 @@ COMMENT ON COLUMN public.feature_parameter.name IS 'The name of the parameter';
 
 
 --
--- TOC entry 5188 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5520 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1344,8 +1467,8 @@ COMMENT ON COLUMN public.feature_parameter.description IS 'A short description o
 
 
 --
--- TOC entry 5189 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5521 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1353,8 +1476,8 @@ COMMENT ON COLUMN public.feature_parameter.last_update IS 'Timestamp that provid
 
 
 --
--- TOC entry 5190 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5522 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1362,8 +1485,8 @@ COMMENT ON COLUMN public.feature_parameter.domain IS 'The domain this parameter 
 
 
 --
--- TOC entry 5191 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5523 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.fk_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1371,8 +1494,17 @@ COMMENT ON COLUMN public.feature_parameter.fk_feature_id IS 'Reference to the Fe
 
 
 --
--- TOC entry 5192 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5524 (class 0 OID 0)
+-- Dependencies: 320
+-- Name: COLUMN feature_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.feature_parameter.fk_parent_parameter_id IS 'Reference to the Feature this Parameter describes.';
+
+
+--
+-- TOC entry 5525 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1380,8 +1512,8 @@ COMMENT ON COLUMN public.feature_parameter.value_boolean IS 'Storage of a boolea
 
 
 --
--- TOC entry 5193 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5526 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1389,8 +1521,8 @@ COMMENT ON COLUMN public.feature_parameter.value_category IS 'Storage of a categ
 
 
 --
--- TOC entry 5194 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5527 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1398,8 +1530,8 @@ COMMENT ON COLUMN public.feature_parameter.fk_unit_id IS 'Reference to the unit 
 
 
 --
--- TOC entry 5195 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5528 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1407,8 +1539,8 @@ COMMENT ON COLUMN public.feature_parameter.value_count IS 'Storage of a count pa
 
 
 --
--- TOC entry 5196 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5529 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1416,8 +1548,8 @@ COMMENT ON COLUMN public.feature_parameter.value_quantity IS 'Storage of a quant
 
 
 --
--- TOC entry 5197 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5530 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1425,8 +1557,8 @@ COMMENT ON COLUMN public.feature_parameter.value_text IS 'Storage of a textual p
 
 
 --
--- TOC entry 5198 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5531 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1434,8 +1566,8 @@ COMMENT ON COLUMN public.feature_parameter.value_xml IS 'Storage of a XML encode
 
 
 --
--- TOC entry 5199 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5532 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1443,8 +1575,8 @@ COMMENT ON COLUMN public.feature_parameter.value_json IS 'Storage of a JSON enco
 
 
 --
--- TOC entry 5200 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5533 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1452,8 +1584,8 @@ COMMENT ON COLUMN public.feature_parameter.value_temporal_from IS 'Storage of a 
 
 
 --
--- TOC entry 5201 (class 0 OID 0)
--- Dependencies: 282
+-- TOC entry 5534 (class 0 OID 0)
+-- Dependencies: 320
 -- Name: COLUMN feature_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1461,16 +1593,7 @@ COMMENT ON COLUMN public.feature_parameter.value_temporal_to IS 'Storage of a te
 
 
 --
--- TOC entry 5202 (class 0 OID 0)
--- Dependencies: 282
--- Name: COLUMN feature_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.feature_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 328 (class 1259 OID 20252)
+-- TOC entry 284 (class 1259 OID 37070)
 -- Name: feature_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1485,7 +1608,7 @@ CREATE SEQUENCE public.feature_seq
 ALTER TABLE public.feature_seq OWNER TO postgres;
 
 --
--- TOC entry 283 (class 1259 OID 19780)
+-- TOC entry 321 (class 1259 OID 37191)
 -- Name: format; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1498,8 +1621,8 @@ CREATE TABLE public.format (
 ALTER TABLE public.format OWNER TO postgres;
 
 --
--- TOC entry 5203 (class 0 OID 0)
--- Dependencies: 283
+-- TOC entry 5535 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: TABLE format; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1507,8 +1630,8 @@ COMMENT ON TABLE public.format IS 'Storage of types (feature, observation) and f
 
 
 --
--- TOC entry 5204 (class 0 OID 0)
--- Dependencies: 283
+-- TOC entry 5536 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN format.format_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1516,8 +1639,8 @@ COMMENT ON COLUMN public.format.format_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5205 (class 0 OID 0)
--- Dependencies: 283
+-- TOC entry 5537 (class 0 OID 0)
+-- Dependencies: 321
 -- Name: COLUMN format.definition; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1525,7 +1648,7 @@ COMMENT ON COLUMN public.format.definition IS 'The definition of the format.';
 
 
 --
--- TOC entry 329 (class 1259 OID 20254)
+-- TOC entry 285 (class 1259 OID 37071)
 -- Name: format_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1540,7 +1663,7 @@ CREATE SEQUENCE public.format_seq
 ALTER TABLE public.format_seq OWNER TO postgres;
 
 --
--- TOC entry 284 (class 1259 OID 19785)
+-- TOC entry 322 (class 1259 OID 37196)
 -- Name: historical_location; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1556,8 +1679,8 @@ CREATE TABLE public.historical_location (
 ALTER TABLE public.historical_location OWNER TO postgres;
 
 --
--- TOC entry 5206 (class 0 OID 0)
--- Dependencies: 284
+-- TOC entry 5538 (class 0 OID 0)
+-- Dependencies: 322
 -- Name: COLUMN historical_location.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1565,8 +1688,8 @@ COMMENT ON COLUMN public.historical_location.identifier IS 'Unique identifier of
 
 
 --
--- TOC entry 5207 (class 0 OID 0)
--- Dependencies: 284
+-- TOC entry 5539 (class 0 OID 0)
+-- Dependencies: 322
 -- Name: COLUMN historical_location.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1574,7 +1697,7 @@ COMMENT ON COLUMN public.historical_location.sta_identifier IS 'Unique identifie
 
 
 --
--- TOC entry 330 (class 1259 OID 20256)
+-- TOC entry 286 (class 1259 OID 37072)
 -- Name: historical_location_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1589,7 +1712,7 @@ CREATE SEQUENCE public.historical_location_seq
 ALTER TABLE public.historical_location_seq OWNER TO postgres;
 
 --
--- TOC entry 285 (class 1259 OID 19793)
+-- TOC entry 323 (class 1259 OID 37203)
 -- Name: location; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1608,8 +1731,8 @@ CREATE TABLE public.location (
 ALTER TABLE public.location OWNER TO postgres;
 
 --
--- TOC entry 5208 (class 0 OID 0)
--- Dependencies: 285
+-- TOC entry 5540 (class 0 OID 0)
+-- Dependencies: 323
 -- Name: COLUMN location.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1617,8 +1740,8 @@ COMMENT ON COLUMN public.location.identifier IS 'Unique identifier of the locati
 
 
 --
--- TOC entry 5209 (class 0 OID 0)
--- Dependencies: 285
+-- TOC entry 5541 (class 0 OID 0)
+-- Dependencies: 323
 -- Name: COLUMN location.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1626,7 +1749,7 @@ COMMENT ON COLUMN public.location.sta_identifier IS 'Unique identifier used by S
 
 
 --
--- TOC entry 286 (class 1259 OID 19801)
+-- TOC entry 324 (class 1259 OID 37210)
 -- Name: location_historical_location; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1639,7 +1762,7 @@ CREATE TABLE public.location_historical_location (
 ALTER TABLE public.location_historical_location OWNER TO postgres;
 
 --
--- TOC entry 287 (class 1259 OID 19806)
+-- TOC entry 325 (class 1259 OID 37215)
 -- Name: location_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1656,8 +1779,8 @@ CREATE TABLE public.location_i18n (
 ALTER TABLE public.location_i18n OWNER TO postgres;
 
 --
--- TOC entry 5210 (class 0 OID 0)
--- Dependencies: 287
+-- TOC entry 5542 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN location_i18n.location_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1665,8 +1788,8 @@ COMMENT ON COLUMN public.location_i18n.location_i18n_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5211 (class 0 OID 0)
--- Dependencies: 287
+-- TOC entry 5543 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN location_i18n.fk_location_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1674,8 +1797,8 @@ COMMENT ON COLUMN public.location_i18n.fk_location_id IS 'Reference to the featu
 
 
 --
--- TOC entry 5212 (class 0 OID 0)
--- Dependencies: 287
+-- TOC entry 5544 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN location_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1683,8 +1806,8 @@ COMMENT ON COLUMN public.location_i18n.locale IS 'Locale/language specification 
 
 
 --
--- TOC entry 5213 (class 0 OID 0)
--- Dependencies: 287
+-- TOC entry 5545 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN location_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1692,8 +1815,8 @@ COMMENT ON COLUMN public.location_i18n.name IS 'Locale/language specific name of
 
 
 --
--- TOC entry 5214 (class 0 OID 0)
--- Dependencies: 287
+-- TOC entry 5546 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN location_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1701,8 +1824,8 @@ COMMENT ON COLUMN public.location_i18n.description IS 'Locale/language specific 
 
 
 --
--- TOC entry 5215 (class 0 OID 0)
--- Dependencies: 287
+-- TOC entry 5547 (class 0 OID 0)
+-- Dependencies: 325
 -- Name: COLUMN location_i18n.location; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1710,7 +1833,7 @@ COMMENT ON COLUMN public.location_i18n.location IS 'Locale/language specific loc
 
 
 --
--- TOC entry 331 (class 1259 OID 20258)
+-- TOC entry 287 (class 1259 OID 37073)
 -- Name: location_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1725,7 +1848,7 @@ CREATE SEQUENCE public.location_i18n_seq
 ALTER TABLE public.location_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 288 (class 1259 OID 19814)
+-- TOC entry 326 (class 1259 OID 37222)
 -- Name: location_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1737,6 +1860,7 @@ CREATE TABLE public.location_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_location_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_boolean smallint,
     value_category character varying(255),
     fk_unit_id bigint,
@@ -1747,7 +1871,6 @@ CREATE TABLE public.location_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT location_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -1755,8 +1878,8 @@ CREATE TABLE public.location_parameter (
 ALTER TABLE public.location_parameter OWNER TO postgres;
 
 --
--- TOC entry 5216 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5548 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: TABLE location_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1764,8 +1887,8 @@ COMMENT ON TABLE public.location_parameter IS 'Storage for additional informatio
 
 
 --
--- TOC entry 5217 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5549 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1773,8 +1896,8 @@ COMMENT ON COLUMN public.location_parameter.parameter_id IS 'PK column of the ta
 
 
 --
--- TOC entry 5218 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5550 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1782,8 +1905,8 @@ COMMENT ON COLUMN public.location_parameter.type IS 'Indicator used by Hibernate
 
 
 --
--- TOC entry 5219 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5551 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1791,8 +1914,8 @@ COMMENT ON COLUMN public.location_parameter.name IS 'The name of the parameter';
 
 
 --
--- TOC entry 5220 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5552 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1800,8 +1923,8 @@ COMMENT ON COLUMN public.location_parameter.description IS 'A short description 
 
 
 --
--- TOC entry 5221 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5553 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1809,8 +1932,8 @@ COMMENT ON COLUMN public.location_parameter.last_update IS 'Timestamp that provi
 
 
 --
--- TOC entry 5222 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5554 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1818,8 +1941,8 @@ COMMENT ON COLUMN public.location_parameter.domain IS 'The domain this parameter
 
 
 --
--- TOC entry 5223 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5555 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.fk_location_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1827,8 +1950,17 @@ COMMENT ON COLUMN public.location_parameter.fk_location_id IS 'Reference to the 
 
 
 --
--- TOC entry 5224 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5556 (class 0 OID 0)
+-- Dependencies: 326
+-- Name: COLUMN location_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.location_parameter.fk_parent_parameter_id IS 'Reference to the Location this Parameter describes.';
+
+
+--
+-- TOC entry 5557 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1836,8 +1968,8 @@ COMMENT ON COLUMN public.location_parameter.value_boolean IS 'Storage of a boole
 
 
 --
--- TOC entry 5225 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5558 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1845,8 +1977,8 @@ COMMENT ON COLUMN public.location_parameter.value_category IS 'Storage of a cate
 
 
 --
--- TOC entry 5226 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5559 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1854,8 +1986,8 @@ COMMENT ON COLUMN public.location_parameter.fk_unit_id IS 'Reference to the unit
 
 
 --
--- TOC entry 5227 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5560 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1863,8 +1995,8 @@ COMMENT ON COLUMN public.location_parameter.value_count IS 'Storage of a count p
 
 
 --
--- TOC entry 5228 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5561 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1872,8 +2004,8 @@ COMMENT ON COLUMN public.location_parameter.value_quantity IS 'Storage of a quan
 
 
 --
--- TOC entry 5229 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5562 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1881,8 +2013,8 @@ COMMENT ON COLUMN public.location_parameter.value_text IS 'Storage of a textual 
 
 
 --
--- TOC entry 5230 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5563 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1890,8 +2022,8 @@ COMMENT ON COLUMN public.location_parameter.value_xml IS 'Storage of a XML encod
 
 
 --
--- TOC entry 5231 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5564 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1899,8 +2031,8 @@ COMMENT ON COLUMN public.location_parameter.value_json IS 'Storage of a JSON enc
 
 
 --
--- TOC entry 5232 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5565 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1908,8 +2040,8 @@ COMMENT ON COLUMN public.location_parameter.value_temporal_from IS 'Storage of a
 
 
 --
--- TOC entry 5233 (class 0 OID 0)
--- Dependencies: 288
+-- TOC entry 5566 (class 0 OID 0)
+-- Dependencies: 326
 -- Name: COLUMN location_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1917,16 +2049,7 @@ COMMENT ON COLUMN public.location_parameter.value_temporal_to IS 'Storage of a t
 
 
 --
--- TOC entry 5234 (class 0 OID 0)
--- Dependencies: 288
--- Name: COLUMN location_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.location_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 332 (class 1259 OID 20260)
+-- TOC entry 288 (class 1259 OID 37074)
 -- Name: location_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -1941,7 +2064,7 @@ CREATE SEQUENCE public.location_seq
 ALTER TABLE public.location_seq OWNER TO postgres;
 
 --
--- TOC entry 289 (class 1259 OID 19823)
+-- TOC entry 327 (class 1259 OID 37230)
 -- Name: observation; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -1981,15 +2104,15 @@ CREATE TABLE public.observation (
     fk_result_template_id bigint,
     CONSTRAINT observation_detection_limit_flag_check CHECK ((detection_limit_flag = ANY (ARRAY[NULL::integer, '-1'::integer, 1]))),
     CONSTRAINT observation_is_deleted_check CHECK ((is_deleted = ANY (ARRAY[1, 0]))),
-    CONSTRAINT observation_value_type_check CHECK (((value_type)::text = ANY ((ARRAY['quantity'::character varying, 'count'::character varying, 'text'::character varying, 'category'::character varying, 'bool'::character varying, 'profile'::character varying, 'complex'::character varying, 'dataarray'::character varying, 'geometry'::character varying, 'blob'::character varying, 'reference'::character varying, 'trajectory'::character varying])::text[])))
+    CONSTRAINT observation_value_type_check CHECK (((value_type)::text = ANY ((ARRAY['quantity'::character varying, 'count'::character varying, 'text'::character varying, 'category'::character varying, 'bool'::character varying, 'profile'::character varying, 'complex'::character varying, 'dataarray'::character varying, 'geometry'::character varying, 'blob'::character varying, 'reference'::character varying, 'trajectory'::character varying, 'sensorML20'::character varying])::text[])))
 );
 
 
 ALTER TABLE public.observation OWNER TO postgres;
 
 --
--- TOC entry 5235 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5567 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: TABLE observation; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -1997,8 +2120,8 @@ COMMENT ON TABLE public.observation IS 'Storage of the observation values with t
 
 
 --
--- TOC entry 5236 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5568 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2006,8 +2129,8 @@ COMMENT ON COLUMN public.observation.observation_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5237 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5569 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2015,8 +2138,8 @@ COMMENT ON COLUMN public.observation.value_type IS 'Indicator used by Hibernate 
 
 
 --
--- TOC entry 5238 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5570 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.fk_dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2024,8 +2147,8 @@ COMMENT ON COLUMN public.observation.fk_dataset_id IS 'Reference to the dataset 
 
 
 --
--- TOC entry 5239 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5571 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.sampling_time_start; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2033,8 +2156,8 @@ COMMENT ON COLUMN public.observation.sampling_time_start IS 'The timestamp when 
 
 
 --
--- TOC entry 5240 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5572 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.sampling_time_end; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2042,8 +2165,8 @@ COMMENT ON COLUMN public.observation.sampling_time_end IS 'The timestamp when th
 
 
 --
--- TOC entry 5241 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5573 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.result_time; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2051,8 +2174,8 @@ COMMENT ON COLUMN public.observation.result_time IS 'The timestamp when the obse
 
 
 --
--- TOC entry 5242 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5574 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2060,8 +2183,8 @@ COMMENT ON COLUMN public.observation.identifier IS 'Unique identifier of the obs
 
 
 --
--- TOC entry 5243 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5575 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2069,8 +2192,8 @@ COMMENT ON COLUMN public.observation.sta_identifier IS 'Unique identifier used b
 
 
 --
--- TOC entry 5244 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5576 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.fk_identifier_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2078,8 +2201,8 @@ COMMENT ON COLUMN public.observation.fk_identifier_codespace_id IS 'The codespac
 
 
 --
--- TOC entry 5245 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5577 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2087,8 +2210,8 @@ COMMENT ON COLUMN public.observation.name IS 'The human readable name of the obs
 
 
 --
--- TOC entry 5246 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5578 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.fk_name_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2096,8 +2219,8 @@ COMMENT ON COLUMN public.observation.fk_name_codespace_id IS 'The codespace of t
 
 
 --
--- TOC entry 5247 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5579 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2105,8 +2228,8 @@ COMMENT ON COLUMN public.observation.description IS 'A short description of the 
 
 
 --
--- TOC entry 5248 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5580 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.is_deleted; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2114,8 +2237,8 @@ COMMENT ON COLUMN public.observation.is_deleted IS 'Flag that indicates if this 
 
 
 --
--- TOC entry 5249 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5581 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.valid_time_start; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2123,8 +2246,8 @@ COMMENT ON COLUMN public.observation.valid_time_start IS 'The timestamp from whe
 
 
 --
--- TOC entry 5250 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5582 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.valid_time_end; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2132,8 +2255,8 @@ COMMENT ON COLUMN public.observation.valid_time_end IS 'The timestamp until when
 
 
 --
--- TOC entry 5251 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5583 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.sampling_geometry; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2141,8 +2264,8 @@ COMMENT ON COLUMN public.observation.sampling_geometry IS 'The geometry that rep
 
 
 --
--- TOC entry 5252 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5584 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2150,8 +2273,8 @@ COMMENT ON COLUMN public.observation.value_identifier IS 'Identifier of the valu
 
 
 --
--- TOC entry 5253 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5585 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2159,8 +2282,8 @@ COMMENT ON COLUMN public.observation.value_name IS 'Identifier of the name. E.g.
 
 
 --
--- TOC entry 5254 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5586 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2168,8 +2291,8 @@ COMMENT ON COLUMN public.observation.value_description IS 'Identifier of the des
 
 
 --
--- TOC entry 5255 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5587 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.vertical_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2177,8 +2300,8 @@ COMMENT ON COLUMN public.observation.vertical_from IS 'The start level of a vert
 
 
 --
--- TOC entry 5256 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5588 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.vertical_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2186,8 +2309,8 @@ COMMENT ON COLUMN public.observation.vertical_to IS 'The end level or the level 
 
 
 --
--- TOC entry 5257 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5589 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.fk_parent_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2195,8 +2318,8 @@ COMMENT ON COLUMN public.observation.fk_parent_observation_id IS 'Reference to t
 
 
 --
--- TOC entry 5258 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5590 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.detection_limit_flag; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2204,8 +2327,8 @@ COMMENT ON COLUMN public.observation.detection_limit_flag IS 'Flag that indicate
 
 
 --
--- TOC entry 5259 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5591 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.detection_limit; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2213,8 +2336,8 @@ COMMENT ON COLUMN public.observation.detection_limit IS 'The detection limit';
 
 
 --
--- TOC entry 5260 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5592 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_reference; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2222,8 +2345,8 @@ COMMENT ON COLUMN public.observation.value_reference IS 'The reference value (UR
 
 
 --
--- TOC entry 5261 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5593 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_geometry; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2231,8 +2354,8 @@ COMMENT ON COLUMN public.observation.value_geometry IS 'The geometry value of an
 
 
 --
--- TOC entry 5262 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5594 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.value_array; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2240,8 +2363,8 @@ COMMENT ON COLUMN public.observation.value_array IS 'The textual value of an obs
 
 
 --
--- TOC entry 5263 (class 0 OID 0)
--- Dependencies: 289
+-- TOC entry 5595 (class 0 OID 0)
+-- Dependencies: 327
 -- Name: COLUMN observation.fk_result_template_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2249,7 +2372,7 @@ COMMENT ON COLUMN public.observation.fk_result_template_id IS 'Reference to the 
 
 
 --
--- TOC entry 290 (class 1259 OID 19837)
+-- TOC entry 328 (class 1259 OID 37243)
 -- Name: observation_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2267,8 +2390,8 @@ CREATE TABLE public.observation_i18n (
 ALTER TABLE public.observation_i18n OWNER TO postgres;
 
 --
--- TOC entry 5264 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5596 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.observation_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2276,8 +2399,8 @@ COMMENT ON COLUMN public.observation_i18n.observation_i18n_id IS 'PK column of t
 
 
 --
--- TOC entry 5265 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5597 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.fk_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2285,8 +2408,8 @@ COMMENT ON COLUMN public.observation_i18n.fk_observation_id IS 'Reference to the
 
 
 --
--- TOC entry 5266 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5598 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2294,8 +2417,8 @@ COMMENT ON COLUMN public.observation_i18n.locale IS 'Locale/language specificati
 
 
 --
--- TOC entry 5267 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5599 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2303,8 +2426,8 @@ COMMENT ON COLUMN public.observation_i18n.name IS 'Locale/language specific name
 
 
 --
--- TOC entry 5268 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5600 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2312,8 +2435,8 @@ COMMENT ON COLUMN public.observation_i18n.description IS 'Locale/language specif
 
 
 --
--- TOC entry 5269 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5601 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.value_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2321,8 +2444,8 @@ COMMENT ON COLUMN public.observation_i18n.value_name IS 'Locale/language specifi
 
 
 --
--- TOC entry 5270 (class 0 OID 0)
--- Dependencies: 290
+-- TOC entry 5602 (class 0 OID 0)
+-- Dependencies: 328
 -- Name: COLUMN observation_i18n.value_description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2330,7 +2453,7 @@ COMMENT ON COLUMN public.observation_i18n.value_description IS 'Locale/language 
 
 
 --
--- TOC entry 333 (class 1259 OID 20262)
+-- TOC entry 289 (class 1259 OID 37075)
 -- Name: observation_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2345,7 +2468,7 @@ CREATE SEQUENCE public.observation_i18n_seq
 ALTER TABLE public.observation_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 291 (class 1259 OID 19845)
+-- TOC entry 329 (class 1259 OID 37250)
 -- Name: observation_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2357,6 +2480,7 @@ CREATE TABLE public.observation_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_observation_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_boolean smallint,
     value_category character varying(255),
     fk_unit_id bigint,
@@ -2367,7 +2491,6 @@ CREATE TABLE public.observation_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT observation_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -2375,8 +2498,8 @@ CREATE TABLE public.observation_parameter (
 ALTER TABLE public.observation_parameter OWNER TO postgres;
 
 --
--- TOC entry 5271 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5603 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: TABLE observation_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2384,8 +2507,8 @@ COMMENT ON TABLE public.observation_parameter IS 'Storage of relations between o
 
 
 --
--- TOC entry 5272 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5604 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2393,8 +2516,8 @@ COMMENT ON COLUMN public.observation_parameter.parameter_id IS 'PK column of the
 
 
 --
--- TOC entry 5273 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5605 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2402,8 +2525,8 @@ COMMENT ON COLUMN public.observation_parameter.type IS 'Indicator used by Hibern
 
 
 --
--- TOC entry 5274 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5606 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2411,8 +2534,8 @@ COMMENT ON COLUMN public.observation_parameter.name IS 'The name of the paramete
 
 
 --
--- TOC entry 5275 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5607 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2420,8 +2543,8 @@ COMMENT ON COLUMN public.observation_parameter.description IS 'A short descripti
 
 
 --
--- TOC entry 5276 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5608 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2429,8 +2552,8 @@ COMMENT ON COLUMN public.observation_parameter.last_update IS 'Timestamp that pr
 
 
 --
--- TOC entry 5277 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5609 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2438,8 +2561,8 @@ COMMENT ON COLUMN public.observation_parameter.domain IS 'The domain this parame
 
 
 --
--- TOC entry 5278 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5610 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.fk_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2447,8 +2570,17 @@ COMMENT ON COLUMN public.observation_parameter.fk_observation_id IS 'Reference t
 
 
 --
--- TOC entry 5279 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5611 (class 0 OID 0)
+-- Dependencies: 329
+-- Name: COLUMN observation_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.observation_parameter.fk_parent_parameter_id IS 'Reference to the Observation this Parameter describes.';
+
+
+--
+-- TOC entry 5612 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2456,8 +2588,8 @@ COMMENT ON COLUMN public.observation_parameter.value_boolean IS 'Storage of a bo
 
 
 --
--- TOC entry 5280 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5613 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2465,8 +2597,8 @@ COMMENT ON COLUMN public.observation_parameter.value_category IS 'Storage of a c
 
 
 --
--- TOC entry 5281 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5614 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2474,8 +2606,8 @@ COMMENT ON COLUMN public.observation_parameter.fk_unit_id IS 'Reference to the u
 
 
 --
--- TOC entry 5282 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5615 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2483,8 +2615,8 @@ COMMENT ON COLUMN public.observation_parameter.value_count IS 'Storage of a coun
 
 
 --
--- TOC entry 5283 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5616 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2492,8 +2624,8 @@ COMMENT ON COLUMN public.observation_parameter.value_quantity IS 'Storage of a q
 
 
 --
--- TOC entry 5284 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5617 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2501,8 +2633,8 @@ COMMENT ON COLUMN public.observation_parameter.value_text IS 'Storage of a textu
 
 
 --
--- TOC entry 5285 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5618 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2510,8 +2642,8 @@ COMMENT ON COLUMN public.observation_parameter.value_xml IS 'Storage of a XML en
 
 
 --
--- TOC entry 5286 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5619 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2519,8 +2651,8 @@ COMMENT ON COLUMN public.observation_parameter.value_json IS 'Storage of a JSON 
 
 
 --
--- TOC entry 5287 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5620 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2528,8 +2660,8 @@ COMMENT ON COLUMN public.observation_parameter.value_temporal_from IS 'Storage o
 
 
 --
--- TOC entry 5288 (class 0 OID 0)
--- Dependencies: 291
+-- TOC entry 5621 (class 0 OID 0)
+-- Dependencies: 329
 -- Name: COLUMN observation_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2537,16 +2669,7 @@ COMMENT ON COLUMN public.observation_parameter.value_temporal_to IS 'Storage of 
 
 
 --
--- TOC entry 5289 (class 0 OID 0)
--- Dependencies: 291
--- Name: COLUMN observation_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.observation_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 334 (class 1259 OID 20264)
+-- TOC entry 290 (class 1259 OID 37076)
 -- Name: observation_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2561,7 +2684,7 @@ CREATE SEQUENCE public.observation_seq
 ALTER TABLE public.observation_seq OWNER TO postgres;
 
 --
--- TOC entry 292 (class 1259 OID 19854)
+-- TOC entry 330 (class 1259 OID 37258)
 -- Name: offering; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2585,8 +2708,8 @@ CREATE TABLE public.offering (
 ALTER TABLE public.offering OWNER TO postgres;
 
 --
--- TOC entry 5290 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5622 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: TABLE offering; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2594,8 +2717,8 @@ COMMENT ON TABLE public.offering IS 'Storage of the offerings which is required 
 
 
 --
--- TOC entry 5291 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5623 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2603,8 +2726,8 @@ COMMENT ON COLUMN public.offering.offering_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5292 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5624 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2612,8 +2735,8 @@ COMMENT ON COLUMN public.offering.identifier IS 'Unique identifier of the offeri
 
 
 --
--- TOC entry 5293 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5625 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.fk_identifier_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2621,8 +2744,8 @@ COMMENT ON COLUMN public.offering.fk_identifier_codespace_id IS 'The codespace o
 
 
 --
--- TOC entry 5294 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5626 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2630,8 +2753,8 @@ COMMENT ON COLUMN public.offering.name IS 'The human readable name of the offeri
 
 
 --
--- TOC entry 5295 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5627 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.fk_name_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2639,8 +2762,8 @@ COMMENT ON COLUMN public.offering.fk_name_codespace_id IS 'The codespace of the 
 
 
 --
--- TOC entry 5296 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5628 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2648,8 +2771,8 @@ COMMENT ON COLUMN public.offering.description IS 'A short description of the off
 
 
 --
--- TOC entry 5297 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5629 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.sampling_time_start; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2657,8 +2780,8 @@ COMMENT ON COLUMN public.offering.sampling_time_start IS 'The minimum samplingTi
 
 
 --
--- TOC entry 5298 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5630 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.sampling_time_end; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2666,8 +2789,8 @@ COMMENT ON COLUMN public.offering.sampling_time_end IS 'The maximum samplingTime
 
 
 --
--- TOC entry 5299 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5631 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.result_time_start; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2675,8 +2798,8 @@ COMMENT ON COLUMN public.offering.result_time_start IS 'The minimum resultTimeSt
 
 
 --
--- TOC entry 5300 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5632 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.result_time_end; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2684,8 +2807,8 @@ COMMENT ON COLUMN public.offering.result_time_end IS 'The maximum resultTimeEnd 
 
 
 --
--- TOC entry 5301 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5633 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.valid_time_start; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2693,8 +2816,8 @@ COMMENT ON COLUMN public.offering.valid_time_start IS 'The minimum validTimeStar
 
 
 --
--- TOC entry 5302 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5634 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.valid_time_end; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2702,8 +2825,8 @@ COMMENT ON COLUMN public.offering.valid_time_end IS 'The maximum validTimeEnd of
 
 
 --
--- TOC entry 5303 (class 0 OID 0)
--- Dependencies: 292
+-- TOC entry 5635 (class 0 OID 0)
+-- Dependencies: 330
 -- Name: COLUMN offering.geom; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2711,7 +2834,7 @@ COMMENT ON COLUMN public.offering.geom IS 'The envelope/geometry of all features
 
 
 --
--- TOC entry 293 (class 1259 OID 19862)
+-- TOC entry 331 (class 1259 OID 37265)
 -- Name: offering_feature_type; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2724,8 +2847,8 @@ CREATE TABLE public.offering_feature_type (
 ALTER TABLE public.offering_feature_type OWNER TO postgres;
 
 --
--- TOC entry 5304 (class 0 OID 0)
--- Dependencies: 293
+-- TOC entry 5636 (class 0 OID 0)
+-- Dependencies: 331
 -- Name: TABLE offering_feature_type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2733,8 +2856,8 @@ COMMENT ON TABLE public.offering_feature_type IS 'Relation to store the valid  f
 
 
 --
--- TOC entry 5305 (class 0 OID 0)
--- Dependencies: 293
+-- TOC entry 5637 (class 0 OID 0)
+-- Dependencies: 331
 -- Name: COLUMN offering_feature_type.fk_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2742,8 +2865,8 @@ COMMENT ON COLUMN public.offering_feature_type.fk_offering_id IS 'The related of
 
 
 --
--- TOC entry 5306 (class 0 OID 0)
--- Dependencies: 293
+-- TOC entry 5638 (class 0 OID 0)
+-- Dependencies: 331
 -- Name: COLUMN offering_feature_type.fk_format_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2751,7 +2874,7 @@ COMMENT ON COLUMN public.offering_feature_type.fk_format_id IS 'The reference of
 
 
 --
--- TOC entry 294 (class 1259 OID 19867)
+-- TOC entry 332 (class 1259 OID 37270)
 -- Name: offering_hierarchy; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2764,8 +2887,8 @@ CREATE TABLE public.offering_hierarchy (
 ALTER TABLE public.offering_hierarchy OWNER TO postgres;
 
 --
--- TOC entry 5307 (class 0 OID 0)
--- Dependencies: 294
+-- TOC entry 5639 (class 0 OID 0)
+-- Dependencies: 332
 -- Name: COLUMN offering_hierarchy.fk_child_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2773,8 +2896,8 @@ COMMENT ON COLUMN public.offering_hierarchy.fk_child_offering_id IS 'Reference t
 
 
 --
--- TOC entry 5308 (class 0 OID 0)
--- Dependencies: 294
+-- TOC entry 5640 (class 0 OID 0)
+-- Dependencies: 332
 -- Name: COLUMN offering_hierarchy.fk_parent_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2782,7 +2905,7 @@ COMMENT ON COLUMN public.offering_hierarchy.fk_parent_offering_id IS 'Reference 
 
 
 --
--- TOC entry 295 (class 1259 OID 19872)
+-- TOC entry 333 (class 1259 OID 37275)
 -- Name: offering_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2798,8 +2921,8 @@ CREATE TABLE public.offering_i18n (
 ALTER TABLE public.offering_i18n OWNER TO postgres;
 
 --
--- TOC entry 5309 (class 0 OID 0)
--- Dependencies: 295
+-- TOC entry 5641 (class 0 OID 0)
+-- Dependencies: 333
 -- Name: TABLE offering_i18n; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2807,8 +2930,8 @@ COMMENT ON TABLE public.offering_i18n IS 'Storage for internationalizations of o
 
 
 --
--- TOC entry 5310 (class 0 OID 0)
--- Dependencies: 295
+-- TOC entry 5642 (class 0 OID 0)
+-- Dependencies: 333
 -- Name: COLUMN offering_i18n.offering_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2816,8 +2939,8 @@ COMMENT ON COLUMN public.offering_i18n.offering_i18n_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5311 (class 0 OID 0)
--- Dependencies: 295
+-- TOC entry 5643 (class 0 OID 0)
+-- Dependencies: 333
 -- Name: COLUMN offering_i18n.fk_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2825,8 +2948,8 @@ COMMENT ON COLUMN public.offering_i18n.fk_offering_id IS 'Reference to the offer
 
 
 --
--- TOC entry 5312 (class 0 OID 0)
--- Dependencies: 295
+-- TOC entry 5644 (class 0 OID 0)
+-- Dependencies: 333
 -- Name: COLUMN offering_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2834,8 +2957,8 @@ COMMENT ON COLUMN public.offering_i18n.locale IS 'Locale/language specification 
 
 
 --
--- TOC entry 5313 (class 0 OID 0)
--- Dependencies: 295
+-- TOC entry 5645 (class 0 OID 0)
+-- Dependencies: 333
 -- Name: COLUMN offering_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2843,8 +2966,8 @@ COMMENT ON COLUMN public.offering_i18n.name IS 'Locale/language specific name of
 
 
 --
--- TOC entry 5314 (class 0 OID 0)
--- Dependencies: 295
+-- TOC entry 5646 (class 0 OID 0)
+-- Dependencies: 333
 -- Name: COLUMN offering_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2852,7 +2975,7 @@ COMMENT ON COLUMN public.offering_i18n.description IS 'Locale/language specific 
 
 
 --
--- TOC entry 335 (class 1259 OID 20266)
+-- TOC entry 291 (class 1259 OID 37077)
 -- Name: offering_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2867,7 +2990,7 @@ CREATE SEQUENCE public.offering_i18n_seq
 ALTER TABLE public.offering_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 296 (class 1259 OID 19880)
+-- TOC entry 334 (class 1259 OID 37282)
 -- Name: offering_observation_type; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2880,8 +3003,8 @@ CREATE TABLE public.offering_observation_type (
 ALTER TABLE public.offering_observation_type OWNER TO postgres;
 
 --
--- TOC entry 5315 (class 0 OID 0)
--- Dependencies: 296
+-- TOC entry 5647 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: TABLE offering_observation_type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2889,8 +3012,8 @@ COMMENT ON TABLE public.offering_observation_type IS 'Relation to store the vali
 
 
 --
--- TOC entry 5316 (class 0 OID 0)
--- Dependencies: 296
+-- TOC entry 5648 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN offering_observation_type.fk_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2898,8 +3021,8 @@ COMMENT ON COLUMN public.offering_observation_type.fk_offering_id IS 'The relate
 
 
 --
--- TOC entry 5317 (class 0 OID 0)
--- Dependencies: 296
+-- TOC entry 5649 (class 0 OID 0)
+-- Dependencies: 334
 -- Name: COLUMN offering_observation_type.fk_format_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2907,7 +3030,7 @@ COMMENT ON COLUMN public.offering_observation_type.fk_format_id IS 'The referenc
 
 
 --
--- TOC entry 297 (class 1259 OID 19885)
+-- TOC entry 335 (class 1259 OID 37287)
 -- Name: offering_related_feature; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2920,8 +3043,8 @@ CREATE TABLE public.offering_related_feature (
 ALTER TABLE public.offering_related_feature OWNER TO postgres;
 
 --
--- TOC entry 5318 (class 0 OID 0)
--- Dependencies: 297
+-- TOC entry 5650 (class 0 OID 0)
+-- Dependencies: 335
 -- Name: TABLE offering_related_feature; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2929,8 +3052,8 @@ COMMENT ON TABLE public.offering_related_feature IS 'Storage tfor the relation b
 
 
 --
--- TOC entry 5319 (class 0 OID 0)
--- Dependencies: 297
+-- TOC entry 5651 (class 0 OID 0)
+-- Dependencies: 335
 -- Name: COLUMN offering_related_feature.fk_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2938,8 +3061,8 @@ COMMENT ON COLUMN public.offering_related_feature.fk_offering_id IS 'The related
 
 
 --
--- TOC entry 5320 (class 0 OID 0)
--- Dependencies: 297
+-- TOC entry 5652 (class 0 OID 0)
+-- Dependencies: 335
 -- Name: COLUMN offering_related_feature.fk_related_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2947,7 +3070,7 @@ COMMENT ON COLUMN public.offering_related_feature.fk_related_feature_id IS 'The 
 
 
 --
--- TOC entry 336 (class 1259 OID 20268)
+-- TOC entry 292 (class 1259 OID 37078)
 -- Name: offering_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2962,7 +3085,7 @@ CREATE SEQUENCE public.offering_seq
 ALTER TABLE public.offering_seq OWNER TO postgres;
 
 --
--- TOC entry 337 (class 1259 OID 20270)
+-- TOC entry 293 (class 1259 OID 37079)
 -- Name: parameter_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2977,7 +3100,7 @@ CREATE SEQUENCE public.parameter_seq
 ALTER TABLE public.parameter_seq OWNER TO postgres;
 
 --
--- TOC entry 298 (class 1259 OID 19890)
+-- TOC entry 336 (class 1259 OID 37292)
 -- Name: phenomenon; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2995,8 +3118,8 @@ CREATE TABLE public.phenomenon (
 ALTER TABLE public.phenomenon OWNER TO postgres;
 
 --
--- TOC entry 5321 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5653 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: TABLE phenomenon; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3004,8 +3127,8 @@ COMMENT ON TABLE public.phenomenon IS 'Storage of the phenomenon/observablePrope
 
 
 --
--- TOC entry 5322 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5654 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3013,8 +3136,8 @@ COMMENT ON COLUMN public.phenomenon.phenomenon_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5323 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5655 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3022,8 +3145,8 @@ COMMENT ON COLUMN public.phenomenon.identifier IS 'Unique identifier of the phen
 
 
 --
--- TOC entry 5324 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5656 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3031,8 +3154,8 @@ COMMENT ON COLUMN public.phenomenon.sta_identifier IS 'Unique identifier used by
 
 
 --
--- TOC entry 5325 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5657 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.fk_identifier_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3040,8 +3163,8 @@ COMMENT ON COLUMN public.phenomenon.fk_identifier_codespace_id IS 'The codespace
 
 
 --
--- TOC entry 5326 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5658 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3049,8 +3172,8 @@ COMMENT ON COLUMN public.phenomenon.name IS 'The human readable name of the phen
 
 
 --
--- TOC entry 5327 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5659 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.fk_name_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3058,8 +3181,8 @@ COMMENT ON COLUMN public.phenomenon.fk_name_codespace_id IS 'The codespace of th
 
 
 --
--- TOC entry 5328 (class 0 OID 0)
--- Dependencies: 298
+-- TOC entry 5660 (class 0 OID 0)
+-- Dependencies: 336
 -- Name: COLUMN phenomenon.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3067,7 +3190,7 @@ COMMENT ON COLUMN public.phenomenon.description IS 'A short description of the p
 
 
 --
--- TOC entry 299 (class 1259 OID 19898)
+-- TOC entry 337 (class 1259 OID 37299)
 -- Name: phenomenon_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3083,8 +3206,8 @@ CREATE TABLE public.phenomenon_i18n (
 ALTER TABLE public.phenomenon_i18n OWNER TO postgres;
 
 --
--- TOC entry 5329 (class 0 OID 0)
--- Dependencies: 299
+-- TOC entry 5661 (class 0 OID 0)
+-- Dependencies: 337
 -- Name: TABLE phenomenon_i18n; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3092,8 +3215,8 @@ COMMENT ON TABLE public.phenomenon_i18n IS 'Storage for internationalizations of
 
 
 --
--- TOC entry 5330 (class 0 OID 0)
--- Dependencies: 299
+-- TOC entry 5662 (class 0 OID 0)
+-- Dependencies: 337
 -- Name: COLUMN phenomenon_i18n.phenomenon_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3101,8 +3224,8 @@ COMMENT ON COLUMN public.phenomenon_i18n.phenomenon_i18n_id IS 'PK column of the
 
 
 --
--- TOC entry 5331 (class 0 OID 0)
--- Dependencies: 299
+-- TOC entry 5663 (class 0 OID 0)
+-- Dependencies: 337
 -- Name: COLUMN phenomenon_i18n.fk_phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3110,8 +3233,8 @@ COMMENT ON COLUMN public.phenomenon_i18n.fk_phenomenon_id IS 'Reference to the p
 
 
 --
--- TOC entry 5332 (class 0 OID 0)
--- Dependencies: 299
+-- TOC entry 5664 (class 0 OID 0)
+-- Dependencies: 337
 -- Name: COLUMN phenomenon_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3119,8 +3242,8 @@ COMMENT ON COLUMN public.phenomenon_i18n.locale IS 'Locale/language specificatio
 
 
 --
--- TOC entry 5333 (class 0 OID 0)
--- Dependencies: 299
+-- TOC entry 5665 (class 0 OID 0)
+-- Dependencies: 337
 -- Name: COLUMN phenomenon_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3128,8 +3251,8 @@ COMMENT ON COLUMN public.phenomenon_i18n.name IS 'Locale/language specific name 
 
 
 --
--- TOC entry 5334 (class 0 OID 0)
--- Dependencies: 299
+-- TOC entry 5666 (class 0 OID 0)
+-- Dependencies: 337
 -- Name: COLUMN phenomenon_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3137,7 +3260,7 @@ COMMENT ON COLUMN public.phenomenon_i18n.description IS 'Locale/language specifi
 
 
 --
--- TOC entry 338 (class 1259 OID 20272)
+-- TOC entry 294 (class 1259 OID 37080)
 -- Name: phenomenon_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3152,7 +3275,7 @@ CREATE SEQUENCE public.phenomenon_i18n_seq
 ALTER TABLE public.phenomenon_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 300 (class 1259 OID 19906)
+-- TOC entry 338 (class 1259 OID 37306)
 -- Name: phenomenon_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3164,6 +3287,7 @@ CREATE TABLE public.phenomenon_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_phenomenon_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_boolean smallint,
     value_category character varying(255),
     fk_unit_id bigint,
@@ -3174,7 +3298,6 @@ CREATE TABLE public.phenomenon_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT phenomenon_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -3182,8 +3305,8 @@ CREATE TABLE public.phenomenon_parameter (
 ALTER TABLE public.phenomenon_parameter OWNER TO postgres;
 
 --
--- TOC entry 5335 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5667 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: TABLE phenomenon_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3191,8 +3314,8 @@ COMMENT ON TABLE public.phenomenon_parameter IS 'Storage for additional informat
 
 
 --
--- TOC entry 5336 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5668 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3200,8 +3323,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.parameter_id IS 'PK column of the 
 
 
 --
--- TOC entry 5337 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5669 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3209,8 +3332,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.type IS 'Indicator used by Hiberna
 
 
 --
--- TOC entry 5338 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5670 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3218,8 +3341,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.name IS 'The name of the parameter
 
 
 --
--- TOC entry 5339 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5671 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3227,8 +3350,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.description IS 'A short descriptio
 
 
 --
--- TOC entry 5340 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5672 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3236,8 +3359,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.last_update IS 'Timestamp that pro
 
 
 --
--- TOC entry 5341 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5673 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3245,8 +3368,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.domain IS 'The domain this paramet
 
 
 --
--- TOC entry 5342 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5674 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.fk_phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3254,8 +3377,17 @@ COMMENT ON COLUMN public.phenomenon_parameter.fk_phenomenon_id IS 'Reference to 
 
 
 --
--- TOC entry 5343 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5675 (class 0 OID 0)
+-- Dependencies: 338
+-- Name: COLUMN phenomenon_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.phenomenon_parameter.fk_parent_parameter_id IS 'Reference to the Phenomenon this Parameter describes.';
+
+
+--
+-- TOC entry 5676 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3263,8 +3395,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_boolean IS 'Storage of a boo
 
 
 --
--- TOC entry 5344 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5677 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3272,8 +3404,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_category IS 'Storage of a ca
 
 
 --
--- TOC entry 5345 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5678 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3281,8 +3413,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.fk_unit_id IS 'Reference to the un
 
 
 --
--- TOC entry 5346 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5679 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3290,8 +3422,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_count IS 'Storage of a count
 
 
 --
--- TOC entry 5347 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5680 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3299,8 +3431,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_quantity IS 'Storage of a qu
 
 
 --
--- TOC entry 5348 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5681 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3308,8 +3440,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_text IS 'Storage of a textua
 
 
 --
--- TOC entry 5349 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5682 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3317,8 +3449,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_xml IS 'Storage of a XML enc
 
 
 --
--- TOC entry 5350 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5683 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3326,8 +3458,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_json IS 'Storage of a JSON e
 
 
 --
--- TOC entry 5351 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5684 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3335,8 +3467,8 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_temporal_from IS 'Storage of
 
 
 --
--- TOC entry 5352 (class 0 OID 0)
--- Dependencies: 300
+-- TOC entry 5685 (class 0 OID 0)
+-- Dependencies: 338
 -- Name: COLUMN phenomenon_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3344,16 +3476,7 @@ COMMENT ON COLUMN public.phenomenon_parameter.value_temporal_to IS 'Storage of a
 
 
 --
--- TOC entry 5353 (class 0 OID 0)
--- Dependencies: 300
--- Name: COLUMN phenomenon_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.phenomenon_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 339 (class 1259 OID 20274)
+-- TOC entry 295 (class 1259 OID 37081)
 -- Name: phenomenon_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3368,7 +3491,7 @@ CREATE SEQUENCE public.phenomenon_seq
 ALTER TABLE public.phenomenon_seq OWNER TO postgres;
 
 --
--- TOC entry 301 (class 1259 OID 19915)
+-- TOC entry 339 (class 1259 OID 37314)
 -- Name: platform; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3386,8 +3509,8 @@ CREATE TABLE public.platform (
 ALTER TABLE public.platform OWNER TO postgres;
 
 --
--- TOC entry 5354 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5686 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: TABLE platform; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3395,8 +3518,8 @@ COMMENT ON TABLE public.platform IS 'Storage of the platforms. With a platform s
 
 
 --
--- TOC entry 5355 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5687 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.platform_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3404,8 +3527,8 @@ COMMENT ON COLUMN public.platform.platform_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5356 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5688 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3413,8 +3536,8 @@ COMMENT ON COLUMN public.platform.identifier IS 'Unique identifier of the platfo
 
 
 --
--- TOC entry 5357 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5689 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.sta_identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3422,8 +3545,8 @@ COMMENT ON COLUMN public.platform.sta_identifier IS 'Unique identifier used by S
 
 
 --
--- TOC entry 5358 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5690 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.fk_identifier_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3431,8 +3554,8 @@ COMMENT ON COLUMN public.platform.fk_identifier_codespace_id IS 'The codespace o
 
 
 --
--- TOC entry 5359 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5691 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3440,8 +3563,8 @@ COMMENT ON COLUMN public.platform.name IS 'The human readable name of the platfo
 
 
 --
--- TOC entry 5360 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5692 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.fk_name_codespace_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3449,8 +3572,8 @@ COMMENT ON COLUMN public.platform.fk_name_codespace_id IS 'The codespace of the 
 
 
 --
--- TOC entry 5361 (class 0 OID 0)
--- Dependencies: 301
+-- TOC entry 5693 (class 0 OID 0)
+-- Dependencies: 339
 -- Name: COLUMN platform.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3458,7 +3581,7 @@ COMMENT ON COLUMN public.platform.description IS 'A short description of the pla
 
 
 --
--- TOC entry 302 (class 1259 OID 19923)
+-- TOC entry 340 (class 1259 OID 37321)
 -- Name: platform_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3474,8 +3597,8 @@ CREATE TABLE public.platform_i18n (
 ALTER TABLE public.platform_i18n OWNER TO postgres;
 
 --
--- TOC entry 5362 (class 0 OID 0)
--- Dependencies: 302
+-- TOC entry 5694 (class 0 OID 0)
+-- Dependencies: 340
 -- Name: COLUMN platform_i18n.platform_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3483,8 +3606,8 @@ COMMENT ON COLUMN public.platform_i18n.platform_i18n_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5363 (class 0 OID 0)
--- Dependencies: 302
+-- TOC entry 5695 (class 0 OID 0)
+-- Dependencies: 340
 -- Name: COLUMN platform_i18n.fk_platform_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3492,8 +3615,8 @@ COMMENT ON COLUMN public.platform_i18n.fk_platform_id IS 'Reference to the platf
 
 
 --
--- TOC entry 5364 (class 0 OID 0)
--- Dependencies: 302
+-- TOC entry 5696 (class 0 OID 0)
+-- Dependencies: 340
 -- Name: COLUMN platform_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3501,8 +3624,8 @@ COMMENT ON COLUMN public.platform_i18n.locale IS 'Locale/language specification 
 
 
 --
--- TOC entry 5365 (class 0 OID 0)
--- Dependencies: 302
+-- TOC entry 5697 (class 0 OID 0)
+-- Dependencies: 340
 -- Name: COLUMN platform_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3510,8 +3633,8 @@ COMMENT ON COLUMN public.platform_i18n.name IS 'Locale/language specific name of
 
 
 --
--- TOC entry 5366 (class 0 OID 0)
--- Dependencies: 302
+-- TOC entry 5698 (class 0 OID 0)
+-- Dependencies: 340
 -- Name: COLUMN platform_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3519,7 +3642,7 @@ COMMENT ON COLUMN public.platform_i18n.description IS 'Locale/language specific 
 
 
 --
--- TOC entry 340 (class 1259 OID 20276)
+-- TOC entry 296 (class 1259 OID 37082)
 -- Name: platform_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3534,20 +3657,20 @@ CREATE SEQUENCE public.platform_i18n_seq
 ALTER TABLE public.platform_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 303 (class 1259 OID 19931)
+-- TOC entry 341 (class 1259 OID 37328)
 -- Name: platform_location; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.platform_location (
-    fk_location_id bigint NOT NULL,
-    fk_platform_id bigint NOT NULL
+    fk_platform_id bigint NOT NULL,
+    fk_location_id bigint NOT NULL
 );
 
 
 ALTER TABLE public.platform_location OWNER TO postgres;
 
 --
--- TOC entry 304 (class 1259 OID 19936)
+-- TOC entry 342 (class 1259 OID 37333)
 -- Name: platform_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3559,6 +3682,7 @@ CREATE TABLE public.platform_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_platform_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_category character varying(255),
     fk_unit_id bigint,
     value_boolean smallint,
@@ -3569,7 +3693,6 @@ CREATE TABLE public.platform_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT platform_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -3577,8 +3700,8 @@ CREATE TABLE public.platform_parameter (
 ALTER TABLE public.platform_parameter OWNER TO postgres;
 
 --
--- TOC entry 5367 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5699 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: TABLE platform_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3586,8 +3709,8 @@ COMMENT ON TABLE public.platform_parameter IS 'Storage for additional informatio
 
 
 --
--- TOC entry 5368 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5700 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3595,8 +3718,8 @@ COMMENT ON COLUMN public.platform_parameter.parameter_id IS 'PK column of the ta
 
 
 --
--- TOC entry 5369 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5701 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3604,8 +3727,8 @@ COMMENT ON COLUMN public.platform_parameter.type IS 'Indicator used by Hibernate
 
 
 --
--- TOC entry 5370 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5702 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3613,8 +3736,8 @@ COMMENT ON COLUMN public.platform_parameter.name IS 'The name of the parameter';
 
 
 --
--- TOC entry 5371 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5703 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3622,8 +3745,8 @@ COMMENT ON COLUMN public.platform_parameter.description IS 'A short description 
 
 
 --
--- TOC entry 5372 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5704 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3631,8 +3754,8 @@ COMMENT ON COLUMN public.platform_parameter.last_update IS 'Timestamp that provi
 
 
 --
--- TOC entry 5373 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5705 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3640,8 +3763,8 @@ COMMENT ON COLUMN public.platform_parameter.domain IS 'The domain this parameter
 
 
 --
--- TOC entry 5374 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5706 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.fk_platform_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3649,8 +3772,17 @@ COMMENT ON COLUMN public.platform_parameter.fk_platform_id IS 'Reference to the 
 
 
 --
--- TOC entry 5375 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5707 (class 0 OID 0)
+-- Dependencies: 342
+-- Name: COLUMN platform_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.platform_parameter.fk_parent_parameter_id IS 'Reference to the Platform this Parameter describes.';
+
+
+--
+-- TOC entry 5708 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3658,8 +3790,8 @@ COMMENT ON COLUMN public.platform_parameter.value_category IS 'Storage of a cate
 
 
 --
--- TOC entry 5376 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5709 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3667,8 +3799,8 @@ COMMENT ON COLUMN public.platform_parameter.fk_unit_id IS 'Reference to the unit
 
 
 --
--- TOC entry 5377 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5710 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3676,8 +3808,8 @@ COMMENT ON COLUMN public.platform_parameter.value_boolean IS 'Storage of a boole
 
 
 --
--- TOC entry 5378 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5711 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3685,8 +3817,8 @@ COMMENT ON COLUMN public.platform_parameter.value_count IS 'Storage of a count p
 
 
 --
--- TOC entry 5379 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5712 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3694,8 +3826,8 @@ COMMENT ON COLUMN public.platform_parameter.value_quantity IS 'Storage of a quan
 
 
 --
--- TOC entry 5380 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5713 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3703,8 +3835,8 @@ COMMENT ON COLUMN public.platform_parameter.value_text IS 'Storage of a textual 
 
 
 --
--- TOC entry 5381 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5714 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3712,8 +3844,8 @@ COMMENT ON COLUMN public.platform_parameter.value_xml IS 'Storage of a XML encod
 
 
 --
--- TOC entry 5382 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5715 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3721,8 +3853,8 @@ COMMENT ON COLUMN public.platform_parameter.value_json IS 'Storage of a JSON enc
 
 
 --
--- TOC entry 5383 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5716 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3730,8 +3862,8 @@ COMMENT ON COLUMN public.platform_parameter.value_temporal_from IS 'Storage of a
 
 
 --
--- TOC entry 5384 (class 0 OID 0)
--- Dependencies: 304
+-- TOC entry 5717 (class 0 OID 0)
+-- Dependencies: 342
 -- Name: COLUMN platform_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3739,16 +3871,7 @@ COMMENT ON COLUMN public.platform_parameter.value_temporal_to IS 'Storage of a t
 
 
 --
--- TOC entry 5385 (class 0 OID 0)
--- Dependencies: 304
--- Name: COLUMN platform_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.platform_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 341 (class 1259 OID 20278)
+-- TOC entry 297 (class 1259 OID 37083)
 -- Name: platform_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3763,7 +3886,7 @@ CREATE SEQUENCE public.platform_seq
 ALTER TABLE public.platform_seq OWNER TO postgres;
 
 --
--- TOC entry 305 (class 1259 OID 19945)
+-- TOC entry 343 (class 1259 OID 37341)
 -- Name: procedure; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3788,7 +3911,7 @@ CREATE TABLE public.procedure (
 ALTER TABLE public.procedure OWNER TO postgres;
 
 --
--- TOC entry 306 (class 1259 OID 19957)
+-- TOC entry 344 (class 1259 OID 37352)
 -- Name: procedure_hierarchy; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3801,7 +3924,7 @@ CREATE TABLE public.procedure_hierarchy (
 ALTER TABLE public.procedure_hierarchy OWNER TO postgres;
 
 --
--- TOC entry 307 (class 1259 OID 19962)
+-- TOC entry 345 (class 1259 OID 37357)
 -- Name: procedure_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3818,8 +3941,8 @@ CREATE TABLE public.procedure_history (
 ALTER TABLE public.procedure_history OWNER TO postgres;
 
 --
--- TOC entry 5386 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5718 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: TABLE procedure_history; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3827,8 +3950,8 @@ COMMENT ON TABLE public.procedure_history IS 'Storage of historical procedure de
 
 
 --
--- TOC entry 5387 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5719 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: COLUMN procedure_history.procedure_history_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3836,8 +3959,8 @@ COMMENT ON COLUMN public.procedure_history.procedure_history_id IS 'PK column of
 
 
 --
--- TOC entry 5388 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5720 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: COLUMN procedure_history.fk_procedure_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3845,8 +3968,8 @@ COMMENT ON COLUMN public.procedure_history.fk_procedure_id IS 'Reference to the 
 
 
 --
--- TOC entry 5389 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5721 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: COLUMN procedure_history.fk_format_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3854,8 +3977,8 @@ COMMENT ON COLUMN public.procedure_history.fk_format_id IS 'Reference to the for
 
 
 --
--- TOC entry 5390 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5722 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: COLUMN procedure_history.valid_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3863,8 +3986,8 @@ COMMENT ON COLUMN public.procedure_history.valid_from IS 'The timestamp from whi
 
 
 --
--- TOC entry 5391 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5723 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: COLUMN procedure_history.valid_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3872,8 +3995,8 @@ COMMENT ON COLUMN public.procedure_history.valid_to IS 'The timestamp until this
 
 
 --
--- TOC entry 5392 (class 0 OID 0)
--- Dependencies: 307
+-- TOC entry 5724 (class 0 OID 0)
+-- Dependencies: 345
 -- Name: COLUMN procedure_history.xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3881,7 +4004,7 @@ COMMENT ON COLUMN public.procedure_history.xml IS 'XML representation of this pr
 
 
 --
--- TOC entry 342 (class 1259 OID 20280)
+-- TOC entry 298 (class 1259 OID 37084)
 -- Name: procedure_history_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3896,7 +4019,7 @@ CREATE SEQUENCE public.procedure_history_seq
 ALTER TABLE public.procedure_history_seq OWNER TO postgres;
 
 --
--- TOC entry 308 (class 1259 OID 19970)
+-- TOC entry 346 (class 1259 OID 37364)
 -- Name: procedure_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3914,7 +4037,7 @@ CREATE TABLE public.procedure_i18n (
 ALTER TABLE public.procedure_i18n OWNER TO postgres;
 
 --
--- TOC entry 343 (class 1259 OID 20282)
+-- TOC entry 299 (class 1259 OID 37085)
 -- Name: procedure_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3929,7 +4052,7 @@ CREATE SEQUENCE public.procedure_i18n_seq
 ALTER TABLE public.procedure_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 309 (class 1259 OID 19978)
+-- TOC entry 347 (class 1259 OID 37371)
 -- Name: procedure_parameter; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3941,6 +4064,7 @@ CREATE TABLE public.procedure_parameter (
     last_update timestamp without time zone,
     domain character varying(255),
     fk_procedure_id bigint NOT NULL,
+    fk_parent_parameter_id bigint,
     value_boolean smallint,
     value_category character varying(255),
     fk_unit_id bigint,
@@ -3951,7 +4075,6 @@ CREATE TABLE public.procedure_parameter (
     value_json text,
     value_temporal_from timestamp without time zone,
     value_temporal_to timestamp without time zone,
-    fk_parent_parameter_id bigint,
     CONSTRAINT procedure_parameter_type_check CHECK (((type)::text = ANY ((ARRAY['bool'::character varying, 'category'::character varying, 'count'::character varying, 'quantity'::character varying, 'text'::character varying, 'xml'::character varying, 'json'::character varying, 'complex'::character varying, 'temporal'::character varying])::text[])))
 );
 
@@ -3959,8 +4082,8 @@ CREATE TABLE public.procedure_parameter (
 ALTER TABLE public.procedure_parameter OWNER TO postgres;
 
 --
--- TOC entry 5393 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5725 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: TABLE procedure_parameter; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3968,8 +4091,8 @@ COMMENT ON TABLE public.procedure_parameter IS 'Storage for additional informati
 
 
 --
--- TOC entry 5394 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5726 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.parameter_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3977,8 +4100,8 @@ COMMENT ON COLUMN public.procedure_parameter.parameter_id IS 'PK column of the t
 
 
 --
--- TOC entry 5395 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5727 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.type; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3986,8 +4109,8 @@ COMMENT ON COLUMN public.procedure_parameter.type IS 'Indicator used by Hibernat
 
 
 --
--- TOC entry 5396 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5728 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -3995,8 +4118,8 @@ COMMENT ON COLUMN public.procedure_parameter.name IS 'The name of the parameter'
 
 
 --
--- TOC entry 5397 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5729 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4004,8 +4127,8 @@ COMMENT ON COLUMN public.procedure_parameter.description IS 'A short description
 
 
 --
--- TOC entry 5398 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5730 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.last_update; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4013,8 +4136,8 @@ COMMENT ON COLUMN public.procedure_parameter.last_update IS 'Timestamp that prov
 
 
 --
--- TOC entry 5399 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5731 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.domain; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4022,8 +4145,8 @@ COMMENT ON COLUMN public.procedure_parameter.domain IS 'The domain this paramete
 
 
 --
--- TOC entry 5400 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5732 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.fk_procedure_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4031,8 +4154,17 @@ COMMENT ON COLUMN public.procedure_parameter.fk_procedure_id IS 'Reference to th
 
 
 --
--- TOC entry 5401 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5733 (class 0 OID 0)
+-- Dependencies: 347
+-- Name: COLUMN procedure_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.procedure_parameter.fk_parent_parameter_id IS 'Reference to the Procedure this Parameter describes.';
+
+
+--
+-- TOC entry 5734 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_boolean; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4040,8 +4172,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_boolean IS 'Storage of a bool
 
 
 --
--- TOC entry 5402 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5735 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_category; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4049,8 +4181,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_category IS 'Storage of a cat
 
 
 --
--- TOC entry 5403 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5736 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4058,8 +4190,8 @@ COMMENT ON COLUMN public.procedure_parameter.fk_unit_id IS 'Reference to the uni
 
 
 --
--- TOC entry 5404 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5737 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_count; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4067,8 +4199,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_count IS 'Storage of a count 
 
 
 --
--- TOC entry 5405 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5738 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_quantity; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4076,8 +4208,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_quantity IS 'Storage of a qua
 
 
 --
--- TOC entry 5406 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5739 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_text; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4085,8 +4217,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_text IS 'Storage of a textual
 
 
 --
--- TOC entry 5407 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5740 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_xml; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4094,8 +4226,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_xml IS 'Storage of a XML enco
 
 
 --
--- TOC entry 5408 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5741 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_json; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4103,8 +4235,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_json IS 'Storage of a JSON en
 
 
 --
--- TOC entry 5409 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5742 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_temporal_from; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4112,8 +4244,8 @@ COMMENT ON COLUMN public.procedure_parameter.value_temporal_from IS 'Storage of 
 
 
 --
--- TOC entry 5410 (class 0 OID 0)
--- Dependencies: 309
+-- TOC entry 5743 (class 0 OID 0)
+-- Dependencies: 347
 -- Name: COLUMN procedure_parameter.value_temporal_to; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4121,16 +4253,7 @@ COMMENT ON COLUMN public.procedure_parameter.value_temporal_to IS 'Storage of a 
 
 
 --
--- TOC entry 5411 (class 0 OID 0)
--- Dependencies: 309
--- Name: COLUMN procedure_parameter.fk_parent_parameter_id; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON COLUMN public.procedure_parameter.fk_parent_parameter_id IS 'Reference to the parent parameter';
-
-
---
--- TOC entry 344 (class 1259 OID 20284)
+-- TOC entry 300 (class 1259 OID 37086)
 -- Name: procedure_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4145,7 +4268,7 @@ CREATE SEQUENCE public.procedure_seq
 ALTER TABLE public.procedure_seq OWNER TO postgres;
 
 --
--- TOC entry 310 (class 1259 OID 19987)
+-- TOC entry 348 (class 1259 OID 37379)
 -- Name: related_dataset; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4160,8 +4283,8 @@ CREATE TABLE public.related_dataset (
 ALTER TABLE public.related_dataset OWNER TO postgres;
 
 --
--- TOC entry 5412 (class 0 OID 0)
--- Dependencies: 310
+-- TOC entry 5744 (class 0 OID 0)
+-- Dependencies: 348
 -- Name: TABLE related_dataset; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4169,8 +4292,8 @@ COMMENT ON TABLE public.related_dataset IS 'Store the relation of two datasets, 
 
 
 --
--- TOC entry 5413 (class 0 OID 0)
--- Dependencies: 310
+-- TOC entry 5745 (class 0 OID 0)
+-- Dependencies: 348
 -- Name: COLUMN related_dataset.fk_dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4178,8 +4301,8 @@ COMMENT ON COLUMN public.related_dataset.fk_dataset_id IS 'The reference to the 
 
 
 --
--- TOC entry 5414 (class 0 OID 0)
--- Dependencies: 310
+-- TOC entry 5746 (class 0 OID 0)
+-- Dependencies: 348
 -- Name: COLUMN related_dataset.fk_related_dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4187,8 +4310,8 @@ COMMENT ON COLUMN public.related_dataset.fk_related_dataset_id IS 'The reference
 
 
 --
--- TOC entry 5415 (class 0 OID 0)
--- Dependencies: 310
+-- TOC entry 5747 (class 0 OID 0)
+-- Dependencies: 348
 -- Name: COLUMN related_dataset.role; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4196,8 +4319,8 @@ COMMENT ON COLUMN public.related_dataset.role IS 'Definition of the role of the 
 
 
 --
--- TOC entry 5416 (class 0 OID 0)
--- Dependencies: 310
+-- TOC entry 5748 (class 0 OID 0)
+-- Dependencies: 348
 -- Name: COLUMN related_dataset.url; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4205,7 +4328,7 @@ COMMENT ON COLUMN public.related_dataset.url IS 'URL that point to external info
 
 
 --
--- TOC entry 311 (class 1259 OID 19995)
+-- TOC entry 349 (class 1259 OID 37386)
 -- Name: related_feature; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4219,8 +4342,8 @@ CREATE TABLE public.related_feature (
 ALTER TABLE public.related_feature OWNER TO postgres;
 
 --
--- TOC entry 5417 (class 0 OID 0)
--- Dependencies: 311
+-- TOC entry 5749 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: TABLE related_feature; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4228,8 +4351,8 @@ COMMENT ON TABLE public.related_feature IS 'Storage of relations between offerin
 
 
 --
--- TOC entry 5418 (class 0 OID 0)
--- Dependencies: 311
+-- TOC entry 5750 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN related_feature.related_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4237,8 +4360,8 @@ COMMENT ON COLUMN public.related_feature.related_feature_id IS 'PK column of the
 
 
 --
--- TOC entry 5419 (class 0 OID 0)
--- Dependencies: 311
+-- TOC entry 5751 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN related_feature.fk_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4246,8 +4369,8 @@ COMMENT ON COLUMN public.related_feature.fk_feature_id IS 'Reference to the feat
 
 
 --
--- TOC entry 5420 (class 0 OID 0)
--- Dependencies: 311
+-- TOC entry 5752 (class 0 OID 0)
+-- Dependencies: 349
 -- Name: COLUMN related_feature.role; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4255,7 +4378,7 @@ COMMENT ON COLUMN public.related_feature.role IS 'The role of the related featur
 
 
 --
--- TOC entry 345 (class 1259 OID 20286)
+-- TOC entry 301 (class 1259 OID 37087)
 -- Name: related_feature_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4270,7 +4393,7 @@ CREATE SEQUENCE public.related_feature_seq
 ALTER TABLE public.related_feature_seq OWNER TO postgres;
 
 --
--- TOC entry 312 (class 1259 OID 20000)
+-- TOC entry 350 (class 1259 OID 37391)
 -- Name: related_observation; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4285,8 +4408,8 @@ CREATE TABLE public.related_observation (
 ALTER TABLE public.related_observation OWNER TO postgres;
 
 --
--- TOC entry 5421 (class 0 OID 0)
--- Dependencies: 312
+-- TOC entry 5753 (class 0 OID 0)
+-- Dependencies: 350
 -- Name: TABLE related_observation; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4294,8 +4417,8 @@ COMMENT ON TABLE public.related_observation IS 'Store the relation of two observ
 
 
 --
--- TOC entry 5422 (class 0 OID 0)
--- Dependencies: 312
+-- TOC entry 5754 (class 0 OID 0)
+-- Dependencies: 350
 -- Name: COLUMN related_observation.fk_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4303,8 +4426,8 @@ COMMENT ON COLUMN public.related_observation.fk_observation_id IS 'The reference
 
 
 --
--- TOC entry 5423 (class 0 OID 0)
--- Dependencies: 312
+-- TOC entry 5755 (class 0 OID 0)
+-- Dependencies: 350
 -- Name: COLUMN related_observation.fk_related_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4312,8 +4435,8 @@ COMMENT ON COLUMN public.related_observation.fk_related_observation_id IS 'The r
 
 
 --
--- TOC entry 5424 (class 0 OID 0)
--- Dependencies: 312
+-- TOC entry 5756 (class 0 OID 0)
+-- Dependencies: 350
 -- Name: COLUMN related_observation.role; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4321,8 +4444,8 @@ COMMENT ON COLUMN public.related_observation.role IS 'Definition of the role of 
 
 
 --
--- TOC entry 5425 (class 0 OID 0)
--- Dependencies: 312
+-- TOC entry 5757 (class 0 OID 0)
+-- Dependencies: 350
 -- Name: COLUMN related_observation.url; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4330,7 +4453,7 @@ COMMENT ON COLUMN public.related_observation.url IS 'URL that point to external 
 
 
 --
--- TOC entry 313 (class 1259 OID 20008)
+-- TOC entry 351 (class 1259 OID 37398)
 -- Name: result_template; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4352,8 +4475,8 @@ CREATE TABLE public.result_template (
 ALTER TABLE public.result_template OWNER TO postgres;
 
 --
--- TOC entry 5426 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5758 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: TABLE result_template; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4361,8 +4484,8 @@ COMMENT ON TABLE public.result_template IS 'Storage of templates for the result 
 
 
 --
--- TOC entry 5427 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5759 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.result_template_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4370,8 +4493,8 @@ COMMENT ON COLUMN public.result_template.result_template_id IS 'PK column of the
 
 
 --
--- TOC entry 5428 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5760 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.fk_offering_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4379,8 +4502,8 @@ COMMENT ON COLUMN public.result_template.fk_offering_id IS 'The offering that is
 
 
 --
--- TOC entry 5429 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5761 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.fk_phenomenon_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4388,8 +4511,8 @@ COMMENT ON COLUMN public.result_template.fk_phenomenon_id IS 'The phenomenon tha
 
 
 --
--- TOC entry 5430 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5762 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.fk_procedure_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4397,8 +4520,8 @@ COMMENT ON COLUMN public.result_template.fk_procedure_id IS 'The procedure that 
 
 
 --
--- TOC entry 5431 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5763 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.fk_feature_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4406,8 +4529,8 @@ COMMENT ON COLUMN public.result_template.fk_feature_id IS 'The feature that is a
 
 
 --
--- TOC entry 5432 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5764 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.fk_category_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4415,8 +4538,8 @@ COMMENT ON COLUMN public.result_template.fk_category_id IS 'The category that is
 
 
 --
--- TOC entry 5433 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5765 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4424,8 +4547,8 @@ COMMENT ON COLUMN public.result_template.identifier IS 'Unique identifier of the
 
 
 --
--- TOC entry 5434 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5766 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.structure; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4433,8 +4556,8 @@ COMMENT ON COLUMN public.result_template.structure IS 'The structure of the resu
 
 
 --
--- TOC entry 5435 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5767 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.encoding; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4442,8 +4565,8 @@ COMMENT ON COLUMN public.result_template.encoding IS 'The encding of the result 
 
 
 --
--- TOC entry 5436 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5768 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.observation_structure; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4451,8 +4574,8 @@ COMMENT ON COLUMN public.result_template.observation_structure IS 'The structure
 
 
 --
--- TOC entry 5437 (class 0 OID 0)
--- Dependencies: 313
+-- TOC entry 5769 (class 0 OID 0)
+-- Dependencies: 351
 -- Name: COLUMN result_template.observation_encoding; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4460,7 +4583,7 @@ COMMENT ON COLUMN public.result_template.observation_encoding IS 'The encding of
 
 
 --
--- TOC entry 346 (class 1259 OID 20288)
+-- TOC entry 302 (class 1259 OID 37088)
 -- Name: result_template_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4475,7 +4598,7 @@ CREATE SEQUENCE public.result_template_seq
 ALTER TABLE public.result_template_seq OWNER TO postgres;
 
 --
--- TOC entry 314 (class 1259 OID 20016)
+-- TOC entry 352 (class 1259 OID 37405)
 -- Name: tag; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4489,8 +4612,8 @@ CREATE TABLE public.tag (
 ALTER TABLE public.tag OWNER TO postgres;
 
 --
--- TOC entry 5438 (class 0 OID 0)
--- Dependencies: 314
+-- TOC entry 5770 (class 0 OID 0)
+-- Dependencies: 352
 -- Name: TABLE tag; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4498,8 +4621,8 @@ COMMENT ON TABLE public.tag IS 'Storage of the tags which should be used to tag 
 
 
 --
--- TOC entry 5439 (class 0 OID 0)
--- Dependencies: 314
+-- TOC entry 5771 (class 0 OID 0)
+-- Dependencies: 352
 -- Name: COLUMN tag.tag_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4507,8 +4630,8 @@ COMMENT ON COLUMN public.tag.tag_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5440 (class 0 OID 0)
--- Dependencies: 314
+-- TOC entry 5772 (class 0 OID 0)
+-- Dependencies: 352
 -- Name: COLUMN tag.identifier; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4516,8 +4639,8 @@ COMMENT ON COLUMN public.tag.identifier IS 'Unique identifier/name of the tag wh
 
 
 --
--- TOC entry 5441 (class 0 OID 0)
--- Dependencies: 314
+-- TOC entry 5773 (class 0 OID 0)
+-- Dependencies: 352
 -- Name: COLUMN tag.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4525,7 +4648,7 @@ COMMENT ON COLUMN public.tag.description IS 'A short description of the tag';
 
 
 --
--- TOC entry 315 (class 1259 OID 20024)
+-- TOC entry 353 (class 1259 OID 37412)
 -- Name: tag_dataset; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4538,8 +4661,8 @@ CREATE TABLE public.tag_dataset (
 ALTER TABLE public.tag_dataset OWNER TO postgres;
 
 --
--- TOC entry 5442 (class 0 OID 0)
--- Dependencies: 315
+-- TOC entry 5774 (class 0 OID 0)
+-- Dependencies: 353
 -- Name: TABLE tag_dataset; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4547,8 +4670,8 @@ COMMENT ON TABLE public.tag_dataset IS 'Storage of relations between dataset and
 
 
 --
--- TOC entry 5443 (class 0 OID 0)
--- Dependencies: 315
+-- TOC entry 5775 (class 0 OID 0)
+-- Dependencies: 353
 -- Name: COLUMN tag_dataset.fk_dataset_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4556,8 +4679,8 @@ COMMENT ON COLUMN public.tag_dataset.fk_dataset_id IS 'The reference to the data
 
 
 --
--- TOC entry 5444 (class 0 OID 0)
--- Dependencies: 315
+-- TOC entry 5776 (class 0 OID 0)
+-- Dependencies: 353
 -- Name: COLUMN tag_dataset.fk_tag_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4565,7 +4688,7 @@ COMMENT ON COLUMN public.tag_dataset.fk_tag_id IS 'The reference to the tags in 
 
 
 --
--- TOC entry 316 (class 1259 OID 20029)
+-- TOC entry 354 (class 1259 OID 37417)
 -- Name: tag_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4581,8 +4704,8 @@ CREATE TABLE public.tag_i18n (
 ALTER TABLE public.tag_i18n OWNER TO postgres;
 
 --
--- TOC entry 5445 (class 0 OID 0)
--- Dependencies: 316
+-- TOC entry 5777 (class 0 OID 0)
+-- Dependencies: 354
 -- Name: TABLE tag_i18n; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4590,8 +4713,8 @@ COMMENT ON TABLE public.tag_i18n IS 'Storage for internationalizations of tags.'
 
 
 --
--- TOC entry 5446 (class 0 OID 0)
--- Dependencies: 316
+-- TOC entry 5778 (class 0 OID 0)
+-- Dependencies: 354
 -- Name: COLUMN tag_i18n.tag_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4599,8 +4722,8 @@ COMMENT ON COLUMN public.tag_i18n.tag_i18n_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5447 (class 0 OID 0)
--- Dependencies: 316
+-- TOC entry 5779 (class 0 OID 0)
+-- Dependencies: 354
 -- Name: COLUMN tag_i18n.fk_tag_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4608,8 +4731,8 @@ COMMENT ON COLUMN public.tag_i18n.fk_tag_id IS 'Reference to the tag table this 
 
 
 --
--- TOC entry 5448 (class 0 OID 0)
--- Dependencies: 316
+-- TOC entry 5780 (class 0 OID 0)
+-- Dependencies: 354
 -- Name: COLUMN tag_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4617,8 +4740,8 @@ COMMENT ON COLUMN public.tag_i18n.locale IS 'Locale/language specification for t
 
 
 --
--- TOC entry 5449 (class 0 OID 0)
--- Dependencies: 316
+-- TOC entry 5781 (class 0 OID 0)
+-- Dependencies: 354
 -- Name: COLUMN tag_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4626,8 +4749,8 @@ COMMENT ON COLUMN public.tag_i18n.name IS 'Locale/language specific name of the 
 
 
 --
--- TOC entry 5450 (class 0 OID 0)
--- Dependencies: 316
+-- TOC entry 5782 (class 0 OID 0)
+-- Dependencies: 354
 -- Name: COLUMN tag_i18n.description; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4635,7 +4758,7 @@ COMMENT ON COLUMN public.tag_i18n.description IS 'Locale/language specific descr
 
 
 --
--- TOC entry 347 (class 1259 OID 20290)
+-- TOC entry 303 (class 1259 OID 37089)
 -- Name: tag_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4650,7 +4773,7 @@ CREATE SEQUENCE public.tag_i18n_seq
 ALTER TABLE public.tag_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 348 (class 1259 OID 20292)
+-- TOC entry 304 (class 1259 OID 37090)
 -- Name: tag_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4665,7 +4788,7 @@ CREATE SEQUENCE public.tag_seq
 ALTER TABLE public.tag_seq OWNER TO postgres;
 
 --
--- TOC entry 317 (class 1259 OID 20037)
+-- TOC entry 355 (class 1259 OID 37424)
 -- Name: unit; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4680,8 +4803,8 @@ CREATE TABLE public.unit (
 ALTER TABLE public.unit OWNER TO postgres;
 
 --
--- TOC entry 5451 (class 0 OID 0)
--- Dependencies: 317
+-- TOC entry 5783 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: TABLE unit; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4689,8 +4812,8 @@ COMMENT ON TABLE public.unit IS 'Storage of the units of measurement of the obse
 
 
 --
--- TOC entry 5452 (class 0 OID 0)
--- Dependencies: 317
+-- TOC entry 5784 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: COLUMN unit.unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4698,8 +4821,8 @@ COMMENT ON COLUMN public.unit.unit_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5453 (class 0 OID 0)
--- Dependencies: 317
+-- TOC entry 5785 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: COLUMN unit.symbol; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4707,8 +4830,8 @@ COMMENT ON COLUMN public.unit.symbol IS 'The symbol of the unit, e.g. °C or m.'
 
 
 --
--- TOC entry 5454 (class 0 OID 0)
--- Dependencies: 317
+-- TOC entry 5786 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: COLUMN unit.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4716,8 +4839,8 @@ COMMENT ON COLUMN public.unit.name IS 'Human readable name of the unit, e.g degr
 
 
 --
--- TOC entry 5455 (class 0 OID 0)
--- Dependencies: 317
+-- TOC entry 5787 (class 0 OID 0)
+-- Dependencies: 355
 -- Name: COLUMN unit.link; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4725,7 +4848,7 @@ COMMENT ON COLUMN public.unit.link IS 'Link/reference to an external description
 
 
 --
--- TOC entry 318 (class 1259 OID 20045)
+-- TOC entry 356 (class 1259 OID 37431)
 -- Name: unit_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4740,8 +4863,8 @@ CREATE TABLE public.unit_i18n (
 ALTER TABLE public.unit_i18n OWNER TO postgres;
 
 --
--- TOC entry 5456 (class 0 OID 0)
--- Dependencies: 318
+-- TOC entry 5788 (class 0 OID 0)
+-- Dependencies: 356
 -- Name: TABLE unit_i18n; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4749,8 +4872,8 @@ COMMENT ON TABLE public.unit_i18n IS 'Storage for internationalizations of units
 
 
 --
--- TOC entry 5457 (class 0 OID 0)
--- Dependencies: 318
+-- TOC entry 5789 (class 0 OID 0)
+-- Dependencies: 356
 -- Name: COLUMN unit_i18n.unit_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4758,8 +4881,8 @@ COMMENT ON COLUMN public.unit_i18n.unit_i18n_id IS 'PK column of the table';
 
 
 --
--- TOC entry 5458 (class 0 OID 0)
--- Dependencies: 318
+-- TOC entry 5790 (class 0 OID 0)
+-- Dependencies: 356
 -- Name: COLUMN unit_i18n.fk_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4767,8 +4890,8 @@ COMMENT ON COLUMN public.unit_i18n.fk_unit_id IS 'Reference to the unit table th
 
 
 --
--- TOC entry 5459 (class 0 OID 0)
--- Dependencies: 318
+-- TOC entry 5791 (class 0 OID 0)
+-- Dependencies: 356
 -- Name: COLUMN unit_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4776,8 +4899,8 @@ COMMENT ON COLUMN public.unit_i18n.locale IS 'Locale/language specification for 
 
 
 --
--- TOC entry 5460 (class 0 OID 0)
--- Dependencies: 318
+-- TOC entry 5792 (class 0 OID 0)
+-- Dependencies: 356
 -- Name: COLUMN unit_i18n.name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4785,7 +4908,7 @@ COMMENT ON COLUMN public.unit_i18n.name IS 'Locale/language specific name of the
 
 
 --
--- TOC entry 349 (class 1259 OID 20294)
+-- TOC entry 305 (class 1259 OID 37091)
 -- Name: unit_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4800,7 +4923,7 @@ CREATE SEQUENCE public.unit_i18n_seq
 ALTER TABLE public.unit_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 350 (class 1259 OID 20296)
+-- TOC entry 306 (class 1259 OID 37092)
 -- Name: unit_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -4815,21 +4938,21 @@ CREATE SEQUENCE public.unit_seq
 ALTER TABLE public.unit_seq OWNER TO postgres;
 
 --
--- TOC entry 319 (class 1259 OID 20053)
+-- TOC entry 357 (class 1259 OID 37438)
 -- Name: value_blob; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.value_blob (
     fk_observation_id bigint NOT NULL,
-    value oid
+    value_blob oid
 );
 
 
 ALTER TABLE public.value_blob OWNER TO postgres;
 
 --
--- TOC entry 5461 (class 0 OID 0)
--- Dependencies: 319
+-- TOC entry 5793 (class 0 OID 0)
+-- Dependencies: 357
 -- Name: COLUMN value_blob.fk_observation_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4837,16 +4960,16 @@ COMMENT ON COLUMN public.value_blob.fk_observation_id IS 'Reference to the data/
 
 
 --
--- TOC entry 5462 (class 0 OID 0)
--- Dependencies: 319
--- Name: COLUMN value_blob.value; Type: COMMENT; Schema: public; Owner: postgres
+-- TOC entry 5794 (class 0 OID 0)
+-- Dependencies: 357
+-- Name: COLUMN value_blob.value_blob; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON COLUMN public.value_blob.value IS 'The blob value of an observation';
+COMMENT ON COLUMN public.value_blob.value_blob IS 'The blob value of an observation';
 
 
 --
--- TOC entry 320 (class 1259 OID 20058)
+-- TOC entry 358 (class 1259 OID 37443)
 -- Name: value_profile; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4863,8 +4986,8 @@ CREATE TABLE public.value_profile (
 ALTER TABLE public.value_profile OWNER TO postgres;
 
 --
--- TOC entry 5463 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5795 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: TABLE value_profile; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4872,8 +4995,8 @@ COMMENT ON TABLE public.value_profile IS 'Storage of meta-information about a pr
 
 
 --
--- TOC entry 5464 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5796 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN value_profile.value_profile_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4881,8 +5004,8 @@ COMMENT ON COLUMN public.value_profile.value_profile_id IS 'PK column of the tab
 
 
 --
--- TOC entry 5465 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5797 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN value_profile.orientation; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4890,8 +5013,8 @@ COMMENT ON COLUMN public.value_profile.orientation IS 'The "orientation" of the 
 
 
 --
--- TOC entry 5466 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5798 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN value_profile.vertical_origin_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4899,8 +5022,8 @@ COMMENT ON COLUMN public.value_profile.vertical_origin_name IS 'The vertical ori
 
 
 --
--- TOC entry 5467 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5799 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN value_profile.vertical_from_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4908,8 +5031,8 @@ COMMENT ON COLUMN public.value_profile.vertical_from_name IS 'The name of the ve
 
 
 --
--- TOC entry 5468 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5800 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN value_profile.vertical_to_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4917,8 +5040,8 @@ COMMENT ON COLUMN public.value_profile.vertical_to_name IS 'The name of the vert
 
 
 --
--- TOC entry 5469 (class 0 OID 0)
--- Dependencies: 320
+-- TOC entry 5801 (class 0 OID 0)
+-- Dependencies: 358
 -- Name: COLUMN value_profile.fk_vertical_unit_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4926,7 +5049,7 @@ COMMENT ON COLUMN public.value_profile.fk_vertical_unit_id IS 'The unit of the v
 
 
 --
--- TOC entry 321 (class 1259 OID 20066)
+-- TOC entry 359 (class 1259 OID 37450)
 -- Name: value_profile_i18n; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -4943,8 +5066,8 @@ CREATE TABLE public.value_profile_i18n (
 ALTER TABLE public.value_profile_i18n OWNER TO postgres;
 
 --
--- TOC entry 5470 (class 0 OID 0)
--- Dependencies: 321
+-- TOC entry 5802 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN value_profile_i18n.value_profile_i18n_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4952,8 +5075,8 @@ COMMENT ON COLUMN public.value_profile_i18n.value_profile_i18n_id IS 'PK column 
 
 
 --
--- TOC entry 5471 (class 0 OID 0)
--- Dependencies: 321
+-- TOC entry 5803 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN value_profile_i18n.fk_value_profile_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4961,8 +5084,8 @@ COMMENT ON COLUMN public.value_profile_i18n.fk_value_profile_id IS 'Reference to
 
 
 --
--- TOC entry 5472 (class 0 OID 0)
--- Dependencies: 321
+-- TOC entry 5804 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN value_profile_i18n.locale; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4970,8 +5093,8 @@ COMMENT ON COLUMN public.value_profile_i18n.locale IS 'Locale/language specifica
 
 
 --
--- TOC entry 5473 (class 0 OID 0)
--- Dependencies: 321
+-- TOC entry 5805 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN value_profile_i18n.vertical_origin_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4979,8 +5102,8 @@ COMMENT ON COLUMN public.value_profile_i18n.vertical_origin_name IS 'Locale/lang
 
 
 --
--- TOC entry 5474 (class 0 OID 0)
--- Dependencies: 321
+-- TOC entry 5806 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN value_profile_i18n.vertical_from_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4988,8 +5111,8 @@ COMMENT ON COLUMN public.value_profile_i18n.vertical_from_name IS 'Locale/langua
 
 
 --
--- TOC entry 5475 (class 0 OID 0)
--- Dependencies: 321
+-- TOC entry 5807 (class 0 OID 0)
+-- Dependencies: 359
 -- Name: COLUMN value_profile_i18n.vertical_to_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -4997,7 +5120,7 @@ COMMENT ON COLUMN public.value_profile_i18n.vertical_to_name IS 'Locale/language
 
 
 --
--- TOC entry 351 (class 1259 OID 20298)
+-- TOC entry 307 (class 1259 OID 37093)
 -- Name: value_profile_i18n_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -5012,7 +5135,7 @@ CREATE SEQUENCE public.value_profile_i18n_seq
 ALTER TABLE public.value_profile_i18n_seq OWNER TO postgres;
 
 --
--- TOC entry 352 (class 1259 OID 20300)
+-- TOC entry 308 (class 1259 OID 37094)
 -- Name: value_profile_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -5027,7 +5150,7 @@ CREATE SEQUENCE public.value_profile_seq
 ALTER TABLE public.value_profile_seq OWNER TO postgres;
 
 --
--- TOC entry 4573 (class 2606 OID 19691)
+-- TOC entry 4878 (class 2606 OID 37108)
 -- Name: category_i18n category_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5036,7 +5159,7 @@ ALTER TABLE ONLY public.category_i18n
 
 
 --
--- TOC entry 4568 (class 2606 OID 19683)
+-- TOC entry 4873 (class 2606 OID 37101)
 -- Name: category category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5045,7 +5168,7 @@ ALTER TABLE ONLY public.category
 
 
 --
--- TOC entry 4576 (class 2606 OID 19696)
+-- TOC entry 4881 (class 2606 OID 37113)
 -- Name: codespace codespace_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5054,7 +5177,7 @@ ALTER TABLE ONLY public.codespace
 
 
 --
--- TOC entry 4580 (class 2606 OID 19701)
+-- TOC entry 4885 (class 2606 OID 37118)
 -- Name: composite_phenomenon composite_phenomenon_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5063,7 +5186,7 @@ ALTER TABLE ONLY public.composite_phenomenon
 
 
 --
--- TOC entry 4609 (class 2606 OID 19735)
+-- TOC entry 4920 (class 2606 OID 37150)
 -- Name: dataset_i18n dataset_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5072,7 +5195,7 @@ ALTER TABLE ONLY public.dataset_i18n
 
 
 --
--- TOC entry 4612 (class 2606 OID 19744)
+-- TOC entry 4923 (class 2606 OID 37158)
 -- Name: dataset_parameter dataset_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5081,7 +5204,7 @@ ALTER TABLE ONLY public.dataset_parameter
 
 
 --
--- TOC entry 4583 (class 2606 OID 19727)
+-- TOC entry 4888 (class 2606 OID 37143)
 -- Name: dataset dataset_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5090,7 +5213,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4617 (class 2606 OID 19749)
+-- TOC entry 4929 (class 2606 OID 37163)
 -- Name: dataset_reference dataset_reference_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5099,7 +5222,7 @@ ALTER TABLE ONLY public.dataset_reference
 
 
 --
--- TOC entry 4633 (class 2606 OID 19762)
+-- TOC entry 4945 (class 2606 OID 37175)
 -- Name: feature_hierarchy feature_hierarchy_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5108,7 +5231,7 @@ ALTER TABLE ONLY public.feature_hierarchy
 
 
 --
--- TOC entry 4636 (class 2606 OID 19770)
+-- TOC entry 4948 (class 2606 OID 37182)
 -- Name: feature_i18n feature_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5117,7 +5240,7 @@ ALTER TABLE ONLY public.feature_i18n
 
 
 --
--- TOC entry 4639 (class 2606 OID 19779)
+-- TOC entry 4951 (class 2606 OID 37190)
 -- Name: feature_parameter feature_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5126,7 +5249,7 @@ ALTER TABLE ONLY public.feature_parameter
 
 
 --
--- TOC entry 4620 (class 2606 OID 19757)
+-- TOC entry 4932 (class 2606 OID 37170)
 -- Name: feature feature_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5135,7 +5258,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4644 (class 2606 OID 19784)
+-- TOC entry 4957 (class 2606 OID 37195)
 -- Name: format format_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5144,7 +5267,7 @@ ALTER TABLE ONLY public.format
 
 
 --
--- TOC entry 4648 (class 2606 OID 19792)
+-- TOC entry 4961 (class 2606 OID 37202)
 -- Name: historical_location historical_location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5153,7 +5276,7 @@ ALTER TABLE ONLY public.historical_location
 
 
 --
--- TOC entry 4667 (class 2606 OID 19805)
+-- TOC entry 4980 (class 2606 OID 37214)
 -- Name: location_historical_location location_historical_location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5162,7 +5285,7 @@ ALTER TABLE ONLY public.location_historical_location
 
 
 --
--- TOC entry 4670 (class 2606 OID 19813)
+-- TOC entry 4983 (class 2606 OID 37221)
 -- Name: location_i18n location_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5171,7 +5294,7 @@ ALTER TABLE ONLY public.location_i18n
 
 
 --
--- TOC entry 4675 (class 2606 OID 19822)
+-- TOC entry 4989 (class 2606 OID 37229)
 -- Name: location_parameter location_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5180,7 +5303,7 @@ ALTER TABLE ONLY public.location_parameter
 
 
 --
--- TOC entry 4660 (class 2606 OID 19800)
+-- TOC entry 4973 (class 2606 OID 37209)
 -- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5189,7 +5312,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4696 (class 2606 OID 19844)
+-- TOC entry 5010 (class 2606 OID 37249)
 -- Name: observation_i18n observation_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5198,7 +5321,7 @@ ALTER TABLE ONLY public.observation_i18n
 
 
 --
--- TOC entry 4701 (class 2606 OID 19853)
+-- TOC entry 5016 (class 2606 OID 37257)
 -- Name: observation_parameter observation_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5207,7 +5330,7 @@ ALTER TABLE ONLY public.observation_parameter
 
 
 --
--- TOC entry 4687 (class 2606 OID 19836)
+-- TOC entry 5001 (class 2606 OID 37242)
 -- Name: observation observation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5216,7 +5339,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4711 (class 2606 OID 19866)
+-- TOC entry 5026 (class 2606 OID 37269)
 -- Name: offering_feature_type offering_feature_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5225,7 +5348,7 @@ ALTER TABLE ONLY public.offering_feature_type
 
 
 --
--- TOC entry 4714 (class 2606 OID 19871)
+-- TOC entry 5029 (class 2606 OID 37274)
 -- Name: offering_hierarchy offering_hierarchy_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5234,7 +5357,7 @@ ALTER TABLE ONLY public.offering_hierarchy
 
 
 --
--- TOC entry 4717 (class 2606 OID 19879)
+-- TOC entry 5032 (class 2606 OID 37281)
 -- Name: offering_i18n offering_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5243,7 +5366,7 @@ ALTER TABLE ONLY public.offering_i18n
 
 
 --
--- TOC entry 4720 (class 2606 OID 19884)
+-- TOC entry 5035 (class 2606 OID 37286)
 -- Name: offering_observation_type offering_observation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5252,7 +5375,7 @@ ALTER TABLE ONLY public.offering_observation_type
 
 
 --
--- TOC entry 4706 (class 2606 OID 19861)
+-- TOC entry 5021 (class 2606 OID 37264)
 -- Name: offering offering_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5261,7 +5384,7 @@ ALTER TABLE ONLY public.offering
 
 
 --
--- TOC entry 4723 (class 2606 OID 19889)
+-- TOC entry 5038 (class 2606 OID 37291)
 -- Name: offering_related_feature offering_related_feature_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5270,7 +5393,7 @@ ALTER TABLE ONLY public.offering_related_feature
 
 
 --
--- TOC entry 4736 (class 2606 OID 19905)
+-- TOC entry 5051 (class 2606 OID 37305)
 -- Name: phenomenon_i18n phenomenon_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5279,7 +5402,7 @@ ALTER TABLE ONLY public.phenomenon_i18n
 
 
 --
--- TOC entry 4741 (class 2606 OID 19914)
+-- TOC entry 5057 (class 2606 OID 37313)
 -- Name: phenomenon_parameter phenomenon_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5288,7 +5411,7 @@ ALTER TABLE ONLY public.phenomenon_parameter
 
 
 --
--- TOC entry 4729 (class 2606 OID 19897)
+-- TOC entry 5044 (class 2606 OID 37298)
 -- Name: phenomenon phenomenon_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5297,7 +5420,7 @@ ALTER TABLE ONLY public.phenomenon
 
 
 --
--- TOC entry 4754 (class 2606 OID 19930)
+-- TOC entry 5070 (class 2606 OID 37327)
 -- Name: platform_i18n platform_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5306,7 +5429,7 @@ ALTER TABLE ONLY public.platform_i18n
 
 
 --
--- TOC entry 4758 (class 2606 OID 19935)
+-- TOC entry 5074 (class 2606 OID 37332)
 -- Name: platform_location platform_location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5315,7 +5438,7 @@ ALTER TABLE ONLY public.platform_location
 
 
 --
--- TOC entry 4763 (class 2606 OID 19944)
+-- TOC entry 5080 (class 2606 OID 37340)
 -- Name: platform_parameter platform_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5324,7 +5447,7 @@ ALTER TABLE ONLY public.platform_parameter
 
 
 --
--- TOC entry 4747 (class 2606 OID 19922)
+-- TOC entry 5063 (class 2606 OID 37320)
 -- Name: platform platform_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5333,7 +5456,7 @@ ALTER TABLE ONLY public.platform
 
 
 --
--- TOC entry 4779 (class 2606 OID 19961)
+-- TOC entry 5096 (class 2606 OID 37356)
 -- Name: procedure_hierarchy procedure_hierarchy_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5342,7 +5465,7 @@ ALTER TABLE ONLY public.procedure_hierarchy
 
 
 --
--- TOC entry 4785 (class 2606 OID 19969)
+-- TOC entry 5102 (class 2606 OID 37363)
 -- Name: procedure_history procedure_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5351,7 +5474,7 @@ ALTER TABLE ONLY public.procedure_history
 
 
 --
--- TOC entry 4788 (class 2606 OID 19977)
+-- TOC entry 5105 (class 2606 OID 37370)
 -- Name: procedure_i18n procedure_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5360,7 +5483,7 @@ ALTER TABLE ONLY public.procedure_i18n
 
 
 --
--- TOC entry 4793 (class 2606 OID 19986)
+-- TOC entry 5111 (class 2606 OID 37378)
 -- Name: procedure_parameter procedure_parameter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5369,7 +5492,7 @@ ALTER TABLE ONLY public.procedure_parameter
 
 
 --
--- TOC entry 4772 (class 2606 OID 19956)
+-- TOC entry 5089 (class 2606 OID 37351)
 -- Name: procedure procedure_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5378,7 +5501,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4796 (class 2606 OID 19994)
+-- TOC entry 5114 (class 2606 OID 37385)
 -- Name: related_dataset related_dataset_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5387,7 +5510,7 @@ ALTER TABLE ONLY public.related_dataset
 
 
 --
--- TOC entry 4799 (class 2606 OID 19999)
+-- TOC entry 5117 (class 2606 OID 37390)
 -- Name: related_feature related_feature_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5396,7 +5519,7 @@ ALTER TABLE ONLY public.related_feature
 
 
 --
--- TOC entry 4803 (class 2606 OID 20007)
+-- TOC entry 5121 (class 2606 OID 37397)
 -- Name: related_observation related_observation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5405,7 +5528,7 @@ ALTER TABLE ONLY public.related_observation
 
 
 --
--- TOC entry 4811 (class 2606 OID 20015)
+-- TOC entry 5129 (class 2606 OID 37404)
 -- Name: result_template result_template_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5414,7 +5537,7 @@ ALTER TABLE ONLY public.result_template
 
 
 --
--- TOC entry 4816 (class 2606 OID 20028)
+-- TOC entry 5135 (class 2606 OID 37416)
 -- Name: tag_dataset tag_dataset_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5423,7 +5546,7 @@ ALTER TABLE ONLY public.tag_dataset
 
 
 --
--- TOC entry 4819 (class 2606 OID 20036)
+-- TOC entry 5138 (class 2606 OID 37423)
 -- Name: tag_i18n tag_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5432,7 +5555,7 @@ ALTER TABLE ONLY public.tag_i18n
 
 
 --
--- TOC entry 4813 (class 2606 OID 20023)
+-- TOC entry 5131 (class 2606 OID 37411)
 -- Name: tag tag_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5441,7 +5564,7 @@ ALTER TABLE ONLY public.tag
 
 
 --
--- TOC entry 4571 (class 2606 OID 20076)
+-- TOC entry 4876 (class 2606 OID 37459)
 -- Name: category un_category_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5450,7 +5573,7 @@ ALTER TABLE ONLY public.category
 
 
 --
--- TOC entry 4578 (class 2606 OID 20079)
+-- TOC entry 4883 (class 2606 OID 37462)
 -- Name: codespace un_codespace_codespace; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5459,7 +5582,7 @@ ALTER TABLE ONLY public.codespace
 
 
 --
--- TOC entry 4603 (class 2606 OID 20100)
+-- TOC entry 4914 (class 2606 OID 37489)
 -- Name: dataset un_dataset_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5468,7 +5591,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4605 (class 2606 OID 20104)
+-- TOC entry 4916 (class 2606 OID 37493)
 -- Name: dataset un_dataset_identity; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5477,7 +5600,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4607 (class 2606 OID 20102)
+-- TOC entry 4918 (class 2606 OID 37491)
 -- Name: dataset un_dataset_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5486,7 +5609,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4627 (class 2606 OID 20116)
+-- TOC entry 4939 (class 2606 OID 37506)
 -- Name: feature un_feature_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5495,7 +5618,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4629 (class 2606 OID 20118)
+-- TOC entry 4941 (class 2606 OID 37508)
 -- Name: feature un_feature_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5504,7 +5627,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4631 (class 2606 OID 20120)
+-- TOC entry 4943 (class 2606 OID 37510)
 -- Name: feature un_feature_url; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5513,7 +5636,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4646 (class 2606 OID 20127)
+-- TOC entry 4959 (class 2606 OID 37518)
 -- Name: format un_format_definition; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5522,7 +5645,7 @@ ALTER TABLE ONLY public.format
 
 
 --
--- TOC entry 4653 (class 2606 OID 20132)
+-- TOC entry 4966 (class 2606 OID 37523)
 -- Name: historical_location un_historicallocation_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5531,7 +5654,7 @@ ALTER TABLE ONLY public.historical_location
 
 
 --
--- TOC entry 4655 (class 2606 OID 20134)
+-- TOC entry 4968 (class 2606 OID 37525)
 -- Name: historical_location un_historicallocation_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5540,7 +5663,7 @@ ALTER TABLE ONLY public.historical_location
 
 
 --
--- TOC entry 4662 (class 2606 OID 20139)
+-- TOC entry 4975 (class 2606 OID 37530)
 -- Name: location un_location_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5549,7 +5672,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4664 (class 2606 OID 20141)
+-- TOC entry 4977 (class 2606 OID 37532)
 -- Name: location un_location_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5558,7 +5681,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4689 (class 2606 OID 20160)
+-- TOC entry 5003 (class 2606 OID 37552)
 -- Name: observation un_observation_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5567,7 +5690,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4691 (class 2606 OID 20158)
+-- TOC entry 5005 (class 2606 OID 37550)
 -- Name: observation un_observation_identity; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5576,7 +5699,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4693 (class 2606 OID 20162)
+-- TOC entry 5007 (class 2606 OID 37554)
 -- Name: observation un_observation_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5585,7 +5708,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4708 (class 2606 OID 20171)
+-- TOC entry 5023 (class 2606 OID 37564)
 -- Name: offering un_offering_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5594,7 +5717,7 @@ ALTER TABLE ONLY public.offering
 
 
 --
--- TOC entry 4731 (class 2606 OID 20182)
+-- TOC entry 5046 (class 2606 OID 37575)
 -- Name: phenomenon un_phenomenon_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5603,7 +5726,7 @@ ALTER TABLE ONLY public.phenomenon
 
 
 --
--- TOC entry 4733 (class 2606 OID 20184)
+-- TOC entry 5048 (class 2606 OID 37577)
 -- Name: phenomenon un_phenomenon_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5612,7 +5735,7 @@ ALTER TABLE ONLY public.phenomenon
 
 
 --
--- TOC entry 4749 (class 2606 OID 20194)
+-- TOC entry 5065 (class 2606 OID 37588)
 -- Name: platform un_platform_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5621,7 +5744,7 @@ ALTER TABLE ONLY public.platform
 
 
 --
--- TOC entry 4751 (class 2606 OID 20196)
+-- TOC entry 5067 (class 2606 OID 37590)
 -- Name: platform un_platform_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5630,7 +5753,7 @@ ALTER TABLE ONLY public.platform
 
 
 --
--- TOC entry 4774 (class 2606 OID 20211)
+-- TOC entry 5091 (class 2606 OID 37606)
 -- Name: procedure un_procedure_identifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5639,7 +5762,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4776 (class 2606 OID 20213)
+-- TOC entry 5093 (class 2606 OID 37608)
 -- Name: procedure un_procedure_staidentifier; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5648,7 +5771,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4821 (class 2606 OID 20236)
+-- TOC entry 5140 (class 2606 OID 37633)
 -- Name: unit un_unit_symbol; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5657,7 +5780,7 @@ ALTER TABLE ONLY public.unit
 
 
 --
--- TOC entry 4826 (class 2606 OID 20052)
+-- TOC entry 5145 (class 2606 OID 37437)
 -- Name: unit_i18n unit_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5666,7 +5789,7 @@ ALTER TABLE ONLY public.unit_i18n
 
 
 --
--- TOC entry 4823 (class 2606 OID 20044)
+-- TOC entry 5142 (class 2606 OID 37430)
 -- Name: unit unit_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5675,7 +5798,7 @@ ALTER TABLE ONLY public.unit
 
 
 --
--- TOC entry 4828 (class 2606 OID 20057)
+-- TOC entry 5147 (class 2606 OID 37442)
 -- Name: value_blob value_blob_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5684,7 +5807,7 @@ ALTER TABLE ONLY public.value_blob
 
 
 --
--- TOC entry 4834 (class 2606 OID 20073)
+-- TOC entry 5153 (class 2606 OID 37456)
 -- Name: value_profile_i18n value_profile_i18n_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5693,7 +5816,7 @@ ALTER TABLE ONLY public.value_profile_i18n
 
 
 --
--- TOC entry 4831 (class 2606 OID 20065)
+-- TOC entry 5150 (class 2606 OID 37449)
 -- Name: value_profile value_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5702,7 +5825,7 @@ ALTER TABLE ONLY public.value_profile
 
 
 --
--- TOC entry 4574 (class 1259 OID 20077)
+-- TOC entry 4879 (class 1259 OID 37460)
 -- Name: idx_category_i18n_category; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5710,7 +5833,7 @@ CREATE INDEX idx_category_i18n_category ON public.category_i18n USING btree (fk_
 
 
 --
--- TOC entry 4569 (class 1259 OID 20074)
+-- TOC entry 4874 (class 1259 OID 37457)
 -- Name: idx_category_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5718,7 +5841,7 @@ CREATE INDEX idx_category_identifier ON public.category USING btree (identifier)
 
 
 --
--- TOC entry 4584 (class 1259 OID 20091)
+-- TOC entry 4889 (class 1259 OID 37474)
 -- Name: idx_dataset_aggregation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5726,7 +5849,7 @@ CREATE INDEX idx_dataset_aggregation ON public.dataset USING btree (fk_aggregati
 
 
 --
--- TOC entry 4585 (class 1259 OID 20086)
+-- TOC entry 4890 (class 1259 OID 37469)
 -- Name: idx_dataset_category; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5734,7 +5857,7 @@ CREATE INDEX idx_dataset_category ON public.dataset USING btree (fk_category_id)
 
 
 --
--- TOC entry 4586 (class 1259 OID 20094)
+-- TOC entry 4891 (class 1259 OID 37477)
 -- Name: idx_dataset_dataset_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5742,7 +5865,7 @@ CREATE INDEX idx_dataset_dataset_type ON public.dataset USING btree (dataset_typ
 
 
 --
--- TOC entry 4587 (class 1259 OID 20087)
+-- TOC entry 4892 (class 1259 OID 37470)
 -- Name: idx_dataset_feature; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5750,7 +5873,7 @@ CREATE INDEX idx_dataset_feature ON public.dataset USING btree (fk_feature_id);
 
 
 --
--- TOC entry 4588 (class 1259 OID 20092)
+-- TOC entry 4893 (class 1259 OID 37475)
 -- Name: idx_dataset_first_observation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5758,7 +5881,7 @@ CREATE INDEX idx_dataset_first_observation ON public.dataset USING btree (fk_fir
 
 
 --
--- TOC entry 4610 (class 1259 OID 20105)
+-- TOC entry 4921 (class 1259 OID 37494)
 -- Name: idx_dataset_i18n_dataset; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5766,7 +5889,7 @@ CREATE INDEX idx_dataset_i18n_dataset ON public.dataset_i18n USING btree (fk_dat
 
 
 --
--- TOC entry 4589 (class 1259 OID 20081)
+-- TOC entry 4894 (class 1259 OID 37464)
 -- Name: idx_dataset_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5774,7 +5897,7 @@ CREATE INDEX idx_dataset_identifier ON public.dataset USING btree (identifier);
 
 
 --
--- TOC entry 4590 (class 1259 OID 20096)
+-- TOC entry 4895 (class 1259 OID 37485)
 -- Name: idx_dataset_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5782,7 +5905,55 @@ CREATE INDEX idx_dataset_identifier_codespace ON public.dataset USING btree (fk_
 
 
 --
--- TOC entry 4591 (class 1259 OID 20093)
+-- TOC entry 4896 (class 1259 OID 37479)
+-- Name: idx_dataset_is_deleted; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_is_deleted ON public.dataset USING btree (is_deleted);
+
+
+--
+-- TOC entry 4897 (class 1259 OID 37480)
+-- Name: idx_dataset_is_disabled; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_is_disabled ON public.dataset USING btree (is_disabled);
+
+
+--
+-- TOC entry 4898 (class 1259 OID 37484)
+-- Name: idx_dataset_is_hidden; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_is_hidden ON public.dataset USING btree (is_hidden);
+
+
+--
+-- TOC entry 4899 (class 1259 OID 37483)
+-- Name: idx_dataset_is_insitu; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_is_insitu ON public.dataset USING btree (is_insitu);
+
+
+--
+-- TOC entry 4900 (class 1259 OID 37482)
+-- Name: idx_dataset_is_mobile; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_is_mobile ON public.dataset USING btree (is_mobile);
+
+
+--
+-- TOC entry 4901 (class 1259 OID 37481)
+-- Name: idx_dataset_is_published; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_is_published ON public.dataset USING btree (is_published);
+
+
+--
+-- TOC entry 4902 (class 1259 OID 37476)
 -- Name: idx_dataset_last_observation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5790,7 +5961,7 @@ CREATE INDEX idx_dataset_last_observation ON public.dataset USING btree (fk_last
 
 
 --
--- TOC entry 4592 (class 1259 OID 20097)
+-- TOC entry 4903 (class 1259 OID 37486)
 -- Name: idx_dataset_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5798,7 +5969,7 @@ CREATE INDEX idx_dataset_name_codespace ON public.dataset USING btree (fk_name_c
 
 
 --
--- TOC entry 4593 (class 1259 OID 20090)
+-- TOC entry 4904 (class 1259 OID 37473)
 -- Name: idx_dataset_observation_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5806,7 +5977,7 @@ CREATE INDEX idx_dataset_observation_type ON public.dataset USING btree (fk_form
 
 
 --
--- TOC entry 4594 (class 1259 OID 20085)
+-- TOC entry 4905 (class 1259 OID 37468)
 -- Name: idx_dataset_offering; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5814,7 +5985,7 @@ CREATE INDEX idx_dataset_offering ON public.dataset USING btree (fk_offering_id)
 
 
 --
--- TOC entry 4613 (class 1259 OID 20106)
+-- TOC entry 4924 (class 1259 OID 37495)
 -- Name: idx_dataset_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5822,7 +5993,7 @@ CREATE INDEX idx_dataset_param_name ON public.dataset_parameter USING btree (nam
 
 
 --
--- TOC entry 4614 (class 1259 OID 20107)
+-- TOC entry 4925 (class 1259 OID 37496)
 -- Name: idx_dataset_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5830,7 +6001,7 @@ CREATE INDEX idx_dataset_parameter ON public.dataset_parameter USING btree (fk_d
 
 
 --
--- TOC entry 4615 (class 1259 OID 20108)
+-- TOC entry 4926 (class 1259 OID 37498)
 -- Name: idx_dataset_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5838,7 +6009,15 @@ CREATE INDEX idx_dataset_parameter_unit ON public.dataset_parameter USING btree 
 
 
 --
--- TOC entry 4595 (class 1259 OID 20084)
+-- TOC entry 4927 (class 1259 OID 37497)
+-- Name: idx_dataset_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_dataset_parent_parameter ON public.dataset_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 4906 (class 1259 OID 37467)
 -- Name: idx_dataset_phenomenon; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5846,7 +6025,7 @@ CREATE INDEX idx_dataset_phenomenon ON public.dataset USING btree (fk_phenomenon
 
 
 --
--- TOC entry 4596 (class 1259 OID 20088)
+-- TOC entry 4907 (class 1259 OID 37471)
 -- Name: idx_dataset_platform; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5854,7 +6033,7 @@ CREATE INDEX idx_dataset_platform ON public.dataset USING btree (fk_platform_id)
 
 
 --
--- TOC entry 4597 (class 1259 OID 20083)
+-- TOC entry 4908 (class 1259 OID 37466)
 -- Name: idx_dataset_procedure; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5862,7 +6041,7 @@ CREATE INDEX idx_dataset_procedure ON public.dataset USING btree (fk_procedure_i
 
 
 --
--- TOC entry 4618 (class 1259 OID 20109)
+-- TOC entry 4930 (class 1259 OID 37499)
 -- Name: idx_dataset_reference_to; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5870,7 +6049,7 @@ CREATE INDEX idx_dataset_reference_to ON public.dataset_reference USING btree (f
 
 
 --
--- TOC entry 4598 (class 1259 OID 20082)
+-- TOC entry 4909 (class 1259 OID 37465)
 -- Name: idx_dataset_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5878,7 +6057,7 @@ CREATE INDEX idx_dataset_staidentifier ON public.dataset USING btree (sta_identi
 
 
 --
--- TOC entry 4599 (class 1259 OID 20089)
+-- TOC entry 4910 (class 1259 OID 37472)
 -- Name: idx_dataset_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5886,7 +6065,7 @@ CREATE INDEX idx_dataset_unit ON public.dataset USING btree (fk_unit_id);
 
 
 --
--- TOC entry 4600 (class 1259 OID 20098)
+-- TOC entry 4911 (class 1259 OID 37487)
 -- Name: idx_dataset_value_profile; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5894,7 +6073,7 @@ CREATE INDEX idx_dataset_value_profile ON public.dataset USING btree (fk_value_p
 
 
 --
--- TOC entry 4601 (class 1259 OID 20095)
+-- TOC entry 4912 (class 1259 OID 37478)
 -- Name: idx_dataset_value_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5902,7 +6081,7 @@ CREATE INDEX idx_dataset_value_type ON public.dataset USING btree (value_type);
 
 
 --
--- TOC entry 4780 (class 1259 OID 20218)
+-- TOC entry 5097 (class 1259 OID 37613)
 -- Name: idx_end_time; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5910,7 +6089,7 @@ CREATE INDEX idx_end_time ON public.procedure_history USING btree (valid_to);
 
 
 --
--- TOC entry 4634 (class 1259 OID 20121)
+-- TOC entry 4946 (class 1259 OID 37511)
 -- Name: idx_feature_child; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5918,7 +6097,7 @@ CREATE INDEX idx_feature_child ON public.feature_hierarchy USING btree (fk_child
 
 
 --
--- TOC entry 4621 (class 1259 OID 20110)
+-- TOC entry 4933 (class 1259 OID 37500)
 -- Name: idx_feature_format; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5926,7 +6105,7 @@ CREATE INDEX idx_feature_format ON public.feature USING btree (fk_format_id);
 
 
 --
--- TOC entry 4637 (class 1259 OID 20122)
+-- TOC entry 4949 (class 1259 OID 37512)
 -- Name: idx_feature_i18n_feature; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5934,7 +6113,7 @@ CREATE INDEX idx_feature_i18n_feature ON public.feature_i18n USING btree (fk_fea
 
 
 --
--- TOC entry 4622 (class 1259 OID 20111)
+-- TOC entry 4934 (class 1259 OID 37501)
 -- Name: idx_feature_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5942,7 +6121,7 @@ CREATE INDEX idx_feature_identifier ON public.feature USING btree (identifier);
 
 
 --
--- TOC entry 4623 (class 1259 OID 20113)
+-- TOC entry 4935 (class 1259 OID 37503)
 -- Name: idx_feature_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5950,7 +6129,7 @@ CREATE INDEX idx_feature_identifier_codespace ON public.feature USING btree (fk_
 
 
 --
--- TOC entry 4624 (class 1259 OID 20114)
+-- TOC entry 4936 (class 1259 OID 37504)
 -- Name: idx_feature_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5958,7 +6137,7 @@ CREATE INDEX idx_feature_name_codespace ON public.feature USING btree (fk_name_c
 
 
 --
--- TOC entry 4640 (class 1259 OID 20123)
+-- TOC entry 4952 (class 1259 OID 37513)
 -- Name: idx_feature_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5966,7 +6145,7 @@ CREATE INDEX idx_feature_param_name ON public.feature_parameter USING btree (nam
 
 
 --
--- TOC entry 4641 (class 1259 OID 20124)
+-- TOC entry 4953 (class 1259 OID 37514)
 -- Name: idx_feature_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5974,7 +6153,7 @@ CREATE INDEX idx_feature_parameter ON public.feature_parameter USING btree (fk_f
 
 
 --
--- TOC entry 4642 (class 1259 OID 20125)
+-- TOC entry 4954 (class 1259 OID 37516)
 -- Name: idx_feature_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5982,7 +6161,15 @@ CREATE INDEX idx_feature_parameter_unit ON public.feature_parameter USING btree 
 
 
 --
--- TOC entry 4625 (class 1259 OID 20112)
+-- TOC entry 4955 (class 1259 OID 37515)
+-- Name: idx_feature_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_feature_parent_parameter ON public.feature_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 4937 (class 1259 OID 37502)
 -- Name: idx_feature_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5990,7 +6177,7 @@ CREATE INDEX idx_feature_staidentifier ON public.feature USING btree (sta_identi
 
 
 --
--- TOC entry 4649 (class 1259 OID 20130)
+-- TOC entry 4962 (class 1259 OID 37521)
 -- Name: idx_historical_location_platform; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5998,7 +6185,7 @@ CREATE INDEX idx_historical_location_platform ON public.historical_location USIN
 
 
 --
--- TOC entry 4650 (class 1259 OID 20128)
+-- TOC entry 4963 (class 1259 OID 37519)
 -- Name: idx_historicallocation_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6006,7 +6193,7 @@ CREATE INDEX idx_historicallocation_identifier ON public.historical_location USI
 
 
 --
--- TOC entry 4651 (class 1259 OID 20129)
+-- TOC entry 4964 (class 1259 OID 37520)
 -- Name: idx_historicallocation_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6014,7 +6201,7 @@ CREATE INDEX idx_historicallocation_staidentifier ON public.historical_location 
 
 
 --
--- TOC entry 4656 (class 1259 OID 20137)
+-- TOC entry 4969 (class 1259 OID 37528)
 -- Name: idx_location_format; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6022,7 +6209,7 @@ CREATE INDEX idx_location_format ON public.location USING btree (fk_format_id);
 
 
 --
--- TOC entry 4665 (class 1259 OID 20142)
+-- TOC entry 4978 (class 1259 OID 37533)
 -- Name: idx_location_historical_location; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6030,7 +6217,7 @@ CREATE INDEX idx_location_historical_location ON public.location_historical_loca
 
 
 --
--- TOC entry 4668 (class 1259 OID 20143)
+-- TOC entry 4981 (class 1259 OID 37534)
 -- Name: idx_location_i18n_location; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6038,7 +6225,7 @@ CREATE INDEX idx_location_i18n_location ON public.location_i18n USING btree (fk_
 
 
 --
--- TOC entry 4657 (class 1259 OID 20135)
+-- TOC entry 4970 (class 1259 OID 37526)
 -- Name: idx_location_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6046,7 +6233,7 @@ CREATE INDEX idx_location_identifier ON public.location USING btree (identifier)
 
 
 --
--- TOC entry 4671 (class 1259 OID 20144)
+-- TOC entry 4984 (class 1259 OID 37535)
 -- Name: idx_location_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6054,7 +6241,7 @@ CREATE INDEX idx_location_param_name ON public.location_parameter USING btree (n
 
 
 --
--- TOC entry 4672 (class 1259 OID 20145)
+-- TOC entry 4985 (class 1259 OID 37536)
 -- Name: idx_location_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6062,7 +6249,7 @@ CREATE INDEX idx_location_parameter ON public.location_parameter USING btree (fk
 
 
 --
--- TOC entry 4673 (class 1259 OID 20146)
+-- TOC entry 4986 (class 1259 OID 37538)
 -- Name: idx_location_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6070,7 +6257,15 @@ CREATE INDEX idx_location_parameter_unit ON public.location_parameter USING btre
 
 
 --
--- TOC entry 4755 (class 1259 OID 20199)
+-- TOC entry 4987 (class 1259 OID 37537)
+-- Name: idx_location_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_location_parent_parameter ON public.location_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 5071 (class 1259 OID 37593)
 -- Name: idx_location_platform; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6078,7 +6273,7 @@ CREATE INDEX idx_location_platform ON public.platform_location USING btree (fk_l
 
 
 --
--- TOC entry 4658 (class 1259 OID 20136)
+-- TOC entry 4971 (class 1259 OID 37527)
 -- Name: idx_location_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6086,7 +6281,7 @@ CREATE INDEX idx_location_staidentifier ON public.location USING btree (sta_iden
 
 
 --
--- TOC entry 4676 (class 1259 OID 20147)
+-- TOC entry 4990 (class 1259 OID 37539)
 -- Name: idx_observation_dataset; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6094,7 +6289,7 @@ CREATE INDEX idx_observation_dataset ON public.observation USING btree (fk_datas
 
 
 --
--- TOC entry 4694 (class 1259 OID 20163)
+-- TOC entry 5008 (class 1259 OID 37555)
 -- Name: idx_observation_i18n_observation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6102,7 +6297,7 @@ CREATE INDEX idx_observation_i18n_observation ON public.observation_i18n USING b
 
 
 --
--- TOC entry 4677 (class 1259 OID 20152)
+-- TOC entry 4991 (class 1259 OID 37544)
 -- Name: idx_observation_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6110,7 +6305,7 @@ CREATE INDEX idx_observation_identifier_codespace ON public.observation USING bt
 
 
 --
--- TOC entry 4678 (class 1259 OID 20154)
+-- TOC entry 4992 (class 1259 OID 37546)
 -- Name: idx_observation_is_deleted; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6118,7 +6313,7 @@ CREATE INDEX idx_observation_is_deleted ON public.observation USING btree (is_de
 
 
 --
--- TOC entry 4679 (class 1259 OID 20153)
+-- TOC entry 4993 (class 1259 OID 37545)
 -- Name: idx_observation_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6126,7 +6321,7 @@ CREATE INDEX idx_observation_name_codespace ON public.observation USING btree (f
 
 
 --
--- TOC entry 4697 (class 1259 OID 20164)
+-- TOC entry 5011 (class 1259 OID 37556)
 -- Name: idx_observation_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6134,7 +6329,7 @@ CREATE INDEX idx_observation_param_name ON public.observation_parameter USING bt
 
 
 --
--- TOC entry 4698 (class 1259 OID 20165)
+-- TOC entry 5012 (class 1259 OID 37557)
 -- Name: idx_observation_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6142,7 +6337,7 @@ CREATE INDEX idx_observation_parameter ON public.observation_parameter USING btr
 
 
 --
--- TOC entry 4699 (class 1259 OID 20166)
+-- TOC entry 5013 (class 1259 OID 37559)
 -- Name: idx_observation_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6150,7 +6345,7 @@ CREATE INDEX idx_observation_parameter_unit ON public.observation_parameter USIN
 
 
 --
--- TOC entry 4680 (class 1259 OID 20155)
+-- TOC entry 4994 (class 1259 OID 37547)
 -- Name: idx_observation_parent; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6158,7 +6353,15 @@ CREATE INDEX idx_observation_parent ON public.observation USING btree (fk_parent
 
 
 --
--- TOC entry 4681 (class 1259 OID 20156)
+-- TOC entry 5014 (class 1259 OID 37558)
+-- Name: idx_observation_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_observation_parent_parameter ON public.observation_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 4995 (class 1259 OID 37548)
 -- Name: idx_observation_result_template; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6166,7 +6369,7 @@ CREATE INDEX idx_observation_result_template ON public.observation USING btree (
 
 
 --
--- TOC entry 4682 (class 1259 OID 20151)
+-- TOC entry 4996 (class 1259 OID 37543)
 -- Name: idx_observation_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6174,7 +6377,7 @@ CREATE INDEX idx_observation_staidentifier ON public.observation USING btree (st
 
 
 --
--- TOC entry 4712 (class 1259 OID 20173)
+-- TOC entry 5027 (class 1259 OID 37566)
 -- Name: idx_offering_child_offering; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6182,7 +6385,7 @@ CREATE INDEX idx_offering_child_offering ON public.offering_hierarchy USING btre
 
 
 --
--- TOC entry 4709 (class 1259 OID 20172)
+-- TOC entry 5024 (class 1259 OID 37565)
 -- Name: idx_offering_feature_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6190,7 +6393,7 @@ CREATE INDEX idx_offering_feature_type ON public.offering_feature_type USING btr
 
 
 --
--- TOC entry 4715 (class 1259 OID 20174)
+-- TOC entry 5030 (class 1259 OID 37567)
 -- Name: idx_offering_i18n_offering; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6198,7 +6401,7 @@ CREATE INDEX idx_offering_i18n_offering ON public.offering_i18n USING btree (fk_
 
 
 --
--- TOC entry 4702 (class 1259 OID 20167)
+-- TOC entry 5017 (class 1259 OID 37560)
 -- Name: idx_offering_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6206,7 +6409,7 @@ CREATE INDEX idx_offering_identifier ON public.offering USING btree (identifier)
 
 
 --
--- TOC entry 4703 (class 1259 OID 20168)
+-- TOC entry 5018 (class 1259 OID 37561)
 -- Name: idx_offering_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6214,7 +6417,7 @@ CREATE INDEX idx_offering_identifier_codespace ON public.offering USING btree (f
 
 
 --
--- TOC entry 4704 (class 1259 OID 20169)
+-- TOC entry 5019 (class 1259 OID 37562)
 -- Name: idx_offering_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6222,7 +6425,7 @@ CREATE INDEX idx_offering_name_codespace ON public.offering USING btree (fk_name
 
 
 --
--- TOC entry 4718 (class 1259 OID 20175)
+-- TOC entry 5033 (class 1259 OID 37568)
 -- Name: idx_offering_observation_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6230,7 +6433,7 @@ CREATE INDEX idx_offering_observation_type ON public.offering_observation_type U
 
 
 --
--- TOC entry 4721 (class 1259 OID 20176)
+-- TOC entry 5036 (class 1259 OID 37569)
 -- Name: idx_offering_related_feature; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6238,7 +6441,7 @@ CREATE INDEX idx_offering_related_feature ON public.offering_related_feature USI
 
 
 --
--- TOC entry 4581 (class 1259 OID 20080)
+-- TOC entry 4886 (class 1259 OID 37463)
 -- Name: idx_phenomenon_child_phenomenon; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6246,7 +6449,7 @@ CREATE INDEX idx_phenomenon_child_phenomenon ON public.composite_phenomenon USIN
 
 
 --
--- TOC entry 4734 (class 1259 OID 20185)
+-- TOC entry 5049 (class 1259 OID 37578)
 -- Name: idx_phenomenon_i18n_phenomenon; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6254,7 +6457,7 @@ CREATE INDEX idx_phenomenon_i18n_phenomenon ON public.phenomenon_i18n USING btre
 
 
 --
--- TOC entry 4724 (class 1259 OID 20177)
+-- TOC entry 5039 (class 1259 OID 37570)
 -- Name: idx_phenomenon_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6262,7 +6465,7 @@ CREATE INDEX idx_phenomenon_identifier ON public.phenomenon USING btree (identif
 
 
 --
--- TOC entry 4725 (class 1259 OID 20179)
+-- TOC entry 5040 (class 1259 OID 37572)
 -- Name: idx_phenomenon_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6270,7 +6473,7 @@ CREATE INDEX idx_phenomenon_identifier_codespace ON public.phenomenon USING btre
 
 
 --
--- TOC entry 4726 (class 1259 OID 20180)
+-- TOC entry 5041 (class 1259 OID 37573)
 -- Name: idx_phenomenon_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6278,7 +6481,7 @@ CREATE INDEX idx_phenomenon_name_codespace ON public.phenomenon USING btree (fk_
 
 
 --
--- TOC entry 4737 (class 1259 OID 20186)
+-- TOC entry 5052 (class 1259 OID 37579)
 -- Name: idx_phenomenon_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6286,7 +6489,7 @@ CREATE INDEX idx_phenomenon_param_name ON public.phenomenon_parameter USING btre
 
 
 --
--- TOC entry 4738 (class 1259 OID 20187)
+-- TOC entry 5053 (class 1259 OID 37580)
 -- Name: idx_phenomenon_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6294,7 +6497,7 @@ CREATE INDEX idx_phenomenon_parameter ON public.phenomenon_parameter USING btree
 
 
 --
--- TOC entry 4739 (class 1259 OID 20188)
+-- TOC entry 5054 (class 1259 OID 37582)
 -- Name: idx_phenomenon_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6302,7 +6505,15 @@ CREATE INDEX idx_phenomenon_parameter_unit ON public.phenomenon_parameter USING 
 
 
 --
--- TOC entry 4727 (class 1259 OID 20178)
+-- TOC entry 5055 (class 1259 OID 37581)
+-- Name: idx_phenomenon_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_phenomenon_parent_parameter ON public.phenomenon_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 5042 (class 1259 OID 37571)
 -- Name: idx_phenomenon_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6310,7 +6521,7 @@ CREATE INDEX idx_phenomenon_staidentifier ON public.phenomenon USING btree (sta_
 
 
 --
--- TOC entry 4752 (class 1259 OID 20197)
+-- TOC entry 5068 (class 1259 OID 37591)
 -- Name: idx_platform_i18n_platform; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6318,7 +6529,7 @@ CREATE INDEX idx_platform_i18n_platform ON public.platform_i18n USING btree (fk_
 
 
 --
--- TOC entry 4742 (class 1259 OID 20189)
+-- TOC entry 5058 (class 1259 OID 37583)
 -- Name: idx_platform_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6326,7 +6537,7 @@ CREATE INDEX idx_platform_identifier ON public.platform USING btree (identifier)
 
 
 --
--- TOC entry 4743 (class 1259 OID 20191)
+-- TOC entry 5059 (class 1259 OID 37585)
 -- Name: idx_platform_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6334,7 +6545,7 @@ CREATE INDEX idx_platform_identifier_codespace ON public.platform USING btree (f
 
 
 --
--- TOC entry 4756 (class 1259 OID 20198)
+-- TOC entry 5072 (class 1259 OID 37592)
 -- Name: idx_platform_location; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6342,7 +6553,7 @@ CREATE INDEX idx_platform_location ON public.platform_location USING btree (fk_p
 
 
 --
--- TOC entry 4744 (class 1259 OID 20192)
+-- TOC entry 5060 (class 1259 OID 37586)
 -- Name: idx_platform_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6350,7 +6561,7 @@ CREATE INDEX idx_platform_name_codespace ON public.platform USING btree (fk_name
 
 
 --
--- TOC entry 4759 (class 1259 OID 20200)
+-- TOC entry 5075 (class 1259 OID 37594)
 -- Name: idx_platform_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6358,7 +6569,7 @@ CREATE INDEX idx_platform_param_name ON public.platform_parameter USING btree (n
 
 
 --
--- TOC entry 4760 (class 1259 OID 20201)
+-- TOC entry 5076 (class 1259 OID 37595)
 -- Name: idx_platform_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6366,7 +6577,7 @@ CREATE INDEX idx_platform_parameter ON public.platform_parameter USING btree (fk
 
 
 --
--- TOC entry 4761 (class 1259 OID 20202)
+-- TOC entry 5077 (class 1259 OID 37597)
 -- Name: idx_platform_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6374,7 +6585,15 @@ CREATE INDEX idx_platform_parameter_unit ON public.platform_parameter USING btre
 
 
 --
--- TOC entry 4745 (class 1259 OID 20190)
+-- TOC entry 5078 (class 1259 OID 37596)
+-- Name: idx_platform_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_platform_parent_parameter ON public.platform_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 5061 (class 1259 OID 37584)
 -- Name: idx_platform_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6382,7 +6601,7 @@ CREATE INDEX idx_platform_staidentifier ON public.platform USING btree (sta_iden
 
 
 --
--- TOC entry 4777 (class 1259 OID 20214)
+-- TOC entry 5094 (class 1259 OID 37609)
 -- Name: idx_procedure_child; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6390,7 +6609,7 @@ CREATE INDEX idx_procedure_child ON public.procedure_hierarchy USING btree (fk_c
 
 
 --
--- TOC entry 4764 (class 1259 OID 20209)
+-- TOC entry 5081 (class 1259 OID 37604)
 -- Name: idx_procedure_format; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6398,7 +6617,7 @@ CREATE INDEX idx_procedure_format ON public.procedure USING btree (fk_format_id)
 
 
 --
--- TOC entry 4781 (class 1259 OID 20216)
+-- TOC entry 5098 (class 1259 OID 37611)
 -- Name: idx_procedure_history_format; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6406,7 +6625,7 @@ CREATE INDEX idx_procedure_history_format ON public.procedure_history USING btre
 
 
 --
--- TOC entry 4782 (class 1259 OID 20215)
+-- TOC entry 5099 (class 1259 OID 37610)
 -- Name: idx_procedure_history_procedure; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6414,7 +6633,7 @@ CREATE INDEX idx_procedure_history_procedure ON public.procedure_history USING b
 
 
 --
--- TOC entry 4786 (class 1259 OID 20219)
+-- TOC entry 5103 (class 1259 OID 37614)
 -- Name: idx_procedure_i18n_procedure; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6422,7 +6641,7 @@ CREATE INDEX idx_procedure_i18n_procedure ON public.procedure_i18n USING btree (
 
 
 --
--- TOC entry 4765 (class 1259 OID 20203)
+-- TOC entry 5082 (class 1259 OID 37598)
 -- Name: idx_procedure_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6430,7 +6649,7 @@ CREATE INDEX idx_procedure_identifier ON public.procedure USING btree (identifie
 
 
 --
--- TOC entry 4766 (class 1259 OID 20205)
+-- TOC entry 5083 (class 1259 OID 37600)
 -- Name: idx_procedure_identifier_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6438,7 +6657,7 @@ CREATE INDEX idx_procedure_identifier_codespace ON public.procedure USING btree 
 
 
 --
--- TOC entry 4767 (class 1259 OID 20207)
+-- TOC entry 5084 (class 1259 OID 37602)
 -- Name: idx_procedure_is_reference; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6446,7 +6665,7 @@ CREATE INDEX idx_procedure_is_reference ON public.procedure USING btree (is_refe
 
 
 --
--- TOC entry 4768 (class 1259 OID 20206)
+-- TOC entry 5085 (class 1259 OID 37601)
 -- Name: idx_procedure_name_codespace; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6454,7 +6673,7 @@ CREATE INDEX idx_procedure_name_codespace ON public.procedure USING btree (fk_na
 
 
 --
--- TOC entry 4789 (class 1259 OID 20220)
+-- TOC entry 5106 (class 1259 OID 37615)
 -- Name: idx_procedure_param_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6462,7 +6681,7 @@ CREATE INDEX idx_procedure_param_name ON public.procedure_parameter USING btree 
 
 
 --
--- TOC entry 4790 (class 1259 OID 20221)
+-- TOC entry 5107 (class 1259 OID 37616)
 -- Name: idx_procedure_parameter; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6470,7 +6689,7 @@ CREATE INDEX idx_procedure_parameter ON public.procedure_parameter USING btree (
 
 
 --
--- TOC entry 4791 (class 1259 OID 20222)
+-- TOC entry 5108 (class 1259 OID 37618)
 -- Name: idx_procedure_parameter_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6478,7 +6697,15 @@ CREATE INDEX idx_procedure_parameter_unit ON public.procedure_parameter USING bt
 
 
 --
--- TOC entry 4769 (class 1259 OID 20204)
+-- TOC entry 5109 (class 1259 OID 37617)
+-- Name: idx_procedure_parent_parameter; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_procedure_parent_parameter ON public.procedure_parameter USING btree (fk_parent_parameter_id);
+
+
+--
+-- TOC entry 5086 (class 1259 OID 37599)
 -- Name: idx_procedure_staidentifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6486,7 +6713,7 @@ CREATE INDEX idx_procedure_staidentifier ON public.procedure USING btree (sta_id
 
 
 --
--- TOC entry 4770 (class 1259 OID 20208)
+-- TOC entry 5087 (class 1259 OID 37603)
 -- Name: idx_procedure_type_of; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6494,7 +6721,7 @@ CREATE INDEX idx_procedure_type_of ON public.procedure USING btree (fk_type_of_p
 
 
 --
--- TOC entry 4829 (class 1259 OID 20238)
+-- TOC entry 5148 (class 1259 OID 37635)
 -- Name: idx_profile_vertical_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6502,7 +6729,7 @@ CREATE INDEX idx_profile_vertical_unit ON public.value_profile USING btree (fk_v
 
 
 --
--- TOC entry 4794 (class 1259 OID 20223)
+-- TOC entry 5112 (class 1259 OID 37619)
 -- Name: idx_related_dataset_related_dataset; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6510,7 +6737,7 @@ CREATE INDEX idx_related_dataset_related_dataset ON public.related_dataset USING
 
 
 --
--- TOC entry 4797 (class 1259 OID 20224)
+-- TOC entry 5115 (class 1259 OID 37620)
 -- Name: idx_related_feature_feature; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6518,7 +6745,7 @@ CREATE INDEX idx_related_feature_feature ON public.related_feature USING btree (
 
 
 --
--- TOC entry 4800 (class 1259 OID 20226)
+-- TOC entry 5118 (class 1259 OID 37622)
 -- Name: idx_related_observation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6526,7 +6753,7 @@ CREATE INDEX idx_related_observation ON public.related_observation USING btree (
 
 
 --
--- TOC entry 4801 (class 1259 OID 20225)
+-- TOC entry 5119 (class 1259 OID 37621)
 -- Name: idx_related_observation_related_observation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6534,7 +6761,7 @@ CREATE INDEX idx_related_observation_related_observation ON public.related_obser
 
 
 --
--- TOC entry 4804 (class 1259 OID 20231)
+-- TOC entry 5122 (class 1259 OID 37627)
 -- Name: idx_result_template_category; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6542,7 +6769,7 @@ CREATE INDEX idx_result_template_category ON public.result_template USING btree 
 
 
 --
--- TOC entry 4805 (class 1259 OID 20230)
+-- TOC entry 5123 (class 1259 OID 37626)
 -- Name: idx_result_template_feature; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6550,7 +6777,7 @@ CREATE INDEX idx_result_template_feature ON public.result_template USING btree (
 
 
 --
--- TOC entry 4806 (class 1259 OID 20232)
+-- TOC entry 5124 (class 1259 OID 37628)
 -- Name: idx_result_template_identifier; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6558,7 +6785,7 @@ CREATE INDEX idx_result_template_identifier ON public.result_template USING btre
 
 
 --
--- TOC entry 4807 (class 1259 OID 20227)
+-- TOC entry 5125 (class 1259 OID 37623)
 -- Name: idx_result_template_offering; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6566,7 +6793,7 @@ CREATE INDEX idx_result_template_offering ON public.result_template USING btree 
 
 
 --
--- TOC entry 4808 (class 1259 OID 20228)
+-- TOC entry 5126 (class 1259 OID 37624)
 -- Name: idx_result_template_phenomenon; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6574,7 +6801,7 @@ CREATE INDEX idx_result_template_phenomenon ON public.result_template USING btre
 
 
 --
--- TOC entry 4809 (class 1259 OID 20229)
+-- TOC entry 5127 (class 1259 OID 37625)
 -- Name: idx_result_template_procedure; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6582,7 +6809,7 @@ CREATE INDEX idx_result_template_procedure ON public.result_template USING btree
 
 
 --
--- TOC entry 4683 (class 1259 OID 20150)
+-- TOC entry 4997 (class 1259 OID 37542)
 -- Name: idx_result_time; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6590,7 +6817,7 @@ CREATE INDEX idx_result_time ON public.observation USING btree (result_time);
 
 
 --
--- TOC entry 4684 (class 1259 OID 20149)
+-- TOC entry 4998 (class 1259 OID 37541)
 -- Name: idx_sampling_time_end; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6598,7 +6825,7 @@ CREATE INDEX idx_sampling_time_end ON public.observation USING btree (sampling_t
 
 
 --
--- TOC entry 4685 (class 1259 OID 20148)
+-- TOC entry 4999 (class 1259 OID 37540)
 -- Name: idx_sampling_time_start; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6606,7 +6833,7 @@ CREATE INDEX idx_sampling_time_start ON public.observation USING btree (sampling
 
 
 --
--- TOC entry 4783 (class 1259 OID 20217)
+-- TOC entry 5100 (class 1259 OID 37612)
 -- Name: idx_start_time; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6614,7 +6841,7 @@ CREATE INDEX idx_start_time ON public.procedure_history USING btree (valid_from)
 
 
 --
--- TOC entry 4814 (class 1259 OID 20233)
+-- TOC entry 5132 (class 1259 OID 37630)
 -- Name: idx_tag_dataset_dataset; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6622,7 +6849,15 @@ CREATE INDEX idx_tag_dataset_dataset ON public.tag_dataset USING btree (fk_datas
 
 
 --
--- TOC entry 4817 (class 1259 OID 20234)
+-- TOC entry 5133 (class 1259 OID 37629)
+-- Name: idx_tag_dataset_fk_dataset_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_tag_dataset_fk_dataset_id ON public.tag_dataset USING btree (fk_dataset_id);
+
+
+--
+-- TOC entry 5136 (class 1259 OID 37631)
 -- Name: idx_tag_i18n_tag; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6630,7 +6865,7 @@ CREATE INDEX idx_tag_i18n_tag ON public.tag_i18n USING btree (fk_tag_id);
 
 
 --
--- TOC entry 4824 (class 1259 OID 20237)
+-- TOC entry 5143 (class 1259 OID 37634)
 -- Name: idx_unit_i18n_unit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6638,7 +6873,7 @@ CREATE INDEX idx_unit_i18n_unit ON public.unit_i18n USING btree (fk_unit_id);
 
 
 --
--- TOC entry 4832 (class 1259 OID 20239)
+-- TOC entry 5151 (class 1259 OID 37636)
 -- Name: idx_value_profile_i18n_value_profile; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6646,7 +6881,7 @@ CREATE INDEX idx_value_profile_i18n_value_profile ON public.value_profile_i18n U
 
 
 --
--- TOC entry 4846 (class 2606 OID 20357)
+-- TOC entry 5165 (class 2606 OID 37692)
 -- Name: dataset fk_aggregation_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6655,7 +6890,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4935 (class 2606 OID 20802)
+-- TOC entry 5254 (class 2606 OID 38137)
 -- Name: value_blob fk_blob_value; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6664,7 +6899,7 @@ ALTER TABLE ONLY public.value_blob
 
 
 --
--- TOC entry 4835 (class 2606 OID 20302)
+-- TOC entry 5154 (class 2606 OID 37637)
 -- Name: category_i18n fk_category; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6673,7 +6908,7 @@ ALTER TABLE ONLY public.category_i18n
 
 
 --
--- TOC entry 4876 (class 2606 OID 20507)
+-- TOC entry 5195 (class 2606 OID 37842)
 -- Name: observation fk_data_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6682,7 +6917,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4877 (class 2606 OID 20512)
+-- TOC entry 5196 (class 2606 OID 37847)
 -- Name: observation fk_data_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6691,7 +6926,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4875 (class 2606 OID 20502)
+-- TOC entry 5194 (class 2606 OID 37837)
 -- Name: observation fk_dataset; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6700,7 +6935,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4840 (class 2606 OID 20332)
+-- TOC entry 5160 (class 2606 OID 37667)
 -- Name: dataset fk_dataset_category; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6709,7 +6944,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4841 (class 2606 OID 20337)
+-- TOC entry 5161 (class 2606 OID 37672)
 -- Name: dataset fk_dataset_feature; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6718,7 +6953,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4847 (class 2606 OID 20362)
+-- TOC entry 5166 (class 2606 OID 37697)
 -- Name: dataset fk_dataset_first_obs; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6727,7 +6962,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4852 (class 2606 OID 20387)
+-- TOC entry 5171 (class 2606 OID 37722)
 -- Name: dataset_i18n fk_dataset_i18n; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6736,7 +6971,7 @@ ALTER TABLE ONLY public.dataset_i18n
 
 
 --
--- TOC entry 4849 (class 2606 OID 20372)
+-- TOC entry 5168 (class 2606 OID 37707)
 -- Name: dataset fk_dataset_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6745,7 +6980,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4848 (class 2606 OID 20367)
+-- TOC entry 5167 (class 2606 OID 37702)
 -- Name: dataset fk_dataset_last_obs; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6754,7 +6989,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4850 (class 2606 OID 20377)
+-- TOC entry 5169 (class 2606 OID 37712)
 -- Name: dataset fk_dataset_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6763,7 +6998,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4839 (class 2606 OID 20327)
+-- TOC entry 5159 (class 2606 OID 37662)
 -- Name: dataset fk_dataset_offering; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6772,7 +7007,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4845 (class 2606 OID 20352)
+-- TOC entry 5164 (class 2606 OID 37687)
 -- Name: dataset fk_dataset_om_obs_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6781,7 +7016,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4854 (class 2606 OID 20397)
+-- TOC entry 5172 (class 2606 OID 37737)
 -- Name: dataset_parameter fk_dataset_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6790,25 +7025,7 @@ ALTER TABLE ONLY public.dataset_parameter
 
 
 --
--- TOC entry 4853 (class 2606 OID 20392)
--- Name: dataset_parameter fk_dataset_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.dataset_parameter
-    ADD CONSTRAINT fk_dataset_parameter FOREIGN KEY (fk_dataset_id) REFERENCES public.dataset(dataset_id);
-
-
---
--- TOC entry 4855 (class 2606 OID 20402)
--- Name: dataset_parameter fk_dataset_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.dataset_parameter
-    ADD CONSTRAINT fk_dataset_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.dataset_parameter(parameter_id);
-
-
---
--- TOC entry 4838 (class 2606 OID 20322)
+-- TOC entry 5158 (class 2606 OID 37657)
 -- Name: dataset fk_dataset_phenomenon; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6817,7 +7034,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4842 (class 2606 OID 20342)
+-- TOC entry 5162 (class 2606 OID 37677)
 -- Name: dataset fk_dataset_platform; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6826,7 +7043,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4844 (class 2606 OID 20317)
+-- TOC entry 5157 (class 2606 OID 37652)
 -- Name: dataset fk_dataset_procedure; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6835,7 +7052,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4857 (class 2606 OID 20412)
+-- TOC entry 5175 (class 2606 OID 37747)
 -- Name: dataset_reference fk_dataset_reference_from; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6844,7 +7061,7 @@ ALTER TABLE ONLY public.dataset_reference
 
 
 --
--- TOC entry 4856 (class 2606 OID 20407)
+-- TOC entry 5176 (class 2606 OID 37742)
 -- Name: dataset_reference fk_dataset_reference_to; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6853,7 +7070,7 @@ ALTER TABLE ONLY public.dataset_reference
 
 
 --
--- TOC entry 4932 (class 2606 OID 20787)
+-- TOC entry 5250 (class 2606 OID 38122)
 -- Name: tag_dataset fk_dataset_tag; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6862,7 +7079,7 @@ ALTER TABLE ONLY public.tag_dataset
 
 
 --
--- TOC entry 4843 (class 2606 OID 20347)
+-- TOC entry 5163 (class 2606 OID 37682)
 -- Name: dataset fk_dataset_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6871,7 +7088,7 @@ ALTER TABLE ONLY public.dataset
 
 
 --
--- TOC entry 4863 (class 2606 OID 20442)
+-- TOC entry 5182 (class 2606 OID 37777)
 -- Name: feature_i18n fk_feature; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6880,7 +7097,7 @@ ALTER TABLE ONLY public.feature_i18n
 
 
 --
--- TOC entry 4862 (class 2606 OID 20437)
+-- TOC entry 5180 (class 2606 OID 37772)
 -- Name: feature_hierarchy fk_feature_child; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6889,7 +7106,7 @@ ALTER TABLE ONLY public.feature_hierarchy
 
 
 --
--- TOC entry 4858 (class 2606 OID 20417)
+-- TOC entry 5177 (class 2606 OID 37752)
 -- Name: feature fk_feature_format; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6898,7 +7115,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4859 (class 2606 OID 20422)
+-- TOC entry 5178 (class 2606 OID 37757)
 -- Name: feature fk_feature_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6907,7 +7124,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4860 (class 2606 OID 20427)
+-- TOC entry 5179 (class 2606 OID 37762)
 -- Name: feature fk_feature_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6916,7 +7133,7 @@ ALTER TABLE ONLY public.feature
 
 
 --
--- TOC entry 4865 (class 2606 OID 20452)
+-- TOC entry 5183 (class 2606 OID 37792)
 -- Name: feature_parameter fk_feature_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6925,16 +7142,7 @@ ALTER TABLE ONLY public.feature_parameter
 
 
 --
--- TOC entry 4864 (class 2606 OID 20447)
--- Name: feature_parameter fk_feature_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.feature_parameter
-    ADD CONSTRAINT fk_feature_parameter FOREIGN KEY (fk_feature_id) REFERENCES public.feature(feature_id);
-
-
---
--- TOC entry 4861 (class 2606 OID 20432)
+-- TOC entry 5181 (class 2606 OID 37767)
 -- Name: feature_hierarchy fk_feature_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6943,16 +7151,7 @@ ALTER TABLE ONLY public.feature_hierarchy
 
 
 --
--- TOC entry 4866 (class 2606 OID 20457)
--- Name: feature_parameter fk_feature_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.feature_parameter
-    ADD CONSTRAINT fk_feature_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.feature_parameter(parameter_id);
-
-
---
--- TOC entry 4886 (class 2606 OID 20557)
+-- TOC entry 5205 (class 2606 OID 37892)
 -- Name: offering_feature_type fk_feature_type_offering; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6961,7 +7160,7 @@ ALTER TABLE ONLY public.offering_feature_type
 
 
 --
--- TOC entry 4869 (class 2606 OID 20472)
+-- TOC entry 5188 (class 2606 OID 37807)
 -- Name: location_historical_location fk_historical_loc_location; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6970,7 +7169,7 @@ ALTER TABLE ONLY public.location_historical_location
 
 
 --
--- TOC entry 4917 (class 2606 OID 20712)
+-- TOC entry 5236 (class 2606 OID 38047)
 -- Name: procedure_i18n fk_i18n_procedure; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6979,7 +7178,7 @@ ALTER TABLE ONLY public.procedure_i18n
 
 
 --
--- TOC entry 4937 (class 2606 OID 20812)
+-- TOC entry 5256 (class 2606 OID 38147)
 -- Name: value_profile_i18n fk_i18n_value_profile; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6988,7 +7187,7 @@ ALTER TABLE ONLY public.value_profile_i18n
 
 
 --
--- TOC entry 4871 (class 2606 OID 20482)
+-- TOC entry 5190 (class 2606 OID 37817)
 -- Name: location_i18n fk_location; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6997,7 +7196,7 @@ ALTER TABLE ONLY public.location_i18n
 
 
 --
--- TOC entry 4868 (class 2606 OID 20467)
+-- TOC entry 5187 (class 2606 OID 37802)
 -- Name: location fk_location_format; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7006,7 +7205,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4870 (class 2606 OID 20477)
+-- TOC entry 5189 (class 2606 OID 37812)
 -- Name: location_historical_location fk_location_historical_loc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7015,7 +7214,7 @@ ALTER TABLE ONLY public.location_historical_location
 
 
 --
--- TOC entry 4873 (class 2606 OID 20492)
+-- TOC entry 5191 (class 2606 OID 37832)
 -- Name: location_parameter fk_location_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7024,25 +7223,7 @@ ALTER TABLE ONLY public.location_parameter
 
 
 --
--- TOC entry 4872 (class 2606 OID 20487)
--- Name: location_parameter fk_location_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.location_parameter
-    ADD CONSTRAINT fk_location_parameter FOREIGN KEY (fk_location_id) REFERENCES public.location(location_id);
-
-
---
--- TOC entry 4874 (class 2606 OID 20497)
--- Name: location_parameter fk_location_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.location_parameter
-    ADD CONSTRAINT fk_location_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.location_parameter(parameter_id);
-
-
---
--- TOC entry 4905 (class 2606 OID 20652)
+-- TOC entry 5223 (class 2606 OID 37982)
 -- Name: platform_location fk_location_platform; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7051,7 +7232,7 @@ ALTER TABLE ONLY public.platform_location
 
 
 --
--- TOC entry 4880 (class 2606 OID 20527)
+-- TOC entry 5199 (class 2606 OID 37862)
 -- Name: observation_i18n fk_observation_i18n; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7060,7 +7241,7 @@ ALTER TABLE ONLY public.observation_i18n
 
 
 --
--- TOC entry 4882 (class 2606 OID 20537)
+-- TOC entry 5200 (class 2606 OID 37877)
 -- Name: observation_parameter fk_observation_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7069,25 +7250,7 @@ ALTER TABLE ONLY public.observation_parameter
 
 
 --
--- TOC entry 4881 (class 2606 OID 20532)
--- Name: observation_parameter fk_observation_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.observation_parameter
-    ADD CONSTRAINT fk_observation_parameter FOREIGN KEY (fk_observation_id) REFERENCES public.observation(observation_id);
-
-
---
--- TOC entry 4883 (class 2606 OID 20542)
--- Name: observation_parameter fk_observation_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.observation_parameter
-    ADD CONSTRAINT fk_observation_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.observation_parameter(parameter_id);
-
-
---
--- TOC entry 4891 (class 2606 OID 20582)
+-- TOC entry 5210 (class 2606 OID 37917)
 -- Name: offering_observation_type fk_observation_type_offering; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7096,7 +7259,7 @@ ALTER TABLE ONLY public.offering_observation_type
 
 
 --
--- TOC entry 4890 (class 2606 OID 20577)
+-- TOC entry 5209 (class 2606 OID 37912)
 -- Name: offering_i18n fk_offering; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7105,7 +7268,7 @@ ALTER TABLE ONLY public.offering_i18n
 
 
 --
--- TOC entry 4889 (class 2606 OID 20572)
+-- TOC entry 5207 (class 2606 OID 37907)
 -- Name: offering_hierarchy fk_offering_child; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7114,7 +7277,7 @@ ALTER TABLE ONLY public.offering_hierarchy
 
 
 --
--- TOC entry 4887 (class 2606 OID 20562)
+-- TOC entry 5206 (class 2606 OID 37897)
 -- Name: offering_feature_type fk_offering_feature_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7123,7 +7286,7 @@ ALTER TABLE ONLY public.offering_feature_type
 
 
 --
--- TOC entry 4884 (class 2606 OID 20547)
+-- TOC entry 5203 (class 2606 OID 37882)
 -- Name: offering fk_offering_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7132,7 +7295,7 @@ ALTER TABLE ONLY public.offering
 
 
 --
--- TOC entry 4885 (class 2606 OID 20552)
+-- TOC entry 5204 (class 2606 OID 37887)
 -- Name: offering fk_offering_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7141,7 +7304,7 @@ ALTER TABLE ONLY public.offering
 
 
 --
--- TOC entry 4892 (class 2606 OID 20587)
+-- TOC entry 5211 (class 2606 OID 37922)
 -- Name: offering_observation_type fk_offering_observation_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7150,7 +7313,7 @@ ALTER TABLE ONLY public.offering_observation_type
 
 
 --
--- TOC entry 4888 (class 2606 OID 20567)
+-- TOC entry 5208 (class 2606 OID 37902)
 -- Name: offering_hierarchy fk_offering_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7159,7 +7322,7 @@ ALTER TABLE ONLY public.offering_hierarchy
 
 
 --
--- TOC entry 4893 (class 2606 OID 20592)
+-- TOC entry 5212 (class 2606 OID 37927)
 -- Name: offering_related_feature fk_offering_related_feature; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7168,7 +7331,133 @@ ALTER TABLE ONLY public.offering_related_feature
 
 
 --
--- TOC entry 4879 (class 2606 OID 20522)
+-- TOC entry 5173 (class 2606 OID 37727)
+-- Name: dataset_parameter fk_param_dataset_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.dataset_parameter
+    ADD CONSTRAINT fk_param_dataset_id FOREIGN KEY (fk_dataset_id) REFERENCES public.dataset(dataset_id);
+
+
+--
+-- TOC entry 5174 (class 2606 OID 37732)
+-- Name: dataset_parameter fk_param_dataset_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.dataset_parameter
+    ADD CONSTRAINT fk_param_dataset_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.dataset_parameter(parameter_id);
+
+
+--
+-- TOC entry 5184 (class 2606 OID 37782)
+-- Name: feature_parameter fk_param_feature_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feature_parameter
+    ADD CONSTRAINT fk_param_feature_id FOREIGN KEY (fk_feature_id) REFERENCES public.feature(feature_id);
+
+
+--
+-- TOC entry 5185 (class 2606 OID 37787)
+-- Name: feature_parameter fk_param_feature_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feature_parameter
+    ADD CONSTRAINT fk_param_feature_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.feature_parameter(parameter_id);
+
+
+--
+-- TOC entry 5192 (class 2606 OID 37822)
+-- Name: location_parameter fk_param_location_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location_parameter
+    ADD CONSTRAINT fk_param_location_id FOREIGN KEY (fk_location_id) REFERENCES public.location(location_id);
+
+
+--
+-- TOC entry 5193 (class 2606 OID 37827)
+-- Name: location_parameter fk_param_location_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location_parameter
+    ADD CONSTRAINT fk_param_location_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.location_parameter(parameter_id);
+
+
+--
+-- TOC entry 5201 (class 2606 OID 37867)
+-- Name: observation_parameter fk_param_observation_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.observation_parameter
+    ADD CONSTRAINT fk_param_observation_id FOREIGN KEY (fk_observation_id) REFERENCES public.observation(observation_id);
+
+
+--
+-- TOC entry 5202 (class 2606 OID 37872)
+-- Name: observation_parameter fk_param_observation_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.observation_parameter
+    ADD CONSTRAINT fk_param_observation_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.observation_parameter(parameter_id);
+
+
+--
+-- TOC entry 5217 (class 2606 OID 37952)
+-- Name: phenomenon_parameter fk_param_phenomenon_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.phenomenon_parameter
+    ADD CONSTRAINT fk_param_phenomenon_id FOREIGN KEY (fk_phenomenon_id) REFERENCES public.phenomenon(phenomenon_id);
+
+
+--
+-- TOC entry 5218 (class 2606 OID 37957)
+-- Name: phenomenon_parameter fk_param_phenomenon_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.phenomenon_parameter
+    ADD CONSTRAINT fk_param_phenomenon_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.phenomenon_parameter(parameter_id);
+
+
+--
+-- TOC entry 5225 (class 2606 OID 37992)
+-- Name: platform_parameter fk_param_platform_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.platform_parameter
+    ADD CONSTRAINT fk_param_platform_id FOREIGN KEY (fk_platform_id) REFERENCES public.platform(platform_id);
+
+
+--
+-- TOC entry 5226 (class 2606 OID 37997)
+-- Name: platform_parameter fk_param_platform_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.platform_parameter
+    ADD CONSTRAINT fk_param_platform_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.platform_parameter(parameter_id);
+
+
+--
+-- TOC entry 5237 (class 2606 OID 38052)
+-- Name: procedure_parameter fk_param_procedure_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.procedure_parameter
+    ADD CONSTRAINT fk_param_procedure_id FOREIGN KEY (fk_procedure_id) REFERENCES public.procedure(procedure_id);
+
+
+--
+-- TOC entry 5238 (class 2606 OID 38057)
+-- Name: procedure_parameter fk_param_procedure_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.procedure_parameter
+    ADD CONSTRAINT fk_param_procedure_parent_id FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.procedure_parameter(parameter_id);
+
+
+--
+-- TOC entry 5198 (class 2606 OID 37857)
 -- Name: observation fk_parent_observation; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7177,7 +7466,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4916 (class 2606 OID 20707)
+-- TOC entry 5234 (class 2606 OID 38042)
 -- Name: procedure_history fk_pdf_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7186,7 +7475,7 @@ ALTER TABLE ONLY public.procedure_history
 
 
 --
--- TOC entry 4897 (class 2606 OID 20612)
+-- TOC entry 5216 (class 2606 OID 37947)
 -- Name: phenomenon_i18n fk_phenomenon; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7195,7 +7484,7 @@ ALTER TABLE ONLY public.phenomenon_i18n
 
 
 --
--- TOC entry 4837 (class 2606 OID 20312)
+-- TOC entry 5155 (class 2606 OID 37647)
 -- Name: composite_phenomenon fk_phenomenon_child; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7204,7 +7493,7 @@ ALTER TABLE ONLY public.composite_phenomenon
 
 
 --
--- TOC entry 4895 (class 2606 OID 20602)
+-- TOC entry 5214 (class 2606 OID 37937)
 -- Name: phenomenon fk_phenomenon_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7213,7 +7502,7 @@ ALTER TABLE ONLY public.phenomenon
 
 
 --
--- TOC entry 4896 (class 2606 OID 20607)
+-- TOC entry 5215 (class 2606 OID 37942)
 -- Name: phenomenon fk_phenomenon_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7222,7 +7511,7 @@ ALTER TABLE ONLY public.phenomenon
 
 
 --
--- TOC entry 4899 (class 2606 OID 20622)
+-- TOC entry 5219 (class 2606 OID 37962)
 -- Name: phenomenon_parameter fk_phenomenon_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7231,16 +7520,7 @@ ALTER TABLE ONLY public.phenomenon_parameter
 
 
 --
--- TOC entry 4898 (class 2606 OID 20617)
--- Name: phenomenon_parameter fk_phenomenon_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.phenomenon_parameter
-    ADD CONSTRAINT fk_phenomenon_parameter FOREIGN KEY (fk_phenomenon_id) REFERENCES public.phenomenon(phenomenon_id);
-
-
---
--- TOC entry 4836 (class 2606 OID 20307)
+-- TOC entry 5156 (class 2606 OID 37642)
 -- Name: composite_phenomenon fk_phenomenon_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7249,16 +7529,7 @@ ALTER TABLE ONLY public.composite_phenomenon
 
 
 --
--- TOC entry 4900 (class 2606 OID 20627)
--- Name: phenomenon_parameter fk_phenomenon_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.phenomenon_parameter
-    ADD CONSTRAINT fk_phenomenon_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.phenomenon_parameter(parameter_id);
-
-
---
--- TOC entry 4903 (class 2606 OID 20642)
+-- TOC entry 5222 (class 2606 OID 37977)
 -- Name: platform_i18n fk_platform; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7267,7 +7538,7 @@ ALTER TABLE ONLY public.platform_i18n
 
 
 --
--- TOC entry 4867 (class 2606 OID 20462)
+-- TOC entry 5186 (class 2606 OID 37797)
 -- Name: historical_location fk_platform_historical_location; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7276,7 +7547,7 @@ ALTER TABLE ONLY public.historical_location
 
 
 --
--- TOC entry 4901 (class 2606 OID 20632)
+-- TOC entry 5220 (class 2606 OID 37967)
 -- Name: platform fk_platform_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7285,7 +7556,7 @@ ALTER TABLE ONLY public.platform
 
 
 --
--- TOC entry 4904 (class 2606 OID 20647)
+-- TOC entry 5224 (class 2606 OID 37987)
 -- Name: platform_location fk_platform_location; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7294,7 +7565,7 @@ ALTER TABLE ONLY public.platform_location
 
 
 --
--- TOC entry 4902 (class 2606 OID 20637)
+-- TOC entry 5221 (class 2606 OID 37972)
 -- Name: platform fk_platform_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7303,7 +7574,7 @@ ALTER TABLE ONLY public.platform
 
 
 --
--- TOC entry 4907 (class 2606 OID 20662)
+-- TOC entry 5227 (class 2606 OID 38002)
 -- Name: platform_parameter fk_platform_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7312,25 +7583,7 @@ ALTER TABLE ONLY public.platform_parameter
 
 
 --
--- TOC entry 4906 (class 2606 OID 20657)
--- Name: platform_parameter fk_platform_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.platform_parameter
-    ADD CONSTRAINT fk_platform_parameter FOREIGN KEY (fk_platform_id) REFERENCES public.platform(platform_id);
-
-
---
--- TOC entry 4908 (class 2606 OID 20667)
--- Name: platform_parameter fk_platform_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.platform_parameter
-    ADD CONSTRAINT fk_platform_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.platform_parameter(parameter_id);
-
-
---
--- TOC entry 4914 (class 2606 OID 20697)
+-- TOC entry 5232 (class 2606 OID 38032)
 -- Name: procedure_hierarchy fk_procedure_child; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7339,7 +7592,7 @@ ALTER TABLE ONLY public.procedure_hierarchy
 
 
 --
--- TOC entry 4912 (class 2606 OID 20687)
+-- TOC entry 5231 (class 2606 OID 38022)
 -- Name: procedure fk_procedure_format; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7348,7 +7601,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4915 (class 2606 OID 20702)
+-- TOC entry 5235 (class 2606 OID 38037)
 -- Name: procedure_history fk_procedure_history; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7357,7 +7610,7 @@ ALTER TABLE ONLY public.procedure_history
 
 
 --
--- TOC entry 4909 (class 2606 OID 20672)
+-- TOC entry 5228 (class 2606 OID 38007)
 -- Name: procedure fk_procedure_identifier_codesp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7366,7 +7619,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4910 (class 2606 OID 20677)
+-- TOC entry 5229 (class 2606 OID 38012)
 -- Name: procedure fk_procedure_name_codespace; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7375,7 +7628,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4919 (class 2606 OID 20722)
+-- TOC entry 5239 (class 2606 OID 38062)
 -- Name: procedure_parameter fk_procedure_param_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7384,16 +7637,7 @@ ALTER TABLE ONLY public.procedure_parameter
 
 
 --
--- TOC entry 4918 (class 2606 OID 20717)
--- Name: procedure_parameter fk_procedure_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.procedure_parameter
-    ADD CONSTRAINT fk_procedure_parameter FOREIGN KEY (fk_procedure_id) REFERENCES public.procedure(procedure_id);
-
-
---
--- TOC entry 4913 (class 2606 OID 20692)
+-- TOC entry 5233 (class 2606 OID 38027)
 -- Name: procedure_hierarchy fk_procedure_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7402,16 +7646,7 @@ ALTER TABLE ONLY public.procedure_hierarchy
 
 
 --
--- TOC entry 4920 (class 2606 OID 20727)
--- Name: procedure_parameter fk_procedure_parent_parameter; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.procedure_parameter
-    ADD CONSTRAINT fk_procedure_parent_parameter FOREIGN KEY (fk_parent_parameter_id) REFERENCES public.procedure_parameter(parameter_id);
-
-
---
--- TOC entry 4936 (class 2606 OID 20807)
+-- TOC entry 5255 (class 2606 OID 38142)
 -- Name: value_profile fk_profile_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7420,7 +7655,7 @@ ALTER TABLE ONLY public.value_profile
 
 
 --
--- TOC entry 4921 (class 2606 OID 20732)
+-- TOC entry 5240 (class 2606 OID 38067)
 -- Name: related_dataset fk_rel_dataset_dataset; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7429,7 +7664,7 @@ ALTER TABLE ONLY public.related_dataset
 
 
 --
--- TOC entry 4922 (class 2606 OID 20737)
+-- TOC entry 5241 (class 2606 OID 38072)
 -- Name: related_dataset fk_rel_dataset_rel_dataset; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7438,7 +7673,7 @@ ALTER TABLE ONLY public.related_dataset
 
 
 --
--- TOC entry 4925 (class 2606 OID 20752)
+-- TOC entry 5243 (class 2606 OID 38087)
 -- Name: related_observation fk_rel_obs_related; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7447,7 +7682,7 @@ ALTER TABLE ONLY public.related_observation
 
 
 --
--- TOC entry 4923 (class 2606 OID 20742)
+-- TOC entry 5242 (class 2606 OID 38077)
 -- Name: related_feature fk_related_feature; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7456,7 +7691,7 @@ ALTER TABLE ONLY public.related_feature
 
 
 --
--- TOC entry 4894 (class 2606 OID 20597)
+-- TOC entry 5213 (class 2606 OID 37932)
 -- Name: offering_related_feature fk_related_feature_offering; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7465,7 +7700,7 @@ ALTER TABLE ONLY public.offering_related_feature
 
 
 --
--- TOC entry 4924 (class 2606 OID 20747)
+-- TOC entry 5244 (class 2606 OID 38082)
 -- Name: related_observation fk_related_observation; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7474,7 +7709,7 @@ ALTER TABLE ONLY public.related_observation
 
 
 --
--- TOC entry 4878 (class 2606 OID 20517)
+-- TOC entry 5197 (class 2606 OID 37852)
 -- Name: observation fk_result_template; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7483,7 +7718,7 @@ ALTER TABLE ONLY public.observation
 
 
 --
--- TOC entry 4930 (class 2606 OID 20777)
+-- TOC entry 5245 (class 2606 OID 38112)
 -- Name: result_template fk_result_template_category; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7492,7 +7727,7 @@ ALTER TABLE ONLY public.result_template
 
 
 --
--- TOC entry 4929 (class 2606 OID 20772)
+-- TOC entry 5246 (class 2606 OID 38107)
 -- Name: result_template fk_result_template_feature; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7501,7 +7736,7 @@ ALTER TABLE ONLY public.result_template
 
 
 --
--- TOC entry 4926 (class 2606 OID 20757)
+-- TOC entry 5247 (class 2606 OID 38092)
 -- Name: result_template fk_result_template_offering; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7510,7 +7745,7 @@ ALTER TABLE ONLY public.result_template
 
 
 --
--- TOC entry 4927 (class 2606 OID 20762)
+-- TOC entry 5248 (class 2606 OID 38097)
 -- Name: result_template fk_result_template_phenomenon; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7519,7 +7754,7 @@ ALTER TABLE ONLY public.result_template
 
 
 --
--- TOC entry 4928 (class 2606 OID 20767)
+-- TOC entry 5249 (class 2606 OID 38102)
 -- Name: result_template fk_result_template_procedure; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7528,7 +7763,7 @@ ALTER TABLE ONLY public.result_template
 
 
 --
--- TOC entry 4933 (class 2606 OID 20792)
+-- TOC entry 5252 (class 2606 OID 38127)
 -- Name: tag_i18n fk_tag; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7537,7 +7772,7 @@ ALTER TABLE ONLY public.tag_i18n
 
 
 --
--- TOC entry 4931 (class 2606 OID 20782)
+-- TOC entry 5251 (class 2606 OID 38117)
 -- Name: tag_dataset fk_tag_dataset; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7546,7 +7781,7 @@ ALTER TABLE ONLY public.tag_dataset
 
 
 --
--- TOC entry 4911 (class 2606 OID 20682)
+-- TOC entry 5230 (class 2606 OID 38017)
 -- Name: procedure fk_type_of; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7555,7 +7790,7 @@ ALTER TABLE ONLY public.procedure
 
 
 --
--- TOC entry 4934 (class 2606 OID 20797)
+-- TOC entry 5253 (class 2606 OID 38132)
 -- Name: unit_i18n fk_unit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7564,7 +7799,7 @@ ALTER TABLE ONLY public.unit_i18n
 
 
 --
--- TOC entry 4851 (class 2606 OID 20382)
+-- TOC entry 5170 (class 2606 OID 37717)
 -- Name: dataset fk_value_profile; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7572,8 +7807,9 @@ ALTER TABLE ONLY public.dataset
     ADD CONSTRAINT fk_value_profile FOREIGN KEY (fk_value_profile_id) REFERENCES public.value_profile(value_profile_id);
 
 
--- Completed on 2022-07-12 10:15:22 UTC
+-- Completed on 2023-05-05 14:31:02 UTC
 
 --
 -- PostgreSQL database dump complete
 --
+
