@@ -74,9 +74,9 @@ services:
       - database
 
   sos:
-    image: 52north/sos:6.1.0
+    image: 52north/sos:6.1.1
     build:
-      context: https://github.com/52North/SOS.git#v6.1.0
+      context: https://github.com/52North/SOS.git#v6.1.1
       dockerfile: Dockerfile_conf
     environment:
       SOS_DATASOURCE_TYPE: postgres
